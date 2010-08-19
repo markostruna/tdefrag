@@ -39,13 +39,19 @@ namespace TDefragLib
             BytesPerCluster = 0;
         }
 
-        public Int64 NumClusters
+        public UInt64 NumClusters
         {
             get;
             set;
         }
 
-        public Int64 BytesPerCluster
+        public UInt64 BytesPerCluster
+        {
+            get;
+            set;
+        }
+
+        public UInt64 MftLockedClusters
         {
             get;
             set;

@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TDefragLib.FS.Ntfs;
+using TDefragLib.Helper;
 
 namespace TDefragLib.Ntfs
 {
     class Scan
     {
+        const UInt64 MFTBUFFERSIZE = 256 * 1024;
+
         public Scan(MainLib parent)
         {
             Lib = parent;
@@ -20,52 +24,59 @@ namespace TDefragLib.Ntfs
             // Test if the boot block is an NTFS boot block.
             if (bootSector.Filesystem != FS.Filesystem.NTFS)
             {
+                Lib.ShowMessage("This is not NTFS disk.");
                 return;
             }
 
-/*            DiskInformation diskInfo = new DiskInformation(bootSector);
+            DiskInformation diskInfo = new DiskInformation(bootSector);
 
-            _lib.Data.BytesPerCluster = diskInfo.BytesPerCluster;
+            Lib.Data.BytesPerCluster = diskInfo.BytesPerCluster;
 
             if (diskInfo.SectorsPerCluster > 0)
             {
-                _lib.Data.TotalClusters = diskInfo.TotalSectors / diskInfo.SectorsPerCluster;
+                Lib.Data.NumClusters = diskInfo.TotalSectors / diskInfo.SectorsPerCluster;
             }
 
-            ShowDebug(0, "This is an NTFS disk.");
+            Lib.ShowMessage("This is an NTFS disk.");
 
-            ShowDebug(2, String.Format(LogMessage.messages[18], bootSector.OemId));
-            ShowDebug(2, String.Format(LogMessage.messages[19], diskInfo.BytesPerSector));
-            ShowDebug(2, String.Format(LogMessage.messages[20], diskInfo.TotalSectors));
-            ShowDebug(2, String.Format(LogMessage.messages[21], diskInfo.SectorsPerCluster));
+            Lib.ShowMessage(String.Format("  Disk cookie: {0:X}", bootSector.OemId));
+            Lib.ShowMessage(String.Format("  BytesPerSector: {0:G}", diskInfo.BytesPerSector));
+            Lib.ShowMessage(String.Format("  TotalSectors: {0:G}", diskInfo.TotalSectors));
 
-            ShowDebug(2, String.Format(LogMessage.messages[22], bootSector.SectorsPerTrack));
-            ShowDebug(2, String.Format(LogMessage.messages[23], bootSector.NumberOfHeads));
-            ShowDebug(2, String.Format(LogMessage.messages[24], diskInfo.MftStartLcn));
-            ShowDebug(2, String.Format(LogMessage.messages[25], diskInfo.Mft2StartLcn));
-            ShowDebug(2, String.Format(LogMessage.messages[26], diskInfo.BytesPerMftRecord));
-            ShowDebug(2, String.Format(LogMessage.messages[27], diskInfo.ClustersPerIndexRecord));
-
-            ShowDebug(2, String.Format(LogMessage.messages[28], bootSector.MediaType));
-            ShowDebug(2, String.Format(LogMessage.messages[29], bootSector.Serial));
+            Lib.ShowMessage(String.Format("  SectorsPerCluster: {0:G}", diskInfo.SectorsPerCluster));
+            Lib.ShowMessage(String.Format("  SectorsPerTrack: {0:G}", bootSector.SectorsPerTrack));
+            Lib.ShowMessage(String.Format("  NumberOfHeads: {0:G}", bootSector.NumberOfHeads));
+            Lib.ShowMessage(String.Format("  MftStartLcn: {0:G}", diskInfo.MftStartLcn));
+            Lib.ShowMessage(String.Format("  Mft2StartLcn: {0:G}", diskInfo.Mft2StartLcn));
+            Lib.ShowMessage(String.Format("  BytesPerMftRecord: {0:G}", diskInfo.BytesPerMftRecord));
+            Lib.ShowMessage(String.Format("  ClustersPerIndexRecord: {0:G}", diskInfo.ClustersPerIndexRecord));
+            Lib.ShowMessage(String.Format("  MediaType: {0:X}", bootSector.MediaType));
+            Lib.ShowMessage(String.Format("  VolumeSerialNumber: {0:X}", bootSector.Serial));
 
             // Calculate the size of first 16 Inodes in the MFT. The Microsoft defragmentation API cannot move these inodes.
-            _lib.Data.Disk.MftLockedClusters = diskInfo.BytesPerCluster / diskInfo.BytesPerMftRecord;
+            Lib.Data.MftLockedClusters = diskInfo.BytesPerCluster / diskInfo.BytesPerMftRecord;
 
             // Read the $MFT record from disk into memory, which is always the first record in the MFT.
             UInt64 tempLcn = diskInfo.MftStartLcn * diskInfo.BytesPerCluster;
 
-            ByteArray Buffer = new ByteArray((Int64)MFTBUFFERSIZE);
+            diskBuffer = new DiskBuffer((Int64)MFTBUFFERSIZE);
 
-            _lib.Data.Disk.ReadFromCluster(tempLcn, Buffer.Bytes, 0,
+            // read MFT record
+            Boolean result = Lib.Data.volume.ReadFromCluster(tempLcn, diskBuffer.Buffer, 0,
                 (Int32)diskInfo.BytesPerMftRecord);
 
-            FixupRawMftdata(diskInfo, Buffer, 0, diskInfo.BytesPerMftRecord);
+            if (result == false)
+            {
+                Lib.ShowMessage("Could not read buffer!!");
+            }
 
-            // Extract data from the MFT record and put into an Item struct in memory. If
-            // there was an error then exit.
-            //
-            FragmentList MftDataFragments = null;
+            // Update sequence numbers in all sectors
+            UpdateSequenceNumbers(diskInfo, 0, diskInfo.BytesPerMftRecord);
+
+            // Extract data from the MFT record and put into an Item struct in memory.
+            // If there was an error then exit.
+            
+/*            FragmentList MftDataFragments = null;
             FragmentList MftBitmapFragments = null;
 
             UInt64 MftDataBytes = 0;
@@ -151,7 +162,7 @@ namespace TDefragLib.Ntfs
                 // Fixup the raw data of this m_iNode
                 UInt64 position = diskInfo.InodeToBytes(InodeNumber - BlockStart);
 
-                FixupRawMftdata(diskInfo,
+                UpdateSequenceNumbers(diskInfo,
                         Buffer, (Int64)position,
                     //Buffer.ToByteArray((Int64)position, Buffer.GetLength() - (Int64)(position)), 0, 
                         diskInfo.BytesPerMftRecord);
@@ -197,6 +208,78 @@ namespace TDefragLib.Ntfs
             return true;*/
         }
 
+        /// <summary>
+        /// Updates Sequence Numbers.
+        /// 
+        /// - To protect against disk failure, the last 2 bytes of every sector in the MFT are
+        ///   not stored in the sector itself, but in the "Usa" array in the header (described
+        ///   by UsaOffset and UsaCount). The last 2 bytes are copied into the array and the
+        ///   Update Sequence Number is written in their place.
+        /// - The Update Sequence Number is stored in the first item (item zero) of the "Usa" array.
+        /// - The number of bytes per sector is defined in the $Boot record.
+        /// </summary>
+        /// 
+        /// <param name="DiskInfo">Disk information</param>
+        /// <param name="bufferStart">Start of the buffer</param>
+        /// <param name="BufLength">Length of the buffer</param>
+        /// 
+        /// <returns>
+        /// Return true if everything is ok, false if the MFT data is corrupt.
+        /// 
+        /// NOTE:
+        /// This can also happen when we have read a record past the end of the MFT, maybe it has
+        /// shrunk while we were processing.
+        /// </returns>
+        private Boolean UpdateSequenceNumbers(DiskInformation DiskInfo, Int64 bufferStart, UInt64 BufLength)
+        {
+            UInt32 record = BitConverter.ToUInt32(diskBuffer.Buffer, (Int32)bufferStart);
+
+            // If this is not a FILE record then return FALSE
+            if (record != 0x454c4946)
+            {
+                Lib.ShowMessage("This is not a valid MFT record, it does not begin with FILE (maybe trying to read past the end?).");
+
+                return false;
+            }
+
+            // Walk through all the sectors and restore the last 2 bytes with the value from the Usa array.
+            // If we encounter bad sector data then return with false. 
+            RecordHeader RecordHeader = RecordHeader.Parse(FS.Ntfs.Helper.BinaryReader(diskBuffer));
+
+            UInt64 Increment = DiskInfo.BytesPerSector / sizeof(UInt16);
+            UInt64 index = Increment - 1;
+
+            for (UInt16 i = 1; i < RecordHeader.UsaCount; i++)
+            {
+                // Check if we are inside the buffer.
+                if (index * sizeof(UInt16) >= BufLength)
+                {
+                    Lib.ShowMessage("Warning: USA data indicates that data is missing, the MFT may be corrupt.");
+
+                    return false;
+                }
+
+                // Check if the last 2 bytes of the sector contain the Update Sequence Number.
+                if (diskBuffer.Buffer[index * sizeof(UInt16) + 0] != diskBuffer.Buffer[RecordHeader.UsaOffset + 0] ||
+                    diskBuffer.Buffer[index * sizeof(UInt16) + 1] != diskBuffer.Buffer[RecordHeader.UsaOffset + 1])
+                {
+                    Lib.ShowMessage("Error: USA fixup word is not equal to the Update Sequence Number, the MFT may be corrupt.");
+
+                    return false;
+                }
+
+                // Replace the last 2 bytes in the sector with the value from the Usa array.
+                diskBuffer.Buffer[index * sizeof(UInt16) + 0] = diskBuffer.Buffer[RecordHeader.UsaOffset + i * sizeof(UInt16) + 0];
+                diskBuffer.Buffer[index * sizeof(UInt16) + 1] = diskBuffer.Buffer[RecordHeader.UsaOffset + i * sizeof(UInt16) + 1];
+
+                // Go to the next sector
+                index += Increment;
+            }
+
+            return true;
+        }
+
         private MainLib Lib;
+        private DiskBuffer diskBuffer;
     }
 }

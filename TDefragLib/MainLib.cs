@@ -52,7 +52,7 @@ namespace TDefragLib
             // Get Disk Information
             BitArray bitmap = Data.volume.VolumeBitmap.Buffer;
 
-            Data.NumClusters = bitmap.Count;
+            Data.NumClusters = (UInt64)bitmap.Count;
 
             Helper.Wrapper.NTFS_VOLUME_DATA_BUFFER ntfsData = Data.volume.NtfsVolumeData;
 
