@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading;
 
 namespace TDefragLib.Helper
 {
@@ -71,23 +73,28 @@ namespace TDefragLib.Helper
         ///// </summary>
         //public UInt64 MftLockedClusters;
 
-        ///// <summary>
-        ///// Read data from this disk starting at the given LCN
-        ///// </summary>
-        ///// <param name="lcn"></param>
-        ///// <param name="buffer">Buffer to copy the data into</param>
-        ///// <param name="start">Start index inside buffer</param>
-        ///// <param name="count">Number of bytes to read</param>
-        //public void ReadFromCluster(UInt64 lcn, Byte[] buffer, int start, int count)
-        //{
-        //    //Trace.WriteLine(this, String.Format("Reading: LCN={0:X8}, {1} bytes", lcn, count));
-        //    Debug.Assert(buffer.Length >= count);
-        //    Overlapped overlapped = IO.OverlappedBuilder.Get(lcn);
-        //    int bytesRead = IO.IOWrapper.Read(VolumeHandle, buffer, start, count, overlapped);
-        //    if (bytesRead != count)
-        //    {
-        //    }
-        //}
+        /// <summary>
+        /// Read data from this disk starting at the given LCN
+        /// </summary>
+        /// <param name="lcn"></param>
+        /// <param name="buffer">Buffer to copy the data into</param>
+        /// <param name="start">Start index inside buffer</param>
+        /// <param name="count">Number of bytes to read</param>
+        public Boolean ReadFromCluster(UInt64 lcn, Byte[] buffer, int start, int count)
+        {
+            //Trace.WriteLine(this, String.Format("Reading: LCN={0:X8}, {1} bytes", lcn, count));
+            Debug.Assert(buffer.Length >= count);
+            Overlapped overlapped = Helper.OverlappedBuilder.Get(lcn);
+
+            int bytesRead = Helper.Wrapper.Read(VolumeHandle, buffer, start, count, overlapped);
+
+            if (bytesRead != count)
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         //public byte[] Load(FileSystem.Ntfs.DiskInformation diskInfo, FragmentList fragments)
         //{
