@@ -16,6 +16,11 @@ namespace TDefragLib.Ntfs
             Lib = parent;
         }
 
+        public void ShowLogMessage(String message)
+        {
+            Lib.ShowMessage(message);
+        }
+
         public void AnalyzeVolume()
         {
             // Read the boot block from the disk.
@@ -24,7 +29,7 @@ namespace TDefragLib.Ntfs
             // Test if the boot block is an NTFS boot block.
             if (bootSector.Filesystem != FS.Filesystem.NTFS)
             {
-                Lib.ShowMessage("This is not NTFS disk.");
+                ShowLogMessage("This is not NTFS disk.");
                 return;
             }
 
@@ -37,21 +42,21 @@ namespace TDefragLib.Ntfs
                 Lib.Data.NumClusters = diskInfo.TotalSectors / diskInfo.SectorsPerCluster;
             }
 
-            Lib.ShowMessage("This is an NTFS disk.");
+            ShowLogMessage("This is an NTFS disk.");
 
-            Lib.ShowMessage(String.Format("  Disk cookie: {0:X}", bootSector.OemId));
-            Lib.ShowMessage(String.Format("  BytesPerSector: {0:G}", diskInfo.BytesPerSector));
-            Lib.ShowMessage(String.Format("  TotalSectors: {0:G}", diskInfo.TotalSectors));
+            ShowLogMessage(String.Format("  Disk cookie: {0:X}", bootSector.OemId));
+            ShowLogMessage(String.Format("  BytesPerSector: {0:G}", diskInfo.BytesPerSector));
+            ShowLogMessage(String.Format("  TotalSectors: {0:G}", diskInfo.TotalSectors));
 
-            Lib.ShowMessage(String.Format("  SectorsPerCluster: {0:G}", diskInfo.SectorsPerCluster));
-            Lib.ShowMessage(String.Format("  SectorsPerTrack: {0:G}", bootSector.SectorsPerTrack));
-            Lib.ShowMessage(String.Format("  NumberOfHeads: {0:G}", bootSector.NumberOfHeads));
-            Lib.ShowMessage(String.Format("  MftStartLcn: {0:G}", diskInfo.MftStartLcn));
-            Lib.ShowMessage(String.Format("  Mft2StartLcn: {0:G}", diskInfo.Mft2StartLcn));
-            Lib.ShowMessage(String.Format("  BytesPerMftRecord: {0:G}", diskInfo.BytesPerMftRecord));
-            Lib.ShowMessage(String.Format("  ClustersPerIndexRecord: {0:G}", diskInfo.ClustersPerIndexRecord));
-            Lib.ShowMessage(String.Format("  MediaType: {0:X}", bootSector.MediaType));
-            Lib.ShowMessage(String.Format("  VolumeSerialNumber: {0:X}", bootSector.Serial));
+            ShowLogMessage(String.Format("  SectorsPerCluster: {0:G}", diskInfo.SectorsPerCluster));
+            ShowLogMessage(String.Format("  SectorsPerTrack: {0:G}", bootSector.SectorsPerTrack));
+            ShowLogMessage(String.Format("  NumberOfHeads: {0:G}", bootSector.NumberOfHeads));
+            ShowLogMessage(String.Format("  MftStartLcn: {0:G}", diskInfo.MftStartLcn));
+            ShowLogMessage(String.Format("  Mft2StartLcn: {0:G}", diskInfo.Mft2StartLcn));
+            ShowLogMessage(String.Format("  BytesPerMftRecord: {0:G}", diskInfo.BytesPerMftRecord));
+            ShowLogMessage(String.Format("  ClustersPerIndexRecord: {0:G}", diskInfo.ClustersPerIndexRecord));
+            ShowLogMessage(String.Format("  MediaType: {0:X}", bootSector.MediaType));
+            ShowLogMessage(String.Format("  VolumeSerialNumber: {0:X}", bootSector.Serial));
 
             // Calculate the size of first 16 Inodes in the MFT. The Microsoft defragmentation API cannot move these inodes.
             Lib.Data.MftLockedClusters = diskInfo.BytesPerCluster / diskInfo.BytesPerMftRecord;
@@ -67,7 +72,7 @@ namespace TDefragLib.Ntfs
 
             if (result == false)
             {
-                Lib.ShowMessage("Could not read buffer!!");
+                ShowLogMessage("Could not read buffer!!");
             }
 
             // Update sequence numbers in all sectors

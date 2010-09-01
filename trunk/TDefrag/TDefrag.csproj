@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -32,6 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,6 +48,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lib\FS\FileSystem.cs" />
+    <Compile Include="Lib\FS\IBootSector.cs" />
+    <Compile Include="Lib\FS\KnownBootSector\BaseBootSector.cs" />
+    <Compile Include="Lib\FS\KnownBootSector\FatBootSector.cs" />
+    <Compile Include="Lib\FS\KnownBootSector\NtfsBootSector.cs" />
+    <Compile Include="Lib\FS\Ntfs\DiskInformation.cs" />
+    <Compile Include="Lib\FS\Ntfs\RecordHeader.cs" />
+    <Compile Include="Lib\FS\Ntfs\RefactoringHelper.cs" />
+    <Compile Include="Lib\FS\Volume.cs" />
+    <Compile Include="Lib\Helper\DiskBuffer.cs" />
+    <Compile Include="Lib\Helper\OverlappedBuilder.cs" />
+    <Compile Include="Lib\Helper\Volume.cs" />
+    <Compile Include="Lib\Helper\Wrapper.cs" />
+    <Compile Include="Lib\Information.cs" />
+    <Compile Include="Lib\MainLib.cs" />
+    <Compile Include="Lib\Ntfs\Scan.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,6 +72,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -73,12 +94,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TDefragLib\TDefragLib.csproj">
-      <Project>{B7154740-E93D-4B9E-BC98-02E575503295}</Project>
-      <Name>TDefragLib</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

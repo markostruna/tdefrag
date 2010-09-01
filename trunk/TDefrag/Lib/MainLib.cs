@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using TDefragLib.Helper;
 using System.Collections;
+using TDefrag;
 
 namespace TDefragLib
 {
     public class MainLib
     {
-        public MainLib()
+        public MainLib(MainForm m)
         {
+            mainForm = m;
+
             Data = new Information();
 
             ScanNtfs = new Ntfs.Scan(this);
@@ -18,12 +21,13 @@ namespace TDefragLib
 
         public void ShowMessage(String message)
         {
+            mainForm.AddLine(message);
             System.Console.WriteLine(message);
         }
 
         public void StartDefrag(String Path)
         {
-            ShowMessage("Defragmentation started!\n");
+            ShowMessage("Defragmentation started!");
 
             if (!String.IsNullOrEmpty(Path))
             {
@@ -35,7 +39,7 @@ namespace TDefragLib
         {
             if (Helper.Wrapper.ElevatePermissions() != 0)
             {
-                ShowMessage("Elevate permissions failed!!!\n");
+                ShowMessage("Elevate permissions failed!!!");
             }
 
             Data.volume = new Volume(Path);
@@ -80,5 +84,7 @@ namespace TDefragLib
 
         public Information Data;
         Ntfs.Scan ScanNtfs;
+
+        private MainForm mainForm;
     }
 }
