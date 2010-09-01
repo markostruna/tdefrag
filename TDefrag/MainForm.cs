@@ -16,9 +16,47 @@ namespace TDefrag
         {
             InitializeComponent();
 
-            MainLib koko = new MainLib();
+            defragLib = new MainLib(this);
 
-            koko.StartDefrag(@"E:\");
+            FillDiskArray();
         }
+
+        private void startDefrag_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                String drive = diskArray.Text;
+                defragLib.StartDefrag(drive);
+            }
+            catch (Exception e1)
+            {
+                AddLine(e1.Message);
+            }
+        }
+
+        public void AddLine(String line)
+        {
+            //defragLog.Lines[defragLog.Lines.Count()] = line;
+            //defragLog.Text += "\n" + line;
+            //defragLog.Text += String.Format("\n\r{0:S}", line);
+
+            if (String.IsNullOrEmpty(defragLog.Text))
+            {
+                defragLog.Text = line;
+            }
+            else
+            {
+                defragLog.Text = String.Concat(defragLog.Text, Environment.NewLine, line);
+            }
+        }
+
+        private void FillDiskArray()
+        {
+            String[] DriveList = Environment.GetLogicalDrives();
+
+            diskArray.Items.AddRange(DriveList);
+        }
+
+        private MainLib defragLib;
     }
 }

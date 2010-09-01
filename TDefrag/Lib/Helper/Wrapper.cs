@@ -179,7 +179,7 @@ namespace TDefragLib.Helper
                 GCHandle handle = GCHandle.Alloc(i64, GCHandleType.Pinned);
                 IntPtr p = handle.AddrOfPinnedObject();
 
-                uint q = 1024 * 1024 * 64 + 2 * 8;
+                uint q = 1024 * 1024 * 128 + 2 * 8;
 
                 uint size = 0;
                 pAlloc = Marshal.AllocHGlobal((int)q);
@@ -197,7 +197,9 @@ namespace TDefragLib.Helper
 
                 if (!fResult)
                 {
-                    throw new Exception(Marshal.GetLastWin32Error().ToString());
+                    int errorId = Marshal.GetLastWin32Error();
+                    String message = GetMessage(errorId);
+                    throw new Exception(message);
                 }
                 handle.Free();
 
