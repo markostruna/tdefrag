@@ -48,14 +48,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lib\Common\Fragment.cs" />
+    <Compile Include="Lib\Common\FragmentList.cs" />
     <Compile Include="Lib\FS\FileSystem.cs" />
     <Compile Include="Lib\FS\IBootSector.cs" />
     <Compile Include="Lib\FS\KnownBootSector\BaseBootSector.cs" />
     <Compile Include="Lib\FS\KnownBootSector\FatBootSector.cs" />
     <Compile Include="Lib\FS\KnownBootSector\NtfsBootSector.cs" />
+    <Compile Include="Lib\FS\Ntfs\Attribute.cs" />
+    <Compile Include="Lib\FS\Ntfs\AttributeType.cs" />
     <Compile Include="Lib\FS\Ntfs\DiskInformation.cs" />
+    <Compile Include="Lib\FS\Ntfs\FileNameAttribute.cs" />
+    <Compile Include="Lib\FS\Ntfs\FileRecordHeader.cs" />
+    <Compile Include="Lib\FS\Ntfs\IAttribute.cs" />
+    <Compile Include="Lib\FS\Ntfs\InodeDataStructure.cs" />
+    <Compile Include="Lib\FS\Ntfs\InodeReference.cs" />
     <Compile Include="Lib\FS\Ntfs\RecordHeader.cs" />
     <Compile Include="Lib\FS\Ntfs\RefactoringHelper.cs" />
+    <Compile Include="Lib\FS\Ntfs\RunData.cs" />
+    <Compile Include="Lib\FS\Ntfs\Stream.cs" />
+    <Compile Include="Lib\FS\Ntfs\StreamList.cs" />
     <Compile Include="Lib\FS\Volume.cs" />
     <Compile Include="Lib\Helper\DiskBuffer.cs" />
     <Compile Include="Lib\Helper\OverlappedBuilder.cs" />
