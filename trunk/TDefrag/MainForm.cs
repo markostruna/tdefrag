@@ -55,6 +55,8 @@ namespace TDefrag
             String[] DriveList = Environment.GetLogicalDrives();
 
             diskArray.Items.AddRange(DriveList);
+
+            diskArray.SelectedIndex = 0;
         }
 
         private MainLib defragLib;

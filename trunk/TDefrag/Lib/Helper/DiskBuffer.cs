@@ -19,32 +19,80 @@ namespace TDefragLib.Helper
             reader = new BinaryReader(stream);
         }
 
+        public Int64 ReaderPosition
+        {
+            set { reader.BaseStream.Seek(value, SeekOrigin.Begin); }
+            get { return reader.BaseStream.Position; }
+        }
+
         public String GetRecordType(Int64 position, Int32 length)
         {
-            reader.BaseStream.Seek(position, SeekOrigin.Begin);
+            return GetString(position, length);
+            //ReaderPosition = position;
+            //return new String(reader.ReadChars(length));
+        }
+
+        public String GetString(Int64 position, Int32 length)
+        {
+            ReaderPosition = position;
             return new String(reader.ReadChars(length));
         }
 
         public RecordHeader GetRecordHeader(Int64 position)
         {
-            reader.BaseStream.Seek(position, SeekOrigin.Begin);
+            ReaderPosition = position;
             return RecordHeader.Parse(reader);
         }
 
         public FileRecordHeader GetFileRecordHeader(Int64 position)
         {
-            reader.BaseStream.Seek(position, SeekOrigin.Begin);
+            ReaderPosition = position;
             return FileRecordHeader.Parse(reader);
+        }
+
+        public FileNameAttribute GetFileNameAttribute(Int64 position)
+        {
+            ReaderPosition = position;
+            return FileNameAttribute.Parse(reader);
         }
 
         public TDefragLib.FileSystem.Ntfs.Attribute GetAttribute(Int64 position)
         {
-            reader.BaseStream.Seek(position, SeekOrigin.Begin);
-
+            ReaderPosition = position;
             return TDefragLib.FileSystem.Ntfs.Attribute.Parse(reader);
         }
 
-        public Byte []Buffer;
+        public NonResidentAttribute GetNonResidentAttribute(Int64 position)
+        {
+            ReaderPosition = position;
+            return NonResidentAttribute.Parse(reader);
+        }
+
+        public ResidentAttribute GetResidentAttribute(Int64 position)
+        {
+            ReaderPosition = position;
+            return ResidentAttribute.Parse(reader);
+        }
+
+        public StandardInformation GetStandardInformation(Int64 position)
+        {
+            ReaderPosition = position;
+            return StandardInformation.Parse(reader);
+        }
+
+        public UInt16 GetUInt16(Int64 position)
+        {
+            ReaderPosition = position;
+            return reader.ReadUInt16();
+        }
+
+        public Byte[] GetBytes(Int64 position, Int32 count)
+        {
+            ReaderPosition = position;
+            return reader.ReadBytes(count);
+        }
+
+        public Byte[] Buffer;
         BinaryReader reader;
     }
 }

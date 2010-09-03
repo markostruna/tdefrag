@@ -57,6 +57,60 @@ namespace TDefragLib
             set;
         }
 
+        public UInt64 CountDirectories
+        {
+            get;
+            set;
+        }
+
+        public UInt64 CountAllFiles
+        {
+            get;
+            set;
+        }
+
+        public UInt64 CountAllClusters
+        {
+            get;
+            set;
+        }
+
+        public UInt64 CountAllBytes
+        {
+            get;
+            set;
+        }
+
+        public UInt64 CountFragmentedItems
+        {
+            get;
+            set;
+        }
+
+        public UInt64 CountFragmentedBytes
+        {
+            get;
+            set;
+        }
+
+        public UInt64 CountFragmentedClusters
+        {
+            get;
+            set;
+        }
+
+        public UInt64 PhaseDone
+        {
+            get;
+            set;
+        }
+
+        public UInt64 PhaseTodo
+        {
+            get;
+            set;
+        }
+
         // List of clusters reserved for the MFT.
         public List<ExcludesStruct> MftExcludes;
 

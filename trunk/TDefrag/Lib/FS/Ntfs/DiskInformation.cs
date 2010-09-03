@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TDefragLib.FS.Ntfs
 {
-    class DiskInformation
+    public class DiskInformation
     {
         public DiskInformation(FS.IBootSector bootSector)
         {

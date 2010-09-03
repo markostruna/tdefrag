@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading;
+using TDefragLib.FS.Ntfs;
 
 namespace TDefragLib.Helper
 {
@@ -96,30 +97,31 @@ namespace TDefragLib.Helper
             return true;
         }
 
-        //public byte[] Load(FileSystem.Ntfs.DiskInformation diskInfo, FragmentList fragments)
-        //{
-        //    UInt64 totalSize = fragments.TotalLength;
+        public byte[] Load(DiskInformation diskInfo, FragmentList fragments)
+        {
+            UInt64 totalSize = fragments.TotalLength;
 
-        //    // transform clusters into bytes
-        //    totalSize *= diskInfo.BytesPerCluster;
+            // transform clusters into bytes
+            totalSize *= diskInfo.BytesPerCluster;
 
-        //    Byte[] bytes = new Byte[totalSize];
+            Byte[] bytes = new Byte[totalSize];
 
-        //    foreach (Fragment fragment in fragments)
-        //    {
-        //        if (fragment.IsLogical)
-        //        {
-        //            UInt64 lcnPosition = diskInfo.ClusterToBytes(fragment.Lcn);
+            foreach (Fragment fragment in fragments)
+            {
+                if (fragment.IsLogical)
+                {
+                    UInt64 lcnPosition = diskInfo.ClusterToBytes(fragment.Lcn);
 
-        //            UInt64 numClusters = fragment.Length;
-        //            Int32 numBytes = (Int32)diskInfo.ClusterToBytes(numClusters);
-        //            Int32 startIndex = (Int32)diskInfo.ClusterToBytes(fragment.Vcn);
+                    UInt64 numClusters = fragment.Length;
+                    Int32 numBytes = (Int32)diskInfo.ClusterToBytes(numClusters);
+                    Int32 startIndex = (Int32)diskInfo.ClusterToBytes(fragment.Vcn);
 
-        //            ReadFromCluster(lcnPosition, bytes, startIndex, numBytes);
-        //        }
-        //    }
-        //    return bytes;
-        //}
+                    ReadFromCluster(lcnPosition, bytes, startIndex, numBytes);
+                }
+            }
+
+            return bytes;
+        }
 
         private FS.IBootSector _bootSector;
 
