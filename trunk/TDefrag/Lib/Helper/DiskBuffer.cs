@@ -25,13 +25,6 @@ namespace TDefragLib.Helper
             get { return reader.BaseStream.Position; }
         }
 
-        public String GetRecordType(Int64 position, Int32 length)
-        {
-            return GetString(position, length);
-            //ReaderPosition = position;
-            //return new String(reader.ReadChars(length));
-        }
-
         public String GetString(Int64 position, Int32 length)
         {
             ReaderPosition = position;
@@ -78,6 +71,12 @@ namespace TDefragLib.Helper
         {
             ReaderPosition = position;
             return StandardInformation.Parse(reader);
+        }
+
+        public AttributeList GetAttributeList(Int64 position)
+        {
+            ReaderPosition = position;
+            return AttributeList.Parse(reader);
         }
 
         public UInt16 GetUInt16(Int64 position)

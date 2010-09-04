@@ -57,6 +57,7 @@
     <Compile Include="Lib\FS\KnownBootSector\FatBootSector.cs" />
     <Compile Include="Lib\FS\KnownBootSector\NtfsBootSector.cs" />
     <Compile Include="Lib\FS\Ntfs\Attribute.cs" />
+    <Compile Include="Lib\FS\Ntfs\AttributeList.cs" />
     <Compile Include="Lib\FS\Ntfs\AttributeType.cs" />
     <Compile Include="Lib\FS\Ntfs\BitmapFile.cs" />
     <Compile Include="Lib\FS\Ntfs\DiskInformation.cs" />
