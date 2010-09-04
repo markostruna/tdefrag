@@ -91,6 +91,19 @@ namespace TDefragLib.Helper
             return reader.ReadBytes(count);
         }
 
+        public Boolean ParseRunData(Int64 position, out UInt64 runLength, out Int64 runOffset)
+        {
+            return RunData.Parse(reader, out runLength, out runOffset);
+        }
+
+        public void ParseStreamRunData(TDefragLib.FileSystem.Ntfs.Stream stream, Int64 position, UInt64 startingVcn)
+        {
+            if (stream == null)
+                return;
+
+            stream.ParseRunData(reader, startingVcn);
+        }
+
         public Byte[] Buffer;
         BinaryReader reader;
     }

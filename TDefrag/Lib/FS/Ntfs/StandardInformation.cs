@@ -7,6 +7,7 @@ using System.Text;
 
 namespace TDefragLib.FileSystem.Ntfs
 {
+    [DebuggerDisplay("{CreationTime}: Usn={Usn} ")]
     public class StandardInformation
     {
         private StandardInformation()
