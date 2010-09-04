@@ -21,13 +21,13 @@ namespace TDefragLib
 
         public void ShowMessage(String message)
         {
-            mainForm.AddLine(message);
+            //mainForm.AddLine(message);
             System.Console.WriteLine(message);
         }
 
         public void StartDefrag(String Path)
         {
-            ShowMessage("Defragmentation started!");
+            //ShowMessage("Defragmentation started!");
 
             if (!String.IsNullOrEmpty(Path))
             {

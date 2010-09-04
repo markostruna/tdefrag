@@ -7,6 +7,7 @@ using TDefragLib.Helper;
 using System.IO;
 using TDefragLib.FileSystem.Ntfs;
 using System.Diagnostics;
+using System.Threading;
 
 namespace TDefragLib.Ntfs
 {
@@ -110,7 +111,7 @@ namespace TDefragLib.Ntfs
                 ref MftDataFragments, ref MftDataBytes, ref MftBitmapFragments, ref MftBitmapBytes,
                 diskBuffer, diskInfo.BytesPerMftRecord);
 
-            ShowLogMessage(String.Format("MftDataBytes = {0:G}, MftBitmapBytes = {0:G}", MftDataBytes, MftBitmapBytes));
+            //ShowLogMessage(String.Format("MftDataBytes = {0:G}, MftBitmapBytes = {0:G}", MftDataBytes, MftBitmapBytes));
 
             BitmapFile bitmapFile = new BitmapFile(Lib.Data.volume,
                 diskInfo, MftBitmapFragments, MftBitmapBytes, MftDataBytes);
@@ -197,8 +198,10 @@ namespace TDefragLib.Ntfs
                 if (Lib.Data.PhaseDone % 50 == 0)
                 {
                     ShowLogMessage(Lib.Data.PhaseDone + " / " + Lib.Data.PhaseTodo);
-                    //Lib.ShowProgress((Double)(Lib.Data.PhaseDone), (Double)Lib.Data.PhaseTodo);
+                //    //Lib.ShowProgress((Double)(Lib.Data.PhaseDone), (Double)Lib.Data.PhaseTodo);
                 }
+
+                Thread.Sleep(10);
 
                 InodeNumber++;
             }
@@ -264,7 +267,7 @@ namespace TDefragLib.Ntfs
 
             if (validRecordType.Equals(recordType) == false)
             {
-                Lib.ShowMessage("This is not a valid MFT record, it does not begin with FILE (maybe trying to read past the end?).");
+                ShowLogMessage("This is not a valid MFT record, it does not begin with FILE (maybe trying to read past the end?).");
 
                 return false;
             }
@@ -283,9 +286,9 @@ namespace TDefragLib.Ntfs
                 Int64 usaArrayOffset = bufferStart + RecordHeader.UsaOffset;
 
                 // Check if we are inside the buffer.
-                if (sequenceNumberIndex >= (Int64)BufLength)
+                if (sequenceNumberIndex >= bufferStart + (Int64)BufLength)
                 {
-                    Lib.ShowMessage("Warning: USA data indicates that data is missing, the MFT may be corrupt.");
+                    ShowLogMessage("Warning: USA data indicates that data is missing, the MFT may be corrupt.");
 
                     return false;
                 }
@@ -298,7 +301,7 @@ namespace TDefragLib.Ntfs
                 // Check if the last 2 bytes of the sector contain the Update Sequence Number.
                 if (sectorSequenceNumber != sequenceNumber)
                 {
-                    Lib.ShowMessage("Error: USA fixup word is not equal to the Update Sequence Number, the MFT may be corrupt.");
+                    ShowLogMessage("Error: USA fixup word is not equal to the Update Sequence Number, the MFT may be corrupt.");
 
                     return false;
                 }
@@ -340,7 +343,7 @@ namespace TDefragLib.Ntfs
             //Int64 position = reader.BaseStream.Position;
             Int64 position = diskBuffer.ReaderPosition;
 
-            FileRecordHeader fileRecordHeader = diskBuffer.GetFileRecordHeader(0);
+            FileRecordHeader fileRecordHeader = diskBuffer.GetFileRecordHeader(position);
 
             // If the record is not in use then quietly exit
             if (!fileRecordHeader.IsInUse)
@@ -517,7 +520,7 @@ namespace TDefragLib.Ntfs
 
                 //if ((Item != null) && (countFiles % 300 == 0))
                 //    ShowDebug(2, "File: " + (String.IsNullOrEmpty(Item.LongFilename) ? (String.IsNullOrEmpty(Item.ShortFilename) ? "" : Item.ShortFilename) : Item.LongFilename));
-                ShowLogMessage("File: " + Item.LongFilename ?? Item.ShortFilename ?? "<NoName>");
+                //ShowLogMessage("File: " + Item.LongFilename ?? Item.ShortFilename ?? "<NoName>");
 
                 countFiles++;
 
@@ -581,7 +584,7 @@ namespace TDefragLib.Ntfs
 
             try
             {
-                foundStream.ParseRunData(runData, startingVcn);
+                diskBuffer.ParseStreamRunData(foundStream, diskBuffer.ReaderPosition, startingVcn);
             }
             catch (Exception)
             {
@@ -1013,7 +1016,7 @@ namespace TDefragLib.Ntfs
             UInt64 runLength;
             Int64 runOffset;
 
-            while (RunData.Parse(runData, out runLength, out runOffset))
+            while (diskBuffer.ParseRunData(diskBuffer.ReaderPosition, out runLength, out runOffset))
             {
                 Lcn += runOffset;
 
@@ -1055,9 +1058,9 @@ namespace TDefragLib.Ntfs
 
                 // Read the data from the disk. If error then return FALSE.
 
-                ShowLogMessage(String.Format("    Cannot read {0:G} bytes, maximum is {1:G}.",
-                    ExtentLength, ExtentLcn / diskInfo.BytesPerCluster,
-                    ExtentVcn - offset));
+                //ShowLogMessage(String.Format("    Cannot read {0:G} bytes, maximum is {1:G}.",
+                //    ExtentLength, ExtentLcn / diskInfo.BytesPerCluster,
+                //    ExtentVcn - offset));
 
                 Lib.Data.volume.ReadFromCluster(ExtentLcn, buffer.Buffer,
                     (Int32)(ExtentVcn - offset), (Int32)ExtentLength);

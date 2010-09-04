@@ -23,6 +23,8 @@ namespace TDefrag
 
         private void startDefrag_Click(object sender, EventArgs e)
         {
+            defragLog.Text = String.Empty;
+
             try
             {
                 String drive = diskArray.Text;
@@ -36,10 +38,6 @@ namespace TDefrag
 
         public void AddLine(String line)
         {
-            //defragLog.Lines[defragLog.Lines.Count()] = line;
-            //defragLog.Text += "\n" + line;
-            //defragLog.Text += String.Format("\n\r{0:S}", line);
-
             if (String.IsNullOrEmpty(defragLog.Text))
             {
                 defragLog.Text = line;
