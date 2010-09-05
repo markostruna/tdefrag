@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Collections;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
+using TDefrag.Lib.Helper;
 
 namespace TDefragLib.Helper
 {
@@ -86,7 +87,7 @@ namespace TDefragLib.Helper
             [Out] IntPtr lpOutBuffer,
             uint nOutBufferSize,
             ref uint lpBytesReturned,
-            IntPtr lpOverlapped);
+            IntPtr overlapped);
 
         static public IntPtr OpenVolume(string DeviceName)
         {
@@ -169,6 +170,7 @@ namespace TDefragLib.Helper
         static public BitmapData GetVolumeMap(IntPtr hDevice)
         {
             IntPtr pAlloc = IntPtr.Zero;
+            IntPtr pDest = IntPtr.Zero;
 
             BitmapData retValue = new BitmapData();
 
@@ -179,11 +181,13 @@ namespace TDefragLib.Helper
                 GCHandle handle = GCHandle.Alloc(i64, GCHandleType.Pinned);
                 IntPtr p = handle.AddrOfPinnedObject();
 
-                uint q = 1024 * 1024 * 128 + 2 * 8;
-
+                uint q = 1024 * 1024 * 1 + 2 * 8;
                 uint size = 0;
+
+                int errorId = SystemErrorCodes.ERROR_SUCCESS;
+
                 pAlloc = Marshal.AllocHGlobal((int)q);
-                IntPtr pDest = pAlloc;
+                pDest = pAlloc;
 
                 bool fResult = DeviceIoControl(
                     hDevice,
@@ -197,11 +201,14 @@ namespace TDefragLib.Helper
 
                 if (!fResult)
                 {
-                    int errorId = Marshal.GetLastWin32Error();
-                    String message = GetMessage(errorId);
-                    throw new Exception(message);
+                    errorId = Marshal.GetLastWin32Error();
+
+                    if (errorId != SystemErrorCodes.ERROR_MORE_DATA)
+                    {
+                        String message = GetMessage(errorId);
+                        throw new Exception(message);
+                    }
                 }
-                handle.Free();
 
                 retValue.StartingLcn = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
 
@@ -210,6 +217,41 @@ namespace TDefragLib.Helper
 
                 Int32 byteSize = (int)(retValue.BitmapSize / 8);
                 byteSize++; // round up - even with no remainder
+
+                q += (UInt32)(byteSize);
+
+                Marshal.FreeHGlobal(pAlloc);
+                pAlloc = IntPtr.Zero;
+
+                pAlloc = Marshal.AllocHGlobal((int)q);
+                pDest = pAlloc;
+
+                fResult = DeviceIoControl(
+                    hDevice,
+                    FSConstants.FSCTL_GET_VOLUME_BITMAP,
+                    p,
+                    (uint)Marshal.SizeOf(i64),
+                    pDest,
+                    q,
+                    ref size,
+                    IntPtr.Zero);
+
+                if (!fResult)
+                {
+                    errorId = Marshal.GetLastWin32Error();
+
+                    String message = GetMessage(errorId);
+                }
+
+                handle.Free();
+
+                //retValue.StartingLcn = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
+
+                //pDest = (IntPtr)((Int64)pDest + 8);
+                //retValue.BitmapSize = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
+
+                //Int32 byteSize = (int)(retValue.BitmapSize / 8);
+                //byteSize++; // round up - even with no remainder
 
                 IntPtr BitmapBegin = (IntPtr)((Int64)pDest + 8);
 
@@ -366,6 +408,7 @@ namespace TDefragLib.Helper
 
                 uint size = 0;
                 pAlloc = Marshal.AllocHGlobal((int)q);
+
                 IntPtr pDest = pAlloc;
                 bool fResult = DeviceIoControl(hFile,
                     FSConstants.FSCTL_GET_RETRIEVAL_POINTERS,

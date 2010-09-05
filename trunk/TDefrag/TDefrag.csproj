@@ -77,6 +77,7 @@
     <Compile Include="Lib\FS\Volume.cs" />
     <Compile Include="Lib\Helper\DiskBuffer.cs" />
     <Compile Include="Lib\Helper\OverlappedBuilder.cs" />
+    <Compile Include="Lib\Helper\SystemErrorCodes.cs" />
     <Compile Include="Lib\Helper\Volume.cs" />
     <Compile Include="Lib\Helper\Wrapper.cs" />
     <Compile Include="Lib\Information.cs" />
