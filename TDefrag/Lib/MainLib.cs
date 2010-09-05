@@ -82,6 +82,23 @@ namespace TDefragLib
             ScanNtfs.AnalyzeVolume();
         }
 
+        //SortedList<UInt64, ItemStruct> itemList;
+        public List<ItemStruct> itemList;
+
+        /* Insert a record into the tree. The tree is sorted by LCN (Logical Cluster Number). */
+        public void AddItemToList(ItemStruct newItem)
+        {
+            if (itemList == null)
+            {
+                itemList = new List<ItemStruct>();
+            }
+
+            lock (itemList)
+            {
+                itemList.Add(newItem);
+            }
+        }
+
         public Information Data;
         Ntfs.Scan ScanNtfs;
 

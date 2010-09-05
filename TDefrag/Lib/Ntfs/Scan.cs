@@ -195,13 +195,13 @@ namespace TDefragLib.Ntfs
                         ref MftDataFragments, ref MftDataBytes, ref MftBitmapFragments, ref MftBitmapBytes,
                         diskBuffer, diskInfo.BytesPerMftRecord);
 
-                if (Lib.Data.PhaseDone % 50 == 0)
+                if (Lib.Data.PhaseDone % 500 == 0)
                 {
                     ShowLogMessage(Lib.Data.PhaseDone + " / " + Lib.Data.PhaseTodo);
                 //    //Lib.ShowProgress((Double)(Lib.Data.PhaseDone), (Double)Lib.Data.PhaseTodo);
                 }
 
-                Thread.Sleep(10);
+                //Thread.Sleep(10);
 
                 InodeNumber++;
             }
@@ -214,22 +214,24 @@ namespace TDefragLib.Ntfs
                         (Int64)MaxInode * 1000 / (endTime - startTime).TotalMilliseconds));
             }
 
-            //using (Lib.Data.Disk)
-            //{
-            //    if (Lib.Data.Running != RunningState.Running)
-            //    {
-            //        Lib.itemList = null;
-            //        return false;
-            //    }
+            using (Lib.Data.volume)
+            {
+                //if (Lib.Data.Running != RunningState.Running)
+                //{
+                //    Lib.itemList = null;
+                //    return false;
+                //}
 
-            //    // Setup the ParentDirectory in all the items with the info in the InodeArray.
-            //    foreach (ItemStruct item in Lib.itemList)
-            //    {
-            //        item.ParentDirectory = (ItemStruct)InodeArray.GetValue((Int64)item.ParentInode);
-            //        if (item.ParentInode == 5)
-            //            item.ParentDirectory = null;
-            //    }
-            //}
+                // Setup the ParentDirectory in all the items with the info in the InodeArray.
+                foreach (ItemStruct item in Lib.itemList)
+                {
+                    item.ParentDirectory = (ItemStruct)InodeArray.GetValue((Int64)item.ParentInode);
+
+                    if (item.ParentInode == 5)
+                        item.ParentDirectory = null;
+                }
+            }
+
             return;
         }
 
@@ -490,7 +492,7 @@ namespace TDefragLib.Ntfs
                 }
 
                 // Add the item record to the sorted item tree in memory.
-                //Lib.AddItemToList(Item);
+                Lib.AddItemToList(Item);
 
                 //  Also add the item to the array that is used to construct the full pathnames.
                 //
@@ -513,14 +515,15 @@ namespace TDefragLib.Ntfs
                     InodeLongFilename = InodeItem.LongFilename;
                 }
 
-                if (InodeLongFilename.CompareTo(Item.LongFilename) > 0)
-                {
-                    inodeArray.SetValue(Item, (Int64)inodeNumber);
-                }
+//                if (InodeLongFilename.CompareTo(Item.LongFilename) > 0)
+//                {
+                    if (Item.IsDirectory == true)
+                        inodeArray.SetValue(Item, (Int64)inodeNumber);
+//                }
 
                 //if ((Item != null) && (countFiles % 300 == 0))
                 //    ShowDebug(2, "File: " + (String.IsNullOrEmpty(Item.LongFilename) ? (String.IsNullOrEmpty(Item.ShortFilename) ? "" : Item.ShortFilename) : Item.LongFilename));
-                //ShowLogMessage("File: " + Item.LongFilename ?? Item.ShortFilename ?? "<NoName>");
+                // ShowLogMessage("File: " + Item.LongFilename ?? Item.ShortFilename ?? "<NoName>");
 
                 countFiles++;
 
