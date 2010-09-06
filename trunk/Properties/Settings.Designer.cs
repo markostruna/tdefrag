@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TDefrag.Properties
+namespace TDefragWPF.Properties
 {
 
 
