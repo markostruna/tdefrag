@@ -5,12 +5,13 @@ using System.Text;
 using TDefragLib.Helper;
 using System.Collections;
 using TDefrag;
+using TDefragWPF;
 
 namespace TDefragLib
 {
     public class MainLib
     {
-        public MainLib(MainForm m)
+        public MainLib(MainWindow m)
         {
             mainForm = m;
 
@@ -102,6 +103,6 @@ namespace TDefragLib
         public Information Data;
         Ntfs.Scan ScanNtfs;
 
-        private MainForm mainForm;
+        private MainWindow mainForm;
     }
 }

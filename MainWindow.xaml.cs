@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 using TDefragLib;
 
-namespace TDefrag
+namespace TDefragWPF
 {
-    public partial class MainForm : Form
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
-        public MainForm()
+        public MainWindow()
         {
             InitializeComponent();
 
@@ -21,7 +29,7 @@ namespace TDefrag
             FillDiskArray();
         }
 
-        private void startDefrag_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, RoutedEventArgs e)
         {
             defragLog.Text = String.Empty;
 
@@ -52,11 +60,13 @@ namespace TDefrag
         {
             String[] DriveList = Environment.GetLogicalDrives();
 
-            diskArray.Items.AddRange(DriveList);
+            foreach (String drive in DriveList)
+                diskArray.Items.Add(drive);
 
             diskArray.SelectedIndex = 0;
         }
 
         private MainLib defragLib;
+
     }
 }
