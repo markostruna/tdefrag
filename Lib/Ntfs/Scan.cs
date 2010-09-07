@@ -1149,7 +1149,6 @@ namespace TDefragLib.Ntfs
         }
 
         private MainLib Lib;
-        private DiskBuffer diskBuffer5;
 
         private Int32 _countProcessAttributesIssues = 0;    // 855
         private Int32 _countRunDataIssues = 0;              // 479
