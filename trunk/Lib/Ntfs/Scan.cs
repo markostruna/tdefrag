@@ -415,15 +415,14 @@ namespace TDefragLib.Ntfs
 
             try
             {
-                Boolean Res = ProcessAttributes(diskInfo, inodeData, diskBuffer, bufLength - fileRecordHeader.AttributeOffset, UInt16.MaxValue, 0);
-
-                if (Res == false)
-                    Result = false;
+                Result = ProcessAttributes(diskInfo, inodeData, diskBuffer, bufLength - fileRecordHeader.AttributeOffset, UInt16.MaxValue, 0);
             }
             catch (Exception)
             {
                 Result = false;
+
                 _countProcessAttributesIssues++;
+
                 Trace.WriteLine(this, String.Format("ProcessAttributes failed for {0} (cnt={1})",
                     inodeData.LongFilename, _countProcessAttributesIssues));
             }
@@ -431,7 +430,7 @@ namespace TDefragLib.Ntfs
             // Save the MftDataFragments, MftDataBytes, MftBitmapFragments, and MftBitmapBytes.
             if (inodeNumber == 0)
             {
-                mftDataFragments = inodeData.MftDataFragments;
+                mftDataFragments =    inodeData.MftDataFragments;
                 mftDataBytes = inodeData.MftDataLength;
                 mftBitmapFragments = inodeData.MftBitmapFragments;
                 mftBitmapBytes = inodeData.MftBitmapLength;
