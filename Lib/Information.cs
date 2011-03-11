@@ -2,13 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace TDefragLib
 {
     public class ExcludesStruct
     {
-        public UInt64 Start;
-        public UInt64 End;
+        private UInt64 startLcn;
+
+        public UInt64 Start
+        {
+            set { startLcn = value; }
+            get { return startLcn; }
+        }
+
+        private UInt64 endLcn;
+
+        public UInt64 End
+        {
+            set { endLcn = value; }
+            get { return endLcn; }
+        }
     };
 
     public enum RunningState
@@ -22,24 +36,24 @@ namespace TDefragLib
     {
         public Information()
         {
-            MftExcludes = new List<ExcludesStruct>(3);
+            _MasterFileTableExcludes = new Collection<ExcludesStruct>();
 
-            MftExcludes.Add(new ExcludesStruct());
-            MftExcludes.Add(new ExcludesStruct());
-            MftExcludes.Add(new ExcludesStruct());
+            _MasterFileTableExcludes.Add(new ExcludesStruct());
+            _MasterFileTableExcludes.Add(new ExcludesStruct());
+            _MasterFileTableExcludes.Add(new ExcludesStruct());
 
-            MftExcludes[0].Start = 0;
-            MftExcludes[0].End = 0;
-            MftExcludes[1].Start = 0;
-            MftExcludes[1].End = 0;
-            MftExcludes[2].Start = 0;
-            MftExcludes[2].End = 0;
+            _MasterFileTableExcludes[0].Start = 0;
+            _MasterFileTableExcludes[0].End = 0;
+            _MasterFileTableExcludes[1].Start = 0;
+            _MasterFileTableExcludes[1].End = 0;
+            _MasterFileTableExcludes[2].Start = 0;
+            _MasterFileTableExcludes[2].End = 0;
 
-            NumClusters = 0;
+            NumberOfClusters = 0;
             BytesPerCluster = 0;
         }
 
-        public UInt64 NumClusters
+        public UInt64 NumberOfClusters
         {
             get;
             set;
@@ -51,7 +65,7 @@ namespace TDefragLib
             set;
         }
 
-        public UInt64 MftLockedClusters
+        public UInt64 MasterFileTableLockedClusters
         {
             get;
             set;
@@ -99,21 +113,27 @@ namespace TDefragLib
             set;
         }
 
-        public UInt64 PhaseDone
+        public UInt64 TasksCompleted
         {
             get;
             set;
         }
 
-        public UInt64 PhaseTodo
+        public UInt64 TasksCount
         {
             get;
             set;
         }
 
         // List of clusters reserved for the MFT.
-        public List<ExcludesStruct> MftExcludes;
+        private Collection<ExcludesStruct> _MasterFileTableExcludes;
 
-        public Helper.Volume volume;
+        public Collection<ExcludesStruct> MasterFileTableExcludes
+        {
+            get { return _MasterFileTableExcludes; }
+        }
+
+        public Helper.Volume Volume
+        { set; get; }
     }
 }

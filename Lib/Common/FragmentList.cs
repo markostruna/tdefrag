@@ -4,47 +4,51 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TDefragWpf.Properties;
 
 namespace TDefragLib
 {
-    public class FragmentList : IEnumerable<Fragment>
+    public class FragmentCollection : IEnumerable<Fragment>
     {
-        public FragmentList()
+        public FragmentCollection()
         {
             _fragments = new List<Fragment>();
         }
 
 
-        public void Add(Int64 lcn, UInt64 vcn, UInt64 length, Boolean isVirtual)
+        public void Add(Int64 logicalClusterNumber, UInt64 virtualClusterNumber, UInt64 length, Boolean isVirtual)
         {
-            if (lcn < 0)
+            if (logicalClusterNumber < 0)
                 throw new InvalidDataException("LCN numbers cannot be negative");
-            _fragments.Add(new Fragment((UInt64)lcn, vcn, length, isVirtual));
+            _fragments.Add(new Fragment((UInt64)logicalClusterNumber, virtualClusterNumber, length, isVirtual));
         }
 
-        public Fragment FindContaining(UInt64 vcn)
+        public Fragment FindContaining(UInt64 virtualClusterNumber)
         {
+            Fragment foundFragment = null;
+
             foreach (Fragment fragment in _fragments)
             {
-                if (fragment.IsLogical)
+                if (fragment.IsLogical && (fragment.NextVirtualClusterNumber > virtualClusterNumber))
                 {
-                    if (fragment.NextVcn > vcn)
-                        return fragment;
+                    foundFragment = fragment;
+
+                    break;
                 }
             }
 
-            throw new Exception("Vcn not found for this fragment list, shall never occur");
+            return foundFragment;
         }
 
 
-        public UInt64 Lcn
+        public UInt64 LogicalClusterNumber
         {
             get
             {
                 Fragment fragment = _fragments.FirstOrDefault(x => x.IsLogical);
                 if (fragment == null)
                     return 0;
-                return fragment.Lcn;
+                return fragment.LogicalClusterNumber;
             }
         }
 
@@ -59,9 +63,9 @@ namespace TDefragLib
                 {
                     if (fragment.IsLogical)
                     {
-                        if ((nextLcn != 0) && (fragment.Lcn != nextLcn))
+                        if ((nextLcn != 0) && (fragment.LogicalClusterNumber != nextLcn))
                             count++;
-                        nextLcn = fragment.NextLcn;
+                        nextLcn = fragment.NextLogicalClusterNumber;
                     }
                 }
 

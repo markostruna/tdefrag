@@ -35,16 +35,16 @@ namespace TDefragLib.FS
             {
                 Byte[] buffer = new Byte[BOOT_SECTOR_SIZE];
                 Overlapped overlapped = Helper.OverlappedBuilder.Get();
-                int bytesRead = Helper.Wrapper.Read(_handle, buffer, 0, BOOT_SECTOR_SIZE, overlapped);
+                int bytesRead = Helper.UnsafeNativeMethods.Read(_handle, buffer, 0, BOOT_SECTOR_SIZE, overlapped);
                 if (bytesRead != BOOT_SECTOR_SIZE)
                     throw new Exception("Could not read the boot sector from disk!");
                 switch (RecognizeType(buffer))
                 {
-                    case Filesystem.NTFS:
+                    case FileSystemType.Ntfs:
                         return new KnownBootSector.NtfsBootSector(buffer);
-                    case Filesystem.FAT12:
-                    case Filesystem.FAT16:
-                    case Filesystem.FAT32:
+                    case FileSystemType.Fat12:
+                    case FileSystemType.Fat16:
+                    case FileSystemType.Fat32:
                         return new KnownBootSector.FatBootSector(buffer);
                 }
                 throw new NotSupportedException("Unrecognized volume type");
@@ -57,22 +57,30 @@ namespace TDefragLib.FS
         /// </summary>
         /// <param name="buffer">The boot sector</param>
         /// <returns>The FS type</returns>
-        private Filesystem RecognizeType(byte[] buffer)
+        private FileSystemType RecognizeType(byte[] buffer)
         {
             if (BitConverter.ToUInt16(buffer, 510) != BOOT_SECTOR_SIGNATURE)
                 throw new Exception("This seems not to be a valid boot sector!");
-            String s;
+
+            String s = String.Empty;
+           
             s = BitConverter.ToString(buffer, 0x03, 4);
+            
             if (s == "4E-54-46-53")
-                return FS.Filesystem.NTFS;
+                return FS.FileSystemType.Ntfs;
+            
             s = BitConverter.ToString(buffer, 0x52, 5);
-            if (s == "")
-                return FS.Filesystem.FAT32;
+            
+            if (String.IsNullOrEmpty(s))
+                return FS.FileSystemType.Fat32;
+            
             s = BitConverter.ToString(buffer, 0x36, 3);
-            if (s == "")
-                return FS.Filesystem.FAT16;
+
+            if (String.IsNullOrEmpty(s))
+                return FS.FileSystemType.Fat16;
+
             throw new NotImplementedException("Eventually add the strings for other filesystems");
-            //return FS.Filesystem.UnknownType;
+            //return FS.FileSystemType.UnknownType;
         }
     }
 }

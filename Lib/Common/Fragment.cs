@@ -16,31 +16,31 @@ namespace TDefragLib
     [DebuggerDisplay("Lcn={Lcn}, Vcn={Vcn}, Len={Length}")]
     public class Fragment
     {
-        public const UInt64 VIRTUALFRAGMENT = UInt64.MaxValue;
+        public const UInt64 VirtualFragment = UInt64.MaxValue;
 
-        public Fragment(UInt64 lcn, UInt64 vcn, UInt64 length, Boolean isVirtual)
+        public Fragment(UInt64 logicalClusterNumber, UInt64 virtualClusterNumber, UInt64 length, Boolean isVirtual)
         {
             Length = length;
-            Vcn = vcn;
+            VirtualClusterNumber = virtualClusterNumber;
 
             if (isVirtual)
-                Lcn = VIRTUALFRAGMENT;
+                LogicalClusterNumber = VirtualFragment;
             else
-                Lcn = lcn;
+                LogicalClusterNumber = logicalClusterNumber;
         }
 
         /// <summary>
         /// Is this a logical fragment or a virtual one
         /// </summary>
         public Boolean IsLogical
-        { get { return Lcn != VIRTUALFRAGMENT; } }
+        { get { return LogicalClusterNumber != VirtualFragment; } }
         public Boolean IsVirtual
-        { get { return Lcn == VIRTUALFRAGMENT; } }
+        { get { return LogicalClusterNumber == VirtualFragment; } }
 
         /// <summary>
         /// Logical cluster number, location on disk.
         /// </summary>
-        public UInt64 Lcn
+        public UInt64 LogicalClusterNumber
         { get; private set; }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace TDefragLib
         /// of the file. The data runs map the VCNs to LCNs so that the file
         /// can be located on the volume. 
         /// </summary>
-        public UInt64 Vcn
+        public UInt64 VirtualClusterNumber
         { get; private set; }
 
         /// <summary>
@@ -62,13 +62,13 @@ namespace TDefragLib
         /// <summary>
         /// Virtual cluster number of next fragment.
         /// </summary>
-        public UInt64 NextVcn
-        { get { return Vcn + Length; } }
+        public UInt64 NextVirtualClusterNumber
+        { get { return VirtualClusterNumber + Length; } }
 
         /// <summary>
         /// Logical cluster number of next fragment.
         /// </summary>
-        public UInt64 NextLcn
-        { get { return Lcn + Length; } }
+        public UInt64 NextLogicalClusterNumber
+        { get { return LogicalClusterNumber + Length; } }
     };
 }

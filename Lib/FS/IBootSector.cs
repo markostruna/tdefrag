@@ -14,9 +14,9 @@ namespace TDefragLib.FS
     public interface IBootSector
     {
         /// <summary>
-        /// Filesystem of the volume
+        /// FileSystemType of the volume
         /// </summary>
-        Filesystem Filesystem { get; }
+        FileSystemType Filesystem { get; }
 
         /// <summary>
         /// The data buffer of this sector
@@ -43,8 +43,8 @@ namespace TDefragLib.FS
         UInt64 TotalSectors { get; }
 
         //TODO: this is really NTFS specific, remove later
-        UInt64 Mft1StartLcn { get; }
-        UInt64 Mft2StartLcn { get; }
+        UInt64 MasterFileTable1StartLogicalClusterNumber { get; }
+        UInt64 MasterFileTable2StartLogicalClusterNumber { get; }
 
         UInt32 ClustersPerMftRecord { get; }
         UInt32 ClustersPerIndexRecord { get; }

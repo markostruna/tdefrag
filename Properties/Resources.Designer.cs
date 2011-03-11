@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TDefragWPF.Properties
-{
-
-
+namespace TDefragWpf.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -22,49 +22,2291 @@ namespace TDefragWPF.Properties
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources
-    {
-
+    internal class Resources {
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources()
-        {
+        internal Resources() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager
-        {
-            get
-            {
-                if ((resourceMan == null))
-                {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TDefragWPF.Properties.Resources", typeof(Resources).Assembly);
+        internal static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if (object.ReferenceEquals(resourceMan, null)) {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TDefragWpf.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture
-        {
-            get
-            {
+        internal static global::System.Globalization.CultureInfo Culture {
+            get {
                 return resourceCulture;
             }
-            set
-            {
+            set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Bytes Per Master File Table Record: {0:G}.
+        /// </summary>
+        internal static string DiskInfoBytesPerMftRecord {
+            get {
+                return ResourceManager.GetString("DiskInfoBytesPerMftRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Bytes Per Sector: {0:G}.
+        /// </summary>
+        internal static string DiskInfoBytesPerSector {
+            get {
+                return ResourceManager.GetString("DiskInfoBytesPerSector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Clusters Per Index Record: {0:G}.
+        /// </summary>
+        internal static string DiskInfoClusterPerIndexRecord {
+            get {
+                return ResourceManager.GetString("DiskInfoClusterPerIndexRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Disk cookie: {0:X}.
+        /// </summary>
+        internal static string DiskInfoCookie {
+            get {
+                return ResourceManager.GetString("DiskInfoCookie", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Media Type: {0:X}.
+        /// </summary>
+        internal static string DiskInfoMediaType {
+            get {
+                return ResourceManager.GetString("DiskInfoMediaType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Master File Table 2 Start Logical Cluster Number: {0:G}.
+        /// </summary>
+        internal static string DiskInfoMft2StartLcn {
+            get {
+                return ResourceManager.GetString("DiskInfoMft2StartLcn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Master File Table Start Logical Cluster Number: {0:G}.
+        /// </summary>
+        internal static string DiskInfoMftStartLcn {
+            get {
+                return ResourceManager.GetString("DiskInfoMftStartLcn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Number Of Heads: {0:G}.
+        /// </summary>
+        internal static string DiskInfoNumberOfHeads {
+            get {
+                return ResourceManager.GetString("DiskInfoNumberOfHeads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Sectors Per Cluster: {0:G}.
+        /// </summary>
+        internal static string DiskInfoSectorsPerCluster {
+            get {
+                return ResourceManager.GetString("DiskInfoSectorsPerCluster", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Sectors Per Track: {0:G}.
+        /// </summary>
+        internal static string DiskInfoSectorsPerTrack {
+            get {
+                return ResourceManager.GetString("DiskInfoSectorsPerTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Total Sectors: {0:G}.
+        /// </summary>
+        internal static string DiskInfoTotalSectors {
+            get {
+                return ResourceManager.GetString("DiskInfoTotalSectors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Volume Serial Number: {0:X}.
+        /// </summary>
+        internal static string DiskInfoVolumeSerialNumber {
+            get {
+                return ResourceManager.GetString("DiskInfoVolumeSerialNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error: attributes in m_iNode {0:G} are outside the FILE record, the MFT may be corrupt..
+        /// </summary>
+        internal static string ErrorAttributesOutsideOfFileRecord {
+            get {
+                return ResourceManager.GetString("ErrorAttributesOutsideOfFileRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not read buffer!!.
+        /// </summary>
+        internal static string ErrorCouldNotReadBuffer {
+            get {
+                return ResourceManager.GetString("ErrorCouldNotReadBuffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Elevate permissions failed!!!.
+        /// </summary>
+        internal static string ErrorElevatePermissionsFailed {
+            get {
+                return ResourceManager.GetString("ErrorElevatePermissionsFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning: Update Sequence Array data indicates that data is missing, the Master File Table may be corrupt..
+        /// </summary>
+        internal static string ErrorMissingDataUSA {
+            get {
+                return ResourceManager.GetString("ErrorMissingDataUSA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is not NTFS disk..
+        /// </summary>
+        internal static string ErrorNotNtfsDisk {
+            get {
+                return ResourceManager.GetString("ErrorNotNtfsDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is not a valid Master File Table record, it does not begin with &quot;FILE&quot; (maybe trying to read past the end?)..
+        /// </summary>
+        internal static string ErrorNotValidMFTDoesStartWithFILE {
+            get {
+                return ResourceManager.GetString("ErrorNotValidMFTDoesStartWithFILE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ProcessAttributes failed for {0} (cnt={1}).
+        /// </summary>
+        internal static string ErrorProcessAttributes {
+            get {
+                return ResourceManager.GetString("ErrorProcessAttributes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error: in m_iNode {0:G} the record is bigger than the size of the buffer, the MFT may be corrupt..
+        /// </summary>
+        internal static string ErrorRecordBiggerThanBufferSize {
+            get {
+                return ResourceManager.GetString("ErrorRecordBiggerThanBufferSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sanity check failed!.
+        /// </summary>
+        internal static string ErrorSanityCheck {
+            get {
+                return ResourceManager.GetString("ErrorSanityCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to open volume!.
+        /// </summary>
+        internal static string ErrorUnableToOpenVolume {
+            get {
+                return ResourceManager.GetString("ErrorUnableToOpenVolume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error: Update Sequence Array fixup word is not equal to the Update Sequence Number, the Master File Table may be corrupt..
+        /// </summary>
+        internal static string ErrorUSAfixupNotEquealToUSN {
+            get {
+                return ResourceManager.GetString("ErrorUSAfixupNotEquealToUSN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual cluster number not found for this fragment list, shall never occur.
+        /// </summary>
+        internal static string ErrorVirtualClusterNotFoundInFragmentCollection {
+            get {
+                return ResourceManager.GetString("ErrorVirtualClusterNotFoundInFragmentCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   Analysis speed: {0:G} items per second.
+        /// </summary>
+        internal static string InfoAnalysisSpeed {
+            get {
+                return ResourceManager.GetString("InfoAnalysisSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is an NTFS disk..
+        /// </summary>
+        internal static string InfoNtfsDisk {
+            get {
+                return ResourceManager.GetString("InfoNtfsDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     Reading {0:G} bytes from Logical Cluster {1:G} into offset {2:G}.
+        /// </summary>
+        internal static string LogLcn {
+            get {
+                return ResourceManager.GetString("LogLcn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to     Reading {0:G} bytes from offset {0:G}.
+        /// </summary>
+        internal static string LogReading {
+            get {
+                return ResourceManager.GetString("LogReading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to $I30.
+        /// </summary>
+        internal static string RootStreamName {
+            get {
+                return ResourceManager.GetString("RootStreamName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  / .
+        /// </summary>
+        internal static string stringSlash {
+            get {
+                return ResourceManager.GetString("stringSlash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access is denied..
+        /// </summary>
+        internal static string SystemErrorAccessDenied {
+            get {
+                return ResourceManager.GetString("SystemErrorAccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A network adapter hardware error occurred..
+        /// </summary>
+        internal static string SystemErrorAdapterHardwareError {
+            get {
+                return ResourceManager.GetString("SystemErrorAdapterHardwareError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The local device name is already in use..
+        /// </summary>
+        internal static string SystemErrorAlreadyAssigned {
+            get {
+                return ResourceManager.GetString("SystemErrorAlreadyAssigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot create a file when that file already exists..
+        /// </summary>
+        internal static string SystemErrorAlreadyExists {
+            get {
+                return ResourceManager.GetString("SystemErrorAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The storage control blocks were destroyed..
+        /// </summary>
+        internal static string SystemErrorArenaThrashed {
+            get {
+                return ResourceManager.GetString("SystemErrorArenaThrashed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file system does not support atomic changes to the lock type..
+        /// </summary>
+        internal static string SystemErrorAtomicLocksNotSupported {
+            get {
+                return ResourceManager.GetString("SystemErrorAtomicLocksNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run this application program..
+        /// </summary>
+        internal static string SystemErrorAutoDataSegmentExceeds64k {
+            get {
+                return ResourceManager.GetString("SystemErrorAutoDataSegmentExceeds64k", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One or more arguments are not correct..
+        /// </summary>
+        internal static string SystemErrorBadArguments {
+            get {
+                return ResourceManager.GetString("SystemErrorBadArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The device does not recognize the command..
+        /// </summary>
+        internal static string SystemErrorBadCommand {
+            get {
+                return ResourceManager.GetString("SystemErrorBadCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The network resource type is not correct..
+        /// </summary>
+        internal static string SystemErrorBadDeviceType {
+            get {
+                return ResourceManager.GetString("SystemErrorBadDeviceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system does not support the command requested..
+        /// </summary>
+        internal static string SystemErrorBadDriverLevel {
+            get {
+                return ResourceManager.GetString("SystemErrorBadDriverLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The environment is incorrect..
+        /// </summary>
+        internal static string SystemErrorBadEnvironment {
+            get {
+                return ResourceManager.GetString("SystemErrorBadEnvironment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is not a valid Win32 application..
+        /// </summary>
+        internal static string SystemErrorBadExeFormat {
+            get {
+                return ResourceManager.GetString("SystemErrorBadExeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file type being saved or retrieved has been blocked..
+        /// </summary>
+        internal static string SystemErrorBadFileType {
+            get {
+                return ResourceManager.GetString("SystemErrorBadFileType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An attempt was made to load a program with an incorrect format..
+        /// </summary>
+        internal static string SystemErrorBadFormat {
+            get {
+                return ResourceManager.GetString("SystemErrorBadFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The program issued a command but the command length is incorrect..
+        /// </summary>
+        internal static string SystemErrorBadLength {
+            get {
+                return ResourceManager.GetString("SystemErrorBadLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The network name cannot be found..
+        /// </summary>
+        internal static string SystemErrorBadNetworkName {
+            get {
+                return ResourceManager.GetString("SystemErrorBadNetworkName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The network path was not found..
+        /// </summary>
+        internal static string SystemErrorBadNetworkPath {
+            get {
+                return ResourceManager.GetString("SystemErrorBadNetworkPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified server cannot perform the requested operation..
+        /// </summary>
+        internal static string SystemErrorBadNetworkResponse {
+            get {
+                return ResourceManager.GetString("SystemErrorBadNetworkResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified path is invalid..
+        /// </summary>
+        internal static string SystemErrorBadPathName {
+            get {
+                return ResourceManager.GetString("SystemErrorBadPathName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The pipe state is invalid..
+        /// </summary>
+        internal static string SystemErrorBadPipe {
+            get {
+                return ResourceManager.GetString("SystemErrorBadPipe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The remote adapter is not compatible..
+        /// </summary>
+        internal static string SystemErrorBadRemoteAdapter {
+            get {
+                return ResourceManager.GetString("SystemErrorBadRemoteAdapter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The address for the thread ID is not correct..
+        /// </summary>
+        internal static string SystemErrorBadThreadIdAddress {
+            get {
+                return ResourceManager.GetString("SystemErrorBadThreadIdAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot find the device specified..
+        /// </summary>
+        internal static string SystemErrorBadUnit {
+            get {
+                return ResourceManager.GetString("SystemErrorBadUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The pipe has been ended..
+        /// </summary>
+        internal static string SystemErrorBrokenPipe {
+            get {
+                return ResourceManager.GetString("SystemErrorBrokenPipe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file name is too long..
+        /// </summary>
+        internal static string SystemErrorBufferOverflow {
+            get {
+                return ResourceManager.GetString("SystemErrorBufferOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The requested resource is in use..
+        /// </summary>
+        internal static string SystemErrorBusy {
+            get {
+                return ResourceManager.GetString("SystemErrorBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot perform a JOIN or SUBST at this time..
+        /// </summary>
+        internal static string SystemErrorBusyDrive {
+            get {
+                return ResourceManager.GetString("SystemErrorBusyDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This function is not supported on this system..
+        /// </summary>
+        internal static string SystemErrorCallNotImplemented {
+            get {
+                return ResourceManager.GetString("SystemErrorCallNotImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A lock request was not outstanding for the supplied cancel region..
+        /// </summary>
+        internal static string SystemErrorCancelViolation {
+            get {
+                return ResourceManager.GetString("SystemErrorCancelViolation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The copy functions cannot be used..
+        /// </summary>
+        internal static string SystemErrorCannotCopy {
+            get {
+                return ResourceManager.GetString("SystemErrorCannotCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The directory or file cannot be created..
+        /// </summary>
+        internal static string SystemErrorCannotCreate {
+            get {
+                return ResourceManager.GetString("SystemErrorCannotCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file must be checked out before saving changes..
+        /// </summary>
+        internal static string SystemErrorCheckoutRequired {
+            get {
+                return ResourceManager.GetString("SystemErrorCheckoutRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The %1 application cannot be run in Win32 mode..
+        /// </summary>
+        internal static string SystemErrorChildNotComplete {
+            get {
+                return ResourceManager.GetString("SystemErrorChildNotComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data error ;..
+        /// </summary>
+        internal static string SystemErrorCrc {
+            get {
+                return ResourceManager.GetString("SystemErrorCrc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The directory cannot be removed..
+        /// </summary>
+        internal static string SystemErrorCurrentDirectory {
+            get {
+                return ResourceManager.GetString("SystemErrorCurrentDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file cannot be opened because it is in the process of being deleted..
+        /// </summary>
+        internal static string SystemErrorDeletePending {
+            get {
+                return ResourceManager.GetString("SystemErrorDeletePending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified network resource or device is no longer available..
+        /// </summary>
+        internal static string SystemErrorDeviceNotExist {
+            get {
+                return ResourceManager.GetString("SystemErrorDeviceNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The directory name is invalid..
+        /// </summary>
+        internal static string SystemErrorDirectory {
+            get {
+                return ResourceManager.GetString("SystemErrorDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempt to use a file handle to an open disk partition for an operation other than raw disk I/O..
+        /// </summary>
+        internal static string SystemErrorDirectoryAccessHandle {
+            get {
+                return ResourceManager.GetString("SystemErrorDirectoryAccessHandle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The directory is not empty..
+        /// </summary>
+        internal static string SystemErrorDirectoryNotEmpty {
+            get {
+                return ResourceManager.GetString("SystemErrorDirectoryNotEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The directory is not a subdirectory of the root directory..
+        /// </summary>
+        internal static string SystemErrorDirectoryNotRoot {
+            get {
+                return ResourceManager.GetString("SystemErrorDirectoryNotRoot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The segment is already discarded and cannot be locked..
+        /// </summary>
+        internal static string SystemErrorDiscarded {
+            get {
+                return ResourceManager.GetString("SystemErrorDiscarded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The program stopped because an alternate diskette was not inserted..
+        /// </summary>
+        internal static string SystemErrorDiskChange {
+            get {
+                return ResourceManager.GetString("SystemErrorDiskChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is not enough space on the disk..
+        /// </summary>
+        internal static string SystemErrorDiskFull {
+            get {
+                return ResourceManager.GetString("SystemErrorDiskFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The volume is too fragmented to complete this operation..
+        /// </summary>
+        internal static string SystemErrorDiskTooFragmented {
+            get {
+                return ResourceManager.GetString("SystemErrorDiskTooFragmented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The disk is in use or locked by another process..
+        /// </summary>
+        internal static string SystemErrorDriveLocked {
+            get {
+                return ResourceManager.GetString("SystemErrorDriveLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You were not connected because a duplicate name exists on the network. If joining a domain, go to System in Control Panel to change the computer name and try again. If joining a workgroup, choose another workgroup name..
+        /// </summary>
+        internal static string SystemErrorDuplicateName {
+            get {
+                return ResourceManager.GetString("SystemErrorDuplicateName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run this application program..
+        /// </summary>
+        internal static string SystemErrorDynamicLinkFromInvalidRing {
+            get {
+                return ResourceManager.GetString("SystemErrorDynamicLinkFromInvalidRing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extended attribute file on the mounted file system is corrupt..
+        /// </summary>
+        internal static string SystemErrorEaFileCorrupt {
+            get {
+                return ResourceManager.GetString("SystemErrorEaFileCorrupt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extended attributes are inconsistent..
+        /// </summary>
+        internal static string SystemErrorEaListInconsistent {
+            get {
+                return ResourceManager.GetString("SystemErrorEaListInconsistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extended attributes did not fit in the buffer..
+        /// </summary>
+        internal static string SystemErrorEasDidNotFit {
+            get {
+                return ResourceManager.GetString("SystemErrorEasDidNotFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The mounted file system does not support extended attributes..
+        /// </summary>
+        internal static string SystemErrorEasNotSupported {
+            get {
+                return ResourceManager.GetString("SystemErrorEasNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extended attribute table file is full..
+        /// </summary>
+        internal static string SystemErrorEaTableFull {
+            get {
+                return ResourceManager.GetString("SystemErrorEaTableFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system could not find the environment option that was entered..
+        /// </summary>
+        internal static string SystemErrorEnvVarNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorEnvVarNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The exclusive semaphore is owned by another process..
+        /// </summary>
+        internal static string SystemErrorExclusiveSemaphoreAlreadyOwned {
+            get {
+                return ResourceManager.GetString("SystemErrorExclusiveSemaphoreAlreadyOwned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The image file %1 is signed, unable to modify..
+        /// </summary>
+        internal static string SystemErrorExeCanNotModifySignedBinary {
+            get {
+                return ResourceManager.GetString("SystemErrorExeCanNotModifySignedBinary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The image file %1 is strong signed, unable to modify..
+        /// </summary>
+        internal static string SystemErrorExeCanNotModifyStrongSingedBinary {
+            get {
+                return ResourceManager.GetString("SystemErrorExeCanNotModifyStrongSingedBinary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version of %1 is not compatible with the version you&apos;re running. Check your computer&apos;s system information to see whether you need a x86 ; or x64 ; version of the program, and then contact the software publisher..
+        /// </summary>
+        internal static string SystemErrorExeMachineTypeMismatch {
+            get {
+                return ResourceManager.GetString("SystemErrorExeMachineTypeMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorExeMarkedInvalid {
+            get {
+                return ResourceManager.GetString("SystemErrorExeMarkedInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fail on INT 24..
+        /// </summary>
+        internal static string SystemErrorFailInt24 {
+            get {
+                return ResourceManager.GetString("SystemErrorFailInt24", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No action was taken as a system reboot is required..
+        /// </summary>
+        internal static string SystemErrorFailNoActionReboot {
+            get {
+                return ResourceManager.GetString("SystemErrorFailNoActionReboot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The restart operation failed..
+        /// </summary>
+        internal static string SystemErrorFailRestart {
+            get {
+                return ResourceManager.GetString("SystemErrorFailRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The shutdown operation failed..
+        /// </summary>
+        internal static string SystemErrorFailShutdown {
+            get {
+                return ResourceManager.GetString("SystemErrorFailShutdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This file is checked out or locked for editing by another user..
+        /// </summary>
+        internal static string SystemErrorFileCheckedOut {
+            get {
+                return ResourceManager.GetString("SystemErrorFileCheckedOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file exists..
+        /// </summary>
+        internal static string SystemErrorFileExists {
+            get {
+                return ResourceManager.GetString("SystemErrorFileExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The filename or extension is too long..
+        /// </summary>
+        internal static string SystemErrorFileNameExceedsRange {
+            get {
+                return ResourceManager.GetString("SystemErrorFileNameExceedsRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot find the file specified..
+        /// </summary>
+        internal static string SystemErrorFileNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file size exceeds the limit allowed and cannot be saved..
+        /// </summary>
+        internal static string SystemErrorFileTooLarge {
+            get {
+                return ResourceManager.GetString("SystemErrorFileTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access Denied. Before opening files in this location, you must first add the web site to your trusted sites list, browse to the web site, and select the option to login automatically..
+        /// </summary>
+        internal static string SystemErrorFormsAuthenticationRequired {
+            get {
+                return ResourceManager.GetString("SystemErrorFormsAuthenticationRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A device attached to the system is not functioning..
+        /// </summary>
+        internal static string SystemErrorGeneralFailure {
+            get {
+                return ResourceManager.GetString("SystemErrorGeneralFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The disk is full..
+        /// </summary>
+        internal static string SystemErrorHandleDiskFull {
+            get {
+                return ResourceManager.GetString("SystemErrorHandleDiskFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reached the end of the file.Reached the end of the file..
+        /// </summary>
+        internal static string SystemErrorHandleEof {
+            get {
+                return ResourceManager.GetString("SystemErrorHandleEof", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The subsystem needed to support the image type is not present..
+        /// </summary>
+        internal static string SystemErrorImageSubsystemNotPresent {
+            get {
+                return ResourceManager.GetString("SystemErrorImageSubsystemNotPresent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short name settings may not be changed on this volume due to the global registry setting..
+        /// </summary>
+        internal static string SystemErrorIncompatibleWithGlobalShortNameRegistrySetting {
+            get {
+                return ResourceManager.GetString("SystemErrorIncompatibleWithGlobalShortNameRegistrySetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorInfiniteLoopInRelocationChain {
+            get {
+                return ResourceManager.GetString("SystemErrorInfiniteLoopInRelocationChain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The data area passed to a system call is too small..
+        /// </summary>
+        internal static string SystemErrorInsufficientBuffer {
+            get {
+                return ResourceManager.GetString("SystemErrorInsufficientBuffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The access code is invalid..
+        /// </summary>
+        internal static string SystemErrorInvalidAccess {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempt to access invalid address..
+        /// </summary>
+        internal static string SystemErrorInvalidAddress {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot request exclusive semaphores at interrupt time..
+        /// </summary>
+        internal static string SystemErrorInvalidAtInterruptTime {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidAtInterruptTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The storage control block address is invalid..
+        /// </summary>
+        internal static string SystemErrorInvalidBlock {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The IOCTL call made by the application program is not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidCategory {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The data is invalid..
+        /// </summary>
+        internal static string SystemErrorInvalidData {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot find the drive specified..
+        /// </summary>
+        internal static string SystemErrorInvalidDrive {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified extended attribute handle is invalid..
+        /// </summary>
+        internal static string SystemErrorInvalidEaHandle {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidEaHandle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified extended attribute name was invalid..
+        /// </summary>
+        internal static string SystemErrorInvalidEaName {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidEaName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of specified semaphore events for DosMuxSemWait is not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidEventCount {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidEventCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot run %1 in Win32 mode..
+        /// </summary>
+        internal static string SystemErrorInvalidExeSignature {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidExeSignature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The flag passed is not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidFlagNumber {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidFlagNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrect function..
+        /// </summary>
+        internal static string SystemErrorInvalidFunction {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The handle is invalid..
+        /// </summary>
+        internal static string SystemErrorInvalidHandle {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidHandle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system call level is not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidLevel {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The DosMuxSemWait list is not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidListFormat {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidListFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A requested file lock operation cannot be processed due to an invalid byte range..
+        /// </summary>
+        internal static string SystemErrorInvalidLockRange {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidLockRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorInvalidMinimumAllocationSize {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidMinimumAllocationSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorInvalidModuleType {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidModuleType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The filename, directory name, or volume label syntax is incorrect..
+        /// </summary>
+        internal static string SystemErrorInvalidName {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An invalid oplock acknowledgment was received by the system..
+        /// </summary>
+        internal static string SystemErrorInvalidOplockProtocol {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidOplockProtocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorInvalidOrdinal {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidOrdinal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The parameter is incorrect..
+        /// </summary>
+        internal static string SystemErrorInvalidParameter {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified network password is not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidPassword {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorInvalidSegmentDeployment {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidSegmentDeployment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system detected a segment number that was not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidSegmentNumber {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidSegmentNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The signal being posted is not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidSignalNumber {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidSignalNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorInvalidStackSegment {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidStackSegment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorInvalidStartingCodeSegment {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidStartingCodeSegment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target internal file identifier is incorrect..
+        /// </summary>
+        internal static string SystemErrorInvalidTargetHandle {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidTargetHandle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The verify-on-write switch parameter value is not correct..
+        /// </summary>
+        internal static string SystemErrorInvalidVerifySwitch {
+            get {
+                return ResourceManager.GetString("SystemErrorInvalidVerifySwitch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system is not presently configured to run this application..
+        /// </summary>
+        internal static string SystemErrorIoplNotEnabled {
+            get {
+                return ResourceManager.GetString("SystemErrorIoplNotEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An attempt was made to use a JOIN or SUBST command on a drive that has already been joined..
+        /// </summary>
+        internal static string SystemErrorIsJoined {
+            get {
+                return ResourceManager.GetString("SystemErrorIsJoined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not enough resources are available to process this command..
+        /// </summary>
+        internal static string SystemErrorIsJoinPath {
+            get {
+                return ResourceManager.GetString("SystemErrorIsJoinPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A JOIN or SUBST command cannot be used for a drive that contains previously joined drives..
+        /// </summary>
+        internal static string SystemErrorIsJoinTarget {
+            get {
+                return ResourceManager.GetString("SystemErrorIsJoinTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An attempt was made to use a JOIN or SUBST command on a drive that has already been substituted..
+        /// </summary>
+        internal static string SystemErrorIsSubsted {
+            get {
+                return ResourceManager.GetString("SystemErrorIsSubsted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The path specified is being used in a substitute..
+        /// </summary>
+        internal static string SystemErrorIsSubstPath {
+            get {
+                return ResourceManager.GetString("SystemErrorIsSubstPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An attempt was made to join or substitute a drive for which a directory on the drive is the target of a previous substitute..
+        /// </summary>
+        internal static string SystemErrorIsSubstTarget {
+            get {
+                return ResourceManager.GetString("SystemErrorIsSubstTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorIteratedDataExceeds64k {
+            get {
+                return ResourceManager.GetString("SystemErrorIteratedDataExceeds64k", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system tried to join a drive to a directory on a joined drive..
+        /// </summary>
+        internal static string SystemErrorJoinToJoin {
+            get {
+                return ResourceManager.GetString("SystemErrorJoinToJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system tried to join a drive to a directory on a substituted drive..
+        /// </summary>
+        internal static string SystemErrorJoinToSubst {
+            get {
+                return ResourceManager.GetString("SystemErrorJoinToSubst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The volume label you entered exceeds the label character limit of the target file system..
+        /// </summary>
+        internal static string SystemErrorLabelTooLong {
+            get {
+                return ResourceManager.GetString("SystemErrorLabelTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The segment is locked and cannot be reallocated..
+        /// </summary>
+        internal static string SystemErrorLocked {
+            get {
+                return ResourceManager.GetString("SystemErrorLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to lock a region of a file..
+        /// </summary>
+        internal static string SystemErrorLockFailed {
+            get {
+                return ResourceManager.GetString("SystemErrorLockFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The process cannot access the file because another process has locked a portion of the file..
+        /// </summary>
+        internal static string SystemErrorLockViolation {
+            get {
+                return ResourceManager.GetString("SystemErrorLockViolation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The maximum number of sessions has been reached..
+        /// </summary>
+        internal static string SystemErrorMaxSessionsReached {
+            get {
+                return ResourceManager.GetString("SystemErrorMaxSessionsReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No more threads can be created in the system..
+        /// </summary>
+        internal static string SystemErrorMaxThreadsReached {
+            get {
+                return ResourceManager.GetString("SystemErrorMaxThreadsReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The global filename characters, * or ?, are entered incorrectly or too many global filename characters are specified..
+        /// </summary>
+        internal static string SystemErrorMetaExpansionTooLong {
+            get {
+                return ResourceManager.GetString("SystemErrorMetaExpansionTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified module could not be found..
+        /// </summary>
+        internal static string SystemErrorModuleNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorModuleNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More data is available..
+        /// </summary>
+        internal static string SystemErrorMoreData {
+            get {
+                return ResourceManager.GetString("SystemErrorMoreData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot find message text for message number 0x%1 in the message file for %2..
+        /// </summary>
+        internal static string SystemErrorMrMidNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorMrMidNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An attempt was made to move the file pointer before the beginning of the file..
+        /// </summary>
+        internal static string SystemErrorNegativeSeek {
+            get {
+                return ResourceManager.GetString("SystemErrorNegativeSeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot nest calls to LoadModule..
+        /// </summary>
+        internal static string SystemErrorNestingNotAllowed {
+            get {
+                return ResourceManager.GetString("SystemErrorNestingNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network access is denied..
+        /// </summary>
+        internal static string SystemErrorNetworkAccessDenied {
+            get {
+                return ResourceManager.GetString("SystemErrorNetworkAccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The network is busy..
+        /// </summary>
+        internal static string SystemErrorNetworkBusy {
+            get {
+                return ResourceManager.GetString("SystemErrorNetworkBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified network name is no longer available..
+        /// </summary>
+        internal static string SystemErrorNetworkNameDeleted {
+            get {
+                return ResourceManager.GetString("SystemErrorNetworkNameDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows cannot find the network path. Verify that the network path is correct and the destination computer is not busy or turned off. If Windows still cannot find the network path, contact your network administrator..
+        /// </summary>
+        internal static string SystemErrorNetworkPathNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorNetworkPathNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A write fault occurred on the network..
+        /// </summary>
+        internal static string SystemErrorNetworkWriteFault {
+            get {
+                return ResourceManager.GetString("SystemErrorNetworkWriteFault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The pipe is being closed..
+        /// </summary>
+        internal static string SystemErrorNoData {
+            get {
+                return ResourceManager.GetString("SystemErrorNoData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no more files..
+        /// </summary>
+        internal static string SystemErrorNoMoreFiles {
+            get {
+                return ResourceManager.GetString("SystemErrorNoMoreFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No more data is available..
+        /// </summary>
+        internal static string SystemErrorNoMoreItems {
+            get {
+                return ResourceManager.GetString("SystemErrorNoMoreItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot start another process at this time..
+        /// </summary>
+        internal static string SystemErrorNoMoreProcessSlots {
+            get {
+                return ResourceManager.GetString("SystemErrorNoMoreProcessSlots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No more internal file identifiers available..
+        /// </summary>
+        internal static string SystemErrorNoMoreSearchHandles {
+            get {
+                return ResourceManager.GetString("SystemErrorNoMoreSearchHandles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No process in the command subtree has a signal handler..
+        /// </summary>
+        internal static string SystemErrorNoSignalSent {
+            get {
+                return ResourceManager.GetString("SystemErrorNoSignalSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Space to store the file waiting to be printed is not available on the server..
+        /// </summary>
+        internal static string SystemErrorNoSpoolSpace {
+            get {
+                return ResourceManager.GetString("SystemErrorNoSpoolSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified disk or diskette cannot be accessed..
+        /// </summary>
+        internal static string SystemErrorNotDosDisk {
+            get {
+                return ResourceManager.GetString("SystemErrorNotDosDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not enough storage is available to process this command..
+        /// </summary>
+        internal static string SystemErrorNotEnoughMemory {
+            get {
+                return ResourceManager.GetString("SystemErrorNotEnoughMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified file already has a notification GUID associated with it..
+        /// </summary>
+        internal static string SystemErrorNotificationGuidAlreadyDefined {
+            get {
+                return ResourceManager.GetString("SystemErrorNotificationGuidAlreadyDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system tried to delete the JOIN of a drive that is not joined..
+        /// </summary>
+        internal static string SystemErrorNotJoined {
+            get {
+                return ResourceManager.GetString("SystemErrorNotJoined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The segment is already unlocked..
+        /// </summary>
+        internal static string SystemErrorNotLocked {
+            get {
+                return ResourceManager.GetString("SystemErrorNotLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempt to release mutex not owned by caller..
+        /// </summary>
+        internal static string SystemErrorNotOwner {
+            get {
+                return ResourceManager.GetString("SystemErrorNotOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The device is not ready..
+        /// </summary>
+        internal static string SystemErrorNotReady {
+            get {
+                return ResourceManager.GetString("SystemErrorNotReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot move the file to a different disk drive..
+        /// </summary>
+        internal static string SystemErrorNotSameDevice {
+            get {
+                return ResourceManager.GetString("SystemErrorNotSameDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system tried to delete the substitution of a drive that is not substituted..
+        /// </summary>
+        internal static string SystemErrorNotSubsted {
+            get {
+                return ResourceManager.GetString("SystemErrorNotSubsted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The request is not supported..
+        /// </summary>
+        internal static string SystemErrorNotSupported {
+            get {
+                return ResourceManager.GetString("SystemErrorNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The disk has no volume label..
+        /// </summary>
+        internal static string SystemErrorNoVolumeLabel {
+            get {
+                return ResourceManager.GetString("SystemErrorNoVolumeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot open the device or file specified..
+        /// </summary>
+        internal static string SystemErrorOpenFailed {
+            get {
+                return ResourceManager.GetString("SystemErrorOpenFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The oplock request is denied..
+        /// </summary>
+        internal static string SystemErrorOplockNotGranted {
+            get {
+                return ResourceManager.GetString("SystemErrorOplockNotGranted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not enough storage is available to complete this operation..
+        /// </summary>
+        internal static string SystemErrorOutOfMemory {
+            get {
+                return ResourceManager.GetString("SystemErrorOutOfMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The printer is out of paper..
+        /// </summary>
+        internal static string SystemErrorOutOfPaper {
+            get {
+                return ResourceManager.GetString("SystemErrorOutOfPaper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Storage to process this request is not available..
+        /// </summary>
+        internal static string SystemErrorOutOfStructures {
+            get {
+                return ResourceManager.GetString("SystemErrorOutOfStructures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only part of a ReadProcessMemory or WriteProcessMemory request was completed..
+        /// </summary>
+        internal static string SystemErrorPartialCopy {
+            get {
+                return ResourceManager.GetString("SystemErrorPartialCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The path specified cannot be used at this time..
+        /// </summary>
+        internal static string SystemErrorPathBusy {
+            get {
+                return ResourceManager.GetString("SystemErrorPathBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot find the path specified..
+        /// </summary>
+        internal static string SystemErrorPathNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorPathNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All pipe instances are busy..
+        /// </summary>
+        internal static string SystemErrorPipeBusy {
+            get {
+                return ResourceManager.GetString("SystemErrorPipeBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The pipe is local..
+        /// </summary>
+        internal static string SystemErrorPipeLocal {
+            get {
+                return ResourceManager.GetString("SystemErrorPipeLocal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No process is on the other end of the pipe..
+        /// </summary>
+        internal static string SystemErrorPipeNotConnected {
+            get {
+                return ResourceManager.GetString("SystemErrorPipeNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your file waiting to be printed was deleted..
+        /// </summary>
+        internal static string SystemErrorPrintCancelled {
+            get {
+                return ResourceManager.GetString("SystemErrorPrintCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The printer queue is full..
+        /// </summary>
+        internal static string SystemErrorPrintQueueFull {
+            get {
+                return ResourceManager.GetString("SystemErrorPrintQueueFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified procedure could not be found..
+        /// </summary>
+        internal static string SystemErrorProcedureNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorProcedureNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The process is already in background processing mode..
+        /// </summary>
+        internal static string SystemErrorProcessModeAlreadyBackground {
+            get {
+                return ResourceManager.GetString("SystemErrorProcessModeAlreadyBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The process is not in background processing mode..
+        /// </summary>
+        internal static string SystemErrorProcessModeNotBackground {
+            get {
+                return ResourceManager.GetString("SystemErrorProcessModeNotBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot read from the specified device..
+        /// </summary>
+        internal static string SystemErrorReadFault {
+            get {
+                return ResourceManager.GetString("SystemErrorReadFault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified printer or disk device has been paused..
+        /// </summary>
+        internal static string SystemErrorRedirectingPaused {
+            get {
+                return ResourceManager.GetString("SystemErrorRedirectingPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operating system cannot run %1..
+        /// </summary>
+        internal static string SystemErrorRelocationChainExceedsSegmentLimit {
+            get {
+                return ResourceManager.GetString("SystemErrorRelocationChainExceedsSegmentLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No more connections can be made to this remote computer at this time because there are already as many connections as the computer can accept..
+        /// </summary>
+        internal static string SystemErrorRequestNotAccepted {
+            get {
+                return ResourceManager.GetString("SystemErrorRequestNotAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The code segment cannot be greater than or equal to 64K..
+        /// </summary>
+        internal static string SystemErrorRing2SegmentMustBeMovable {
+            get {
+                return ResourceManager.GetString("SystemErrorRing2SegmentMustBeMovable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The ring 2 stack is in use..
+        /// </summary>
+        internal static string SystemErrorRing2StackInUse {
+            get {
+                return ResourceManager.GetString("SystemErrorRing2StackInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot join or substitute a drive to or for a directory on the same drive..
+        /// </summary>
+        internal static string SystemErrorSameDrive {
+            get {
+                return ResourceManager.GetString("SystemErrorSameDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The scope specified was not found..
+        /// </summary>
+        internal static string SystemErrorScopeNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorScopeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The drive cannot find the sector requested..
+        /// </summary>
+        internal static string SystemErrorSectorNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorSectorNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The security stream for the given volume is in an inconsistent state. Please run CHKDSK on the volume..
+        /// </summary>
+        internal static string SystemErrorSecurityStreamIsInconsistent {
+            get {
+                return ResourceManager.GetString("SystemErrorSecurityStreamIsInconsistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The drive cannot locate a specific area or track on the disk..
+        /// </summary>
+        internal static string SystemErrorSeek {
+            get {
+                return ResourceManager.GetString("SystemErrorSeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file pointer cannot be set on the specified device or file..
+        /// </summary>
+        internal static string SystemErrorSeekOnDevice {
+            get {
+                return ResourceManager.GetString("SystemErrorSeekOnDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The semaphore is set and cannot be closed..
+        /// </summary>
+        internal static string SystemErrorSemaphoreIsSet {
+            get {
+                return ResourceManager.GetString("SystemErrorSemaphoreIsSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified system semaphore name was not found..
+        /// </summary>
+        internal static string SystemErrorSemaphoreNotFound {
+            get {
+                return ResourceManager.GetString("SystemErrorSemaphoreNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The previous ownership of this semaphore has ended..
+        /// </summary>
+        internal static string SystemErrorSemaphoreOwnerDied {
+            get {
+                return ResourceManager.GetString("SystemErrorSemaphoreOwnerDied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The semaphore timeout period has expired..
+        /// </summary>
+        internal static string SystemErrorSemaphoreTimeout {
+            get {
+                return ResourceManager.GetString("SystemErrorSemaphoreTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert the diskette for drive %1..
+        /// </summary>
+        internal static string SystemErrorSemaphoreUserLimit {
+            get {
+                return ResourceManager.GetString("SystemErrorSemaphoreUserLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many files opened for sharing..
+        /// </summary>
+        internal static string SystemErrorSharingBufferExceeded {
+            get {
+                return ResourceManager.GetString("SystemErrorSharingBufferExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The remote server has been paused or is in the process of being started..
+        /// </summary>
+        internal static string SystemErrorSharingPaused {
+            get {
+                return ResourceManager.GetString("SystemErrorSharingPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The process cannot access the file because it is being used by another process..
+        /// </summary>
+        internal static string SystemErrorSharingViolation {
+            get {
+                return ResourceManager.GetString("SystemErrorSharingViolation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short names are not enabled on this volume..
+        /// </summary>
+        internal static string SystemErrorShortNamesNotEnabledOnVolume {
+            get {
+                return ResourceManager.GetString("SystemErrorShortNamesNotEnabledOnVolume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A signal is already pending..
+        /// </summary>
+        internal static string SystemErrorSignalPending {
+            get {
+                return ResourceManager.GetString("SystemErrorSignalPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The recipient process has refused the signal..
+        /// </summary>
+        internal static string SystemErrorSignalRefused {
+            get {
+                return ResourceManager.GetString("SystemErrorSignalRefused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system tried to SUBST a drive to a directory on a joined drive..
+        /// </summary>
+        internal static string SystemErrorSubstToJoin {
+            get {
+                return ResourceManager.GetString("SystemErrorSubstToJoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system tried to substitute a drive to a directory on a substituted drive..
+        /// </summary>
+        internal static string SystemErrorSubstToSubst {
+            get {
+                return ResourceManager.GetString("SystemErrorSubstToSubst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation completed successfully..
+        /// </summary>
+        internal static string SystemErrorSuccess {
+            get {
+                return ResourceManager.GetString("SystemErrorSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System trace information was not specified in your CONFIG.SYS file, or tracing is disallowed..
+        /// </summary>
+        internal static string SystemErrorSystemTrace {
+            get {
+                return ResourceManager.GetString("SystemErrorSystemTrace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The signal handler cannot be set..
+        /// </summary>
+        internal static string SystemErrorThread1Inactive {
+            get {
+                return ResourceManager.GetString("SystemErrorThread1Inactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The thread is already in background processing mode..
+        /// </summary>
+        internal static string SystemErrorThreadModeAlreadyBackground {
+            get {
+                return ResourceManager.GetString("SystemErrorThreadModeAlreadyBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The thread is not in background processing mode..
+        /// </summary>
+        internal static string SystemErrorThreadModeNotBackground {
+            get {
+                return ResourceManager.GetString("SystemErrorThreadModeNotBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The network BIOS command limit has been reached..
+        /// </summary>
+        internal static string SystemErrorTooManyCommands {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManyCommands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many dynamic-link modules are attached to this program or dynamic-link module..
+        /// </summary>
+        internal static string SystemErrorTooManyModules {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManyModules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DosMuxSemWait did not execute; too many semaphores are already set..
+        /// </summary>
+        internal static string SystemErrorTooManyMutexWaiters {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManyMutexWaiters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name limit for the local computer network adapter card was exceeded..
+        /// </summary>
+        internal static string SystemErrorTooManyNames {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManyNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot open the file..
+        /// </summary>
+        internal static string SystemErrorTooManyOpenFiles {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManyOpenFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many posts were made to a semaphore..
+        /// </summary>
+        internal static string SystemErrorTooManyPosts {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManyPosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The semaphore cannot be set again..
+        /// </summary>
+        internal static string SystemErrorTooManySemaphoreRequests {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManySemaphoreRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot create another system semaphore..
+        /// </summary>
+        internal static string SystemErrorTooManySemaphores {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManySemaphores", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The network BIOS session limit was exceeded..
+        /// </summary>
+        internal static string SystemErrorTooManySessions {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManySessions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot create another thread..
+        /// </summary>
+        internal static string SystemErrorTooManyTcbs {
+            get {
+                return ResourceManager.GetString("SystemErrorTooManyTcbs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unexpected network error occurred..
+        /// </summary>
+        internal static string SystemErrorUnexpectedNetworkError {
+            get {
+                return ResourceManager.GetString("SystemErrorUnexpectedNetworkError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        internal static string SystemErrorUnknown {
+            get {
+                return ResourceManager.GetString("SystemErrorUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The session was cancelled..
+        /// </summary>
+        internal static string SystemErrorVcDisconnected {
+            get {
+                return ResourceManager.GetString("SystemErrorVcDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This file contains a virus and cannot be opened. Due to the nature of this virus, the file has been removed from this location..
+        /// </summary>
+        internal static string SystemErrorVirusDeleted {
+            get {
+                return ResourceManager.GetString("SystemErrorVirusDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation did not complete successfully because the file contains a virus..
+        /// </summary>
+        internal static string SystemErrorVirusInfected {
+            get {
+                return ResourceManager.GetString("SystemErrorVirusInfected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no child processes to wait for..
+        /// </summary>
+        internal static string SystemErrorWaitNoChildren {
+            get {
+                return ResourceManager.GetString("SystemErrorWaitNoChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The wait operation timed out..
+        /// </summary>
+        internal static string SystemErrorWaitTimeout {
+            get {
+                return ResourceManager.GetString("SystemErrorWaitTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The system cannot write to the specified device..
+        /// </summary>
+        internal static string SystemErrorWriteFault {
+            get {
+                return ResourceManager.GetString("SystemErrorWriteFault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The media is write protected..
+        /// </summary>
+        internal static string SystemErrorWriteProtect {
+            get {
+                return ResourceManager.GetString("SystemErrorWriteProtect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The wrong diskette is in the drive. Insert %2 ; into drive %1..
+        /// </summary>
+        internal static string SystemErrorWrongDisk {
+            get {
+                return ResourceManager.GetString("SystemErrorWrongDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning: Inode {0:G} contains a different MFTRecordNumber {1:G}.
+        /// </summary>
+        internal static string WarningInodeContainsDifferentMasterFileTableRecordNumber {
+            get {
+                return ResourceManager.GetString("WarningInodeContainsDifferentMasterFileTableRecordNumber", resourceCulture);
             }
         }
     }

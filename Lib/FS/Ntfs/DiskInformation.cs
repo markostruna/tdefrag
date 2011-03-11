@@ -9,35 +9,40 @@ namespace TDefragLib.FS.Ntfs
     {
         public DiskInformation(FS.IBootSector bootSector)
         {
+            if (bootSector == null)
+            {
+                return;
+            }
+
             /* Extract data from the bootblock. */
             BytesPerSector = bootSector.BytesPerSector;
             SectorsPerCluster = bootSector.SectorsPerCluster;
 
             TotalSectors = bootSector.TotalSectors;
-            MftStartLcn = bootSector.Mft1StartLcn;
-            Mft2StartLcn = bootSector.Mft2StartLcn;
+            MasterFileTableStartLogicalClusterNumber = bootSector.MasterFileTable1StartLogicalClusterNumber;
+            MasterFileTable2StartLogicalClusterNumber = bootSector.MasterFileTable2StartLogicalClusterNumber;
 
             UInt64 clustersPerMftRecord = bootSector.ClustersPerMftRecord;
             ClustersPerIndexRecord = bootSector.ClustersPerIndexRecord;
 
             if (clustersPerMftRecord >= 128)
             {
-                BytesPerMftRecord = (UInt64)(1 << (256 - (Int16)clustersPerMftRecord));
+                BytesPerMasterFileTableRecord = (UInt64)(1 << (256 - (Int16)clustersPerMftRecord));
             }
             else
             {
-                BytesPerMftRecord = clustersPerMftRecord * BytesPerCluster;
+                BytesPerMasterFileTableRecord = clustersPerMftRecord * BytesPerCluster;
             }
         }
 
         public UInt64 ClusterToInode(UInt64 cluster)
         {
-            return cluster * BytesPerCluster / BytesPerMftRecord;
+            return cluster * BytesPerCluster / BytesPerMasterFileTableRecord;
         }
 
         public UInt64 InodeToCluster(UInt64 inode)
         {
-            return inode * BytesPerMftRecord / BytesPerCluster;
+            return inode * BytesPerMasterFileTableRecord / BytesPerCluster;
         }
 
         public UInt64 ClusterToBytes(UInt64 cluster)
@@ -52,12 +57,12 @@ namespace TDefragLib.FS.Ntfs
 
         public UInt64 InodeToBytes(UInt64 inode)
         {
-            return inode * BytesPerMftRecord;
+            return inode * BytesPerMasterFileTableRecord;
         }
 
         public UInt64 BytesToInode(UInt64 bytes)
         {
-            return bytes / BytesPerMftRecord;
+            return bytes / BytesPerMasterFileTableRecord;
         }
 
         public UInt64 BytesPerCluster
@@ -77,13 +82,13 @@ namespace TDefragLib.FS.Ntfs
         public UInt64 TotalSectors
         { get; private set; }
 
-        public UInt64 MftStartLcn
+        public UInt64 MasterFileTableStartLogicalClusterNumber
         { get; private set; }
 
-        public UInt64 Mft2StartLcn
+        public UInt64 MasterFileTable2StartLogicalClusterNumber
         { get; private set; }
 
-        public UInt64 BytesPerMftRecord
+        public UInt64 BytesPerMasterFileTableRecord
         { get; private set; }
 
         public UInt64 ClustersPerIndexRecord

@@ -28,9 +28,9 @@ namespace TDefragLib.FS.KnownBootSector
 
         #region IBootSector Members
 
-        public override Filesystem Filesystem
+        public override FileSystemType Filesystem
         {
-            get { return Filesystem.NTFS; }
+            get { return FileSystemType.Ntfs; }
         }
 
         public override ushort BytesPerSector
@@ -58,7 +58,7 @@ namespace TDefragLib.FS.KnownBootSector
             }
         }
 
-        public override ulong Mft1StartLcn
+        public override ulong MasterFileTable1StartLogicalClusterNumber
         {
             get
             {
@@ -66,7 +66,7 @@ namespace TDefragLib.FS.KnownBootSector
             }
         }
 
-        public override ulong Mft2StartLcn
+        public override ulong MasterFileTable2StartLogicalClusterNumber
         {
             get
             {

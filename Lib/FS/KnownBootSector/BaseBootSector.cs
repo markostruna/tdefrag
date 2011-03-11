@@ -38,7 +38,7 @@ namespace TDefragLib.FS.KnownBootSector
             }
         }
 
-        public abstract Filesystem Filesystem
+        public abstract FileSystemType Filesystem
         {
             get;
         }
@@ -69,12 +69,12 @@ namespace TDefragLib.FS.KnownBootSector
             get { throw new NotImplementedException(); }
         }
 
-        public virtual ulong Mft1StartLcn
+        public virtual ulong MasterFileTable1StartLogicalClusterNumber
         {
             get { throw new NotImplementedException(); }
         }
 
-        public virtual ulong Mft2StartLcn
+        public virtual ulong MasterFileTable2StartLogicalClusterNumber
         {
             get { throw new NotImplementedException(); }
         }

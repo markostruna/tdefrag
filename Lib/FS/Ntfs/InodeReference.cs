@@ -16,9 +16,16 @@ namespace TDefragLib.FileSystem.Ntfs
 
         public static InodeReference Parse(BinaryReader reader)
         {
+            if (reader == null)
+            {
+                return null;
+            }
+
             InodeReference r = new InodeReference();
+
             UInt32 lowPart = reader.ReadUInt32();
             UInt16 highPart = reader.ReadUInt16();
+
             r.BaseInodeNumber = (UInt64)lowPart + ((UInt64)highPart << 32);
             r.SequenceNumber = reader.ReadUInt16();
             return r;

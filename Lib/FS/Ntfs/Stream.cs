@@ -52,7 +52,7 @@ namespace TDefragLib.FileSystem.Ntfs
         {
             Name = name;
             Type = type;
-            Fragments = new FragmentList();
+            Fragments = new FragmentCollection();
             Clusters = 0;
         }
 
@@ -98,7 +98,7 @@ namespace TDefragLib.FileSystem.Ntfs
         /// <summary>
         /// The fragments of the stream.
         /// </summary>
-        public FragmentList Fragments
+        public FragmentCollection Fragments
         { get; private set; }
 
         /// <summary>

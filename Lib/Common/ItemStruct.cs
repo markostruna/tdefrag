@@ -12,6 +12,11 @@ namespace TDefragLib
     {
         public ItemStruct(FileSystem.Ntfs.Stream stream)
         {
+            if (stream == null)
+            {
+                return;
+            }
+
             FragmentList = stream.Fragments;
             Error = false;
         }
@@ -20,11 +25,11 @@ namespace TDefragLib
         /// Return the location on disk (LCN, Logical
         /// Cluster Number) of an item.
         /// </summary>
-        public UInt64 Lcn
+        public UInt64 LogicalClusterNumber
         {
             get
             {
-                return FragmentList.Lcn;
+                return FragmentList.LogicalClusterNumber;
             }
         }
 
@@ -49,10 +54,10 @@ namespace TDefragLib
         ///       it only looks at cached information in memory.
         /// </summary>
         /// <param name="Item"></param>
-        /// <param name="Offset"></param>
-        /// <param name="Size"></param>
+        /// <param name="offset"></param>
+        /// <param name="size"></param>
         /// <returns></returns>
-        public Boolean IsFragmented(UInt64 Offset, UInt64 Size)
+        public Boolean IsFragmented(UInt64 offset, UInt64 size)
         {
             UInt64 FragmentBegin = 0;
             UInt64 FragmentEnd = 0;
@@ -71,19 +76,19 @@ namespace TDefragLib
                 // in fragments even though they are perfectly aligned on disk, especially system 
                 // files and very large files. The defragger treats these files as unfragmented.
 
-                if ((NextLcn != 0) && (fragment.Lcn != NextLcn))
+                if ((NextLcn != 0) && (fragment.LogicalClusterNumber != NextLcn))
                 {
                     // If the fragment is above the block then return false;
                     // the block is not fragmented and we don't have to scan any further.
 
-                    if (FragmentBegin >= Offset + Size)
+                    if (FragmentBegin >= offset + size)
                         return false;
 
                     // If the first cluster of the fragment is above the first cluster of the block,
                     // or the last cluster of the fragment is before the last cluster of the block,
                     // then the block is fragmented, return true.
 
-                    if ((FragmentBegin > Offset) || ((FragmentEnd - 1 >= Offset) && (FragmentEnd < Offset + Size)))
+                    if ((FragmentBegin > offset) || ((FragmentEnd - 1 >= offset) && (FragmentEnd < offset + size)))
                     {
                         return true;
                     }
@@ -92,14 +97,14 @@ namespace TDefragLib
                 }
 
                 FragmentEnd += fragment.Length;
-                NextLcn = fragment.NextLcn;
+                NextLcn = fragment.NextLogicalClusterNumber;
             }
 
             // Handle the last fragment.
-            if (FragmentBegin >= Offset + Size)
+            if (FragmentBegin >= offset + size)
                 return false;
 
-            if ((FragmentBegin > Offset) || ((FragmentEnd - 1 >= Offset) && (FragmentEnd < Offset + Size)))
+            if ((FragmentBegin > offset) || ((FragmentEnd - 1 >= offset) && (FragmentEnd < offset + size)))
             {
                 return true;
             }
@@ -112,11 +117,11 @@ namespace TDefragLib
         {
             String path = String.Empty;
 
-            path = shortPath ? ShortFilename : LongFilename;
+            path = shortPath ? ShortFileName : LongFileName;
 
             if (String.IsNullOrEmpty(path))
             {
-                path = shortPath ? LongFilename : ShortFilename;
+                path = shortPath ? LongFileName : ShortFileName;
             }
 
             if (String.IsNullOrEmpty(path))
@@ -127,7 +132,7 @@ namespace TDefragLib
             return path;
         }
 
-        public String GetCompletePath(String MountPoint, Boolean shortPath)
+        public String GetCompletePath(String mountPoint, Boolean shortPath)
         {
             String path = String.Empty;
             ItemStruct parent = ParentDirectory;
@@ -140,37 +145,73 @@ namespace TDefragLib
             }
 
 	        /* Append all the strings. */
-	        path = MountPoint + "\\" + path;
+	        path = mountPoint + "\\" + path;
 
             return path;
         }
 
-        public ItemStruct Parent;              /* Parent item. */
-        public ItemStruct Smaller;             /* Next smaller item. */
-        public ItemStruct Bigger;              /* Next bigger item. */
+        public ItemStruct Parent                  /* Parent item. */
+        { set; get; }
 
-        public String LongFilename;                /* Long filename. */
-        public String LongPath;                    /* Full path on disk, long filenames. */
-        public String ShortFilename;               /* Short filename (8.3 DOS). */
-        public String ShortPath;                   /* Full path on disk, short filenames. */
+        public ItemStruct Smaller                 /* Next smaller item. */
+        { set; get; }
 
-        public UInt64 Bytes;                        /* Total number of bytes. */
-        public UInt64 NumClusters;                     /* Total number of clusters. */
-        public UInt64 CreationTime;                 /* 1 second = 10000000 */
-        public UInt64 MftChangeTime;
-        public UInt64 LastAccessTime;
+        public ItemStruct Bigger                  /* Next bigger item. */
+        { set; get; }
+
+
+        public String LongFileName                /* Long filename. */
+        { set; get; }
+
+        public String LongPath                    /* Full path on disk, long filenames. */
+        { set; get; }
+
+        public String ShortFileName               /* Short filename (8.3 DOS). */
+        { set; get; }
+
+        public String ShortPath                   /* Full path on disk, short filenames. */
+        { set; get; }
+
+
+        public UInt64 Size                        /* Total number of bytes. */
+        { set; get; }
+
+        public UInt64 CountClusters               /* Total number of clusters. */
+        { set; get; }
+
+        public UInt64 CreationTime                /* 1 second = 10000000 */
+        { set; get; }
+
+        public UInt64 MasterFileTableChangeTime
+        { set; get; }
+
+        public UInt64 LastAccessTime
+        { set; get; }
+
 
         /* List of fragments. */
-        public FragmentList FragmentList { get; private set; }
+        public FragmentCollection FragmentList { get; private set; }
 
-        public UInt64 ParentInode;                  /* The Inode number of the parent directory. */
+        public UInt64 ParentInode                 /* The Inode number of the parent directory. */
+        { set; get; }
 
-        public ItemStruct ParentDirectory;
+        public ItemStruct ParentDirectory
+        { set; get; }
 
-        public Boolean IsDirectory;                    /* YES: it's a directory. */
-        public Boolean Unmovable;                    /* YES: file can't/couldn't be moved. */
-        public Boolean Exclude;                      /* YES: file is not to be defragged/optimized. */
-        public Boolean SpaceHog;                     /* YES: file to be moved to end of disk. */
-        public Boolean Error;
+        public Boolean IsDirectory                /* YES: it's a directory. */
+        { set; get; }
+
+        public Boolean Unmovable                  /* YES: file can't/couldn't be moved. */
+        { set; get; }
+
+        public Boolean Exclude                    /* YES: file is not to be defragged/optimized. */
+        { set; get; }
+
+        public Boolean SpaceHog                   /* YES: file to be moved to end of disk. */
+        { set; get; }
+
+        public Boolean Error
+        { set; get; }
+
     };
 }

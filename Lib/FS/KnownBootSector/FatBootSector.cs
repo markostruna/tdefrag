@@ -15,9 +15,9 @@ namespace TDefragLib.FS.KnownBootSector
 
         #region IBootSector Members
 
-        public override Filesystem Filesystem
+        public override FileSystemType Filesystem
         {
-            get { return Filesystem.FAT32; }
+            get { return FileSystemType.Fat32; }
         }
 
         #endregion

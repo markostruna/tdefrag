@@ -15,20 +15,26 @@ namespace TDefragLib.FS.Ntfs
 
         public static RecordHeader Parse(BinaryReader reader)
         {
+            if (reader == null)
+            {
+                return null;
+            }
+
             RecordHeader r = new RecordHeader();
+            
             r.Type = reader.ReadUInt32();
-            r.UsaOffset = reader.ReadUInt16();
-            r.UsaCount = reader.ReadUInt16();
-            r.Lsn = reader.ReadUInt64();
+            r.UpdateSequenceArrayOffset = reader.ReadUInt16();
+            r.UpdateSequenceArrayCount = reader.ReadUInt16();
+            r.LogFileSequenceNumber = reader.ReadUInt64();
             return r;
         }
 
-        public UInt32 Type;                     /* File type, for example 'FILE' */
+        public UInt32 Type;                        /* File type, for example 'FILE' */
 
-        public UInt16 UsaOffset;                /* Offset to the Update Sequence Array */
-        public UInt16 UsaCount;                 /* Size in words of Update Sequence Array */
+        public UInt16 UpdateSequenceArrayOffset;   /* Offset to the Update Sequence Array */
+        public UInt16 UpdateSequenceArrayCount;    /* Size in words of Update Sequence Array */
 
-        public UInt64 Lsn;                      /* $LogFile Sequence Number (LSN) */
+        public UInt64 LogFileSequenceNumber;       /* $LogFile Sequence Number (LSN) */
 
     }
 }

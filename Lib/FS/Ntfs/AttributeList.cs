@@ -18,12 +18,12 @@ namespace TDefragLib.FileSystem.Ntfs
         {
             AttributeList list = new AttributeList();
             list.Type = AttributeType.Parse(reader);
-            if (list.Type.Type != AttributeTypeEnum.AttributeEndOfList)
+            if (list.Type.Type != AttributeEnumType.EndOfList)
             {
                 list.Length = reader.ReadUInt16();
                 list.NameLength = reader.ReadByte();
                 list.NameOffset = reader.ReadByte();
-                list.LowestVcn = reader.ReadUInt64();
+                list.LowestVirtualClusterNumber = reader.ReadUInt64();
                 list.FileReferenceNumber = InodeReference.Parse(reader);
                 list.Instance = reader.ReadUInt16();
                 list.AlignmentOrReserved = new UInt16[3];
@@ -52,7 +52,7 @@ namespace TDefragLib.FileSystem.Ntfs
         public UInt16 NameOffset
         { get; private set; }
 
-        public UInt64 LowestVcn
+        public UInt64 LowestVirtualClusterNumber
         { get; private set; }
 
         public InodeReference FileReferenceNumber
