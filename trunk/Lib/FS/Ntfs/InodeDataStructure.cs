@@ -23,17 +23,17 @@ namespace TDefragLib.FileSystem.Ntfs
 
             IsDirectory = true;
 
-            LongFilename = null;
-            ShortFilename = null;
+            LongFileName = null;
+            ShortFileName = null;
             CreationTime = 0;
-            MftChangeTime = 0;
+            MasterFileTableChangeTime = 0;
             LastAccessTime = 0;
             TotalBytes = 0;
-            Streams = new StreamList();
-            MftDataFragments = null;
-            MftDataLength = 0;
-            MftBitmapFragments = null;
-            MftBitmapLength = 0;
+            Streams = new StreamCollection();
+            MasterFileTableDataFragments = null;
+            MasterFileTableDataLength = 0;
+            MasterFileTableBitmapFragments = null;
+            MasterFileTableBitmapLength = 0;
         }
 
         /* The Inode number. */
@@ -49,11 +49,11 @@ namespace TDefragLib.FileSystem.Ntfs
         { get; set; }
 
         /* Long filename. */
-        public String LongFilename
+        public String LongFileName
         { get; private set; }
 
         /* Short filename (8.3 DOS). */
-        public String ShortFilename
+        public String ShortFileName
         { get; private set; }
 
         /* Total number of bytes. */
@@ -64,38 +64,38 @@ namespace TDefragLib.FileSystem.Ntfs
         public UInt64 CreationTime
         { get; set; }
 
-        public UInt64 MftChangeTime
+        public UInt64 MasterFileTableChangeTime
         { get; set; }
 
         public UInt64 LastAccessTime
         { get; set; }
 
         /* List of StreamStruct. */
-        public StreamList Streams
+        public StreamCollection Streams
         { get; private set; }
 
         /// <summary>
         /// The Fragments of the $MFT::$DATA stream.
         /// </summary>
-        public FragmentList MftDataFragments 
+        public FragmentCollection MasterFileTableDataFragments 
         { get; set; }
 
         /// <summary>
         /// Length of $MFT::$DATA, can be less than what is told by the fragments
         /// </summary>
-        public UInt64 MftDataLength
+        public UInt64 MasterFileTableDataLength
         { get; set; }
 
         /// <summary>
         /// The Fragments of the $MFT::$BITMAP stream.
         /// </summary>
-        public FragmentList MftBitmapFragments
+        public FragmentCollection MasterFileTableBitmapFragments
         { get; set; }
 
         /// <summary>
         /// Length of $MFT::$BITMAP, can be less than what is told by the fragments
         /// </summary>
-        public UInt64 MftBitmapLength
+        public UInt64 MasterFileTableBitmapLength
         { get; set; }
 
         /// <summary>
@@ -110,12 +110,13 @@ namespace TDefragLib.FileSystem.Ntfs
         {
             switch (attribute.NameType)
             {
-                case NameTypes.DOS:
-                    ShortFilename = ShortFilename ?? attribute.Name;
+                case NameTypes.Dos:
+                    ShortFileName = ShortFileName ?? attribute.Name;
                     break;
-                case NameTypes.NTFS | NameTypes.DOS:
-                case NameTypes.NTFS:
-                    LongFilename = LongFilename ?? attribute.Name;
+                case NameTypes.Ntfs | NameTypes.Dos:
+                case NameTypes.Ntfs:
+                case NameTypes.Posix:
+                    LongFileName = LongFileName ?? attribute.Name;
                     break;
                 default:
                     throw new NotSupportedException();

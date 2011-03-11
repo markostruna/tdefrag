@@ -55,10 +55,10 @@ namespace TDefragLib.Helper
             return TDefragLib.FileSystem.Ntfs.Attribute.Parse(reader);
         }
 
-        public NonResidentAttribute GetNonResidentAttribute(Int64 position)
+        public NonresidentAttribute GetNonResidentAttribute(Int64 position)
         {
             ReaderPosition = position;
-            return NonResidentAttribute.Parse(reader);
+            return NonresidentAttribute.Parse(reader);
         }
 
         public ResidentAttribute GetResidentAttribute(Int64 position)

@@ -11,9 +11,9 @@ namespace TDefragLib.Helper
 {
     public class Volume : IDisposable
     {
-        public Volume(String Path)
+        public Volume(String path)
         {
-            MountPoint = Path;
+            MountPoint = path;
             VolumeHandle = IntPtr.Zero;
         }
 
@@ -31,7 +31,7 @@ namespace TDefragLib.Helper
         public void Open()
         {
             Close();
-            VolumeHandle = Wrapper.OpenVolume(_mountPoint);
+            VolumeHandle = UnsafeNativeMethods.OpenVolume(_mountPoint);
         }
 
         public Boolean IsOpen
@@ -64,9 +64,9 @@ namespace TDefragLib.Helper
         ///// <summary>
         ///// Returns the filesystem of this volume
         ///// </summary>
-        //public FS.Filesystem Filesystem
+        //public FS.FileSystemType FileSystemType
         //{
-        //    get { return BootSector.Filesystem; }
+        //    get { return BootSector.FileSystemType; }
         //}
 
         ///// <summary>
@@ -77,17 +77,17 @@ namespace TDefragLib.Helper
         /// <summary>
         /// Read data from this disk starting at the given LCN
         /// </summary>
-        /// <param name="lcn"></param>
+        /// <param name="logicalClusterNumber"></param>
         /// <param name="buffer">Buffer to copy the data into</param>
         /// <param name="start">Start index inside buffer</param>
         /// <param name="count">Number of bytes to read</param>
         public Boolean ReadFromCluster(UInt64 lcn, Byte[] buffer, int start, int count)
         {
-            //Trace.WriteLine(this, String.Format("Reading: LCN={0:X8}, {1} bytes", lcn, count));
+            //Trace.WriteLine(this, String.Format("Reading: LCN={0:X8}, {1} bytes", logicalClusterNumber, count));
             Debug.Assert(buffer.Length >= count);
             Overlapped overlapped = Helper.OverlappedBuilder.Get(lcn);
 
-            int bytesRead = Helper.Wrapper.Read(VolumeHandle, buffer, start, count, overlapped);
+            int bytesRead = Helper.UnsafeNativeMethods.Read(VolumeHandle, buffer, start, count, overlapped);
 
             if (bytesRead != count)
             {
@@ -97,7 +97,7 @@ namespace TDefragLib.Helper
             return true;
         }
 
-        public byte[] Load(DiskInformation diskInfo, FragmentList fragments)
+        public byte[] Load(DiskInformation diskInfo, FragmentCollection fragments)
         {
             UInt64 totalSize = fragments.TotalLength;
 
@@ -110,11 +110,11 @@ namespace TDefragLib.Helper
             {
                 if (fragment.IsLogical)
                 {
-                    UInt64 lcnPosition = diskInfo.ClusterToBytes(fragment.Lcn);
+                    UInt64 lcnPosition = diskInfo.ClusterToBytes(fragment.LogicalClusterNumber);
 
                     UInt64 numClusters = fragment.Length;
                     Int32 numBytes = (Int32)diskInfo.ClusterToBytes(numClusters);
-                    Int32 startIndex = (Int32)diskInfo.ClusterToBytes(fragment.Vcn);
+                    Int32 startIndex = (Int32)diskInfo.ClusterToBytes(fragment.VirtualClusterNumber);
 
                     ReadFromCluster(lcnPosition, bytes, startIndex, numBytes);
                 }
@@ -138,19 +138,19 @@ namespace TDefragLib.Helper
             }
         }
 
-        public Wrapper.BitmapData VolumeBitmap
+        public UnsafeNativeMethods.BitmapData VolumeBitmap
         {
             get
             {
-                return Wrapper.GetVolumeMap(VolumeHandle);
+                return UnsafeNativeMethods.GetVolumeMap(VolumeHandle);
             }
         }
 
-        public Wrapper.NTFS_VOLUME_DATA_BUFFER NtfsVolumeData
+        public UnsafeNativeMethods.NtfsVolumeDataBuffer NtfsVolumeData
         {
             get
             {
-                return Wrapper.GetNtfsInfo(VolumeHandle);
+                return UnsafeNativeMethods.GetNtfsInfo(VolumeHandle);
             }
         }
 
@@ -159,7 +159,7 @@ namespace TDefragLib.Helper
         public void Close()
         {
             if (IsOpen)
-                Wrapper.CloseHandle(VolumeHandle);
+                UnsafeNativeMethods.CloseHandle(VolumeHandle);
 
             VolumeHandle = IntPtr.Zero;
         }

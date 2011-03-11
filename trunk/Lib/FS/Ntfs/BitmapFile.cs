@@ -10,13 +10,13 @@ namespace TDefragLib.FileSystem.Ntfs
 {
     public class BitmapFile
     {
-        public BitmapFile(Volume volume, DiskInformation diskInfo, FragmentList fragments,
+        public BitmapFile(Volume volume, DiskInformation diskInfo, FragmentCollection fragments,
             UInt64 bitmapBytes, UInt64 dataBytes)
         {
             _bitmapBytes = bitmapBytes;
             _dataBytes = dataBytes;
             _diskInfo = diskInfo;
-            MftBitmap = volume.Load(diskInfo, fragments);
+            MasterFileTableBitmap = volume.Load(diskInfo, fragments);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace TDefragLib.FileSystem.Ntfs
             get
             {
                 UInt64 used = 0;
-                BitArray bits = new BitArray(MftBitmap);
+                BitArray bits = new BitArray(MasterFileTableBitmap);
                 UInt64 c = 0;
                 foreach (bool bit in bits)
                 {
@@ -56,7 +56,7 @@ namespace TDefragLib.FileSystem.Ntfs
         {
             get
             {
-                return new BitArray(MftBitmap);
+                return new BitArray(MasterFileTableBitmap);
             }
         }
 
@@ -64,7 +64,7 @@ namespace TDefragLib.FileSystem.Ntfs
         private UInt64 _dataBytes;
         private DiskInformation _diskInfo;
 
-        public Byte[] MftBitmap
+        public Byte[] MasterFileTableBitmap
         { get; private set; }
     }
 }

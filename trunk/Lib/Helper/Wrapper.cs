@@ -7,10 +7,11 @@ using System.Collections;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
 using TDefrag.Lib.Helper;
+using System.IO;
 
 namespace TDefragLib.Helper
 {
-    public class Wrapper
+    public class UnsafeNativeMethods
     {
         #region CreateFile defines and Imports
 
@@ -65,6 +66,16 @@ namespace TDefragLib.Helper
         const String SE_IMPERSONATE_NAME         = "SeImpersonatePrivilege";
         const String SE_CREATE_GLOBAL_NAME       = "SeCreateGlobalPrivilege";
 
+        //[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        //private static extern Microsoft.Win32.SafeHandles.SafeFileHandle CreateFile(
+        //    string lpFileName, 
+        //    System.UInt32 dwDesiredAccess, 
+        //    System.UInt32 dwShareMode, 
+        //    IntPtr pSecurityAttributes, 
+        //    System.UInt32 dwCreationDisposition, 
+        //    System.UInt32 dwFlagsAndAttributes, 
+        //    IntPtr hTemplateFile);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern IntPtr CreateFile(
             string lpFileName,
@@ -82,34 +93,37 @@ namespace TDefragLib.Helper
         static extern bool DeviceIoControl(
             IntPtr hDevice,
             uint dwIoControlCode,
-            IntPtr lpInBuffer,
-            uint nInBufferSize,
-            [Out] IntPtr lpOutBuffer,
-            uint nOutBufferSize,
-            ref uint lpBytesReturned,
+            IntPtr lpInBuffer, uint nInBufferSize,
+            [Out] IntPtr lpOutBuffer, uint nOutBufferSize,
+            out uint lpBytesReturned,
             IntPtr overlapped);
 
         static public IntPtr OpenVolume(string DeviceName)
         {
-            IntPtr hDevice;
-            hDevice = CreateFile(
-                @"\\.\" + DeviceName,
-                GENERIC_READ | GENERIC_WRITE,
-                FILE_SHARE_READ | FILE_SHARE_WRITE,
-                IntPtr.Zero,
-                OPEN_EXISTING,
-                0,
-                IntPtr.Zero);
+            IntPtr hDevice = IntPtr.Zero;
+
+            String deviceName = @"\\.\" + DeviceName;
+
+            UInt32 access = GENERIC_READ | GENERIC_WRITE;
+            UInt32 shareMode = FILE_SHARE_READ | FILE_SHARE_WRITE;
+            UInt32 dwCreationDesposition = OPEN_EXISTING;
+
+            hDevice = CreateFile(deviceName, access, shareMode, IntPtr.Zero, dwCreationDesposition, 0, IntPtr.Zero);
+
             if ((int)hDevice == -1)
             {
-                throw new Exception(Marshal.GetLastWin32Error().ToString());
+                String message = GetMessage(Marshal.GetLastWin32Error());
+
+                throw new Exception(message);
             }
+
             return hDevice;
         }
 
         static private IntPtr OpenFile(string path)
         {
-            IntPtr hFile;
+            IntPtr hFile = IntPtr.Zero;
+
             hFile = CreateFile(path,
                         FILE_READ_ATTRIBUTES | FILE_WRITE_ATTRIBUTES,
                         FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -117,10 +131,14 @@ namespace TDefragLib.Helper
                         OPEN_EXISTING,
                         0,
                         IntPtr.Zero);
+
             if ((int)hFile == -1)
             {
-                throw new Exception(Marshal.GetLastWin32Error().ToString());
+                String message = GetMessage(Marshal.GetLastWin32Error());
+
+                throw new Exception(message);
             }
+
             return hFile;
         }
 
@@ -130,7 +148,7 @@ namespace TDefragLib.Helper
 
         public class BitmapData
         {
-            public UInt64 StartingLcn;
+            public UInt64 StartingLogicalClusterNumber;
             public UInt64 BitmapSize;
             public BitArray Buffer;
         } ;
@@ -181,7 +199,7 @@ namespace TDefragLib.Helper
                 GCHandle handle = GCHandle.Alloc(i64, GCHandleType.Pinned);
                 IntPtr p = handle.AddrOfPinnedObject();
 
-                uint q = 1024 * 1024 * 1 + 2 * 8;
+                uint q = 1024 * 1024 * 512 + 2 * 8;
                 uint size = 0;
 
                 int errorId = SystemErrorCodes.ERROR_SUCCESS;
@@ -196,7 +214,7 @@ namespace TDefragLib.Helper
                     (uint)Marshal.SizeOf(i64),
                     pDest,
                     q,
-                    ref size,
+                    out size,
                     IntPtr.Zero);
 
                 if (!fResult)
@@ -210,7 +228,7 @@ namespace TDefragLib.Helper
                     }
                 }
 
-                retValue.StartingLcn = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
+                retValue.StartingLogicalClusterNumber = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
 
                 pDest = (IntPtr)((Int64)pDest + 8);
                 retValue.BitmapSize = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
@@ -233,7 +251,7 @@ namespace TDefragLib.Helper
                     (uint)Marshal.SizeOf(i64),
                     pDest,
                     q,
-                    ref size,
+                    out size,
                     IntPtr.Zero);
 
                 if (!fResult)
@@ -271,22 +289,49 @@ namespace TDefragLib.Helper
             }
         }
 
-        public class NTFS_VOLUME_DATA_BUFFER
+        public class NtfsVolumeDataBuffer
         {
-            public UInt64 VolumeSerialNumber;
-            public UInt64 NumberSectors;
-            public UInt64 TotalClusters;
-            public UInt64 FreeClusters;
-            public UInt64 TotalReserved;
-            public UInt32 BytesPerSector;
-            public UInt32 BytesPerCluster;
-            public UInt32 BytesPerFileRecordSegment;
-            public UInt32 ClustersPerFileRecordSegment;
-            public UInt64 MftValidDataLength;
-            public UInt64 MftStartLcn;
-            public UInt64 Mft2StartLcn;
-            public UInt64 MftZoneStart;
-            public UInt64 MftZoneEnd;
+            public UInt64 VolumeSerialNumber
+            { set; get; }
+
+            public UInt64 NumberSectors
+            { set; get; }
+         
+            public UInt64 TotalClusters
+            { set; get; }
+            
+            public UInt64 FreeClusters
+            { set; get; }
+            
+            public UInt64 TotalReserved
+            { set; get; }
+            
+            public UInt32 BytesPerSector
+            { set; get; }
+            
+            public UInt32 BytesPerCluster
+            { set; get; }
+            
+            public UInt32 BytesPerFileRecordSegment
+            { set; get; }
+            
+            public UInt32 ClustersPerFileRecordSegment
+            { set; get; }
+            
+            public UInt64 MasterFileTableValidDataLength
+            { set; get; }
+            
+            public UInt64 MasterFileTableStartLogicalClusterNumber
+            { set; get; }
+            
+            public UInt64 MasterFileTable2StartLogicalClusterNumber
+            { set; get; }
+            
+            public UInt64 MasterFileTableZoneStart
+            { set; get; }
+            
+            public UInt64 MasterFileTableZoneEnd
+            { set; get; }
         };
 
         /// <summary>
@@ -294,11 +339,11 @@ namespace TDefragLib.Helper
         /// </summary>
         /// <param name="DeviceName">use "c:"</param>
         /// <returns>a bitarray for each cluster</returns>
-        static public NTFS_VOLUME_DATA_BUFFER GetNtfsInfo(IntPtr hDevice)
+        static public NtfsVolumeDataBuffer GetNtfsInfo(IntPtr hDevice)
         {
             IntPtr pAlloc = IntPtr.Zero;
 
-            NTFS_VOLUME_DATA_BUFFER retValue = new NTFS_VOLUME_DATA_BUFFER();
+            NtfsVolumeDataBuffer retValue = new NtfsVolumeDataBuffer();
 
             try
             {
@@ -320,13 +365,16 @@ namespace TDefragLib.Helper
                     (uint)Marshal.SizeOf(i64),
                     pDest,
                     q,
-                    ref size,
+                    out size,
                     IntPtr.Zero);
 
                 if (!fResult)
                 {
-                    throw new Exception(Marshal.GetLastWin32Error().ToString());
+                    String message = GetMessage(Marshal.GetLastWin32Error());
+
+                    throw new Exception(message);
                 }
+
                 handle.Free();
 
                 retValue.VolumeSerialNumber = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
@@ -356,19 +404,19 @@ namespace TDefragLib.Helper
                 retValue.ClustersPerFileRecordSegment = (UInt32)Marshal.PtrToStructure(pDest, typeof(UInt32));
 
                 pDest = (IntPtr)((Int64)pDest + 4);
-                retValue.MftValidDataLength = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
+                retValue.MasterFileTableValidDataLength = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
 
                 pDest = (IntPtr)((Int64)pDest + 8);
-                retValue.MftStartLcn = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
+                retValue.MasterFileTableStartLogicalClusterNumber = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
 
                 pDest = (IntPtr)((Int64)pDest + 8);
-                retValue.Mft2StartLcn = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
+                retValue.MasterFileTable2StartLogicalClusterNumber = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
 
                 pDest = (IntPtr)((Int64)pDest + 8);
-                retValue.MftZoneStart = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
+                retValue.MasterFileTableZoneStart = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
 
                 pDest = (IntPtr)((Int64)pDest + 8);
-                retValue.MftZoneEnd = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
+                retValue.MasterFileTableZoneEnd = (UInt64)Marshal.PtrToStructure(pDest, typeof(UInt64));
 
                 return retValue;
             }
@@ -385,7 +433,7 @@ namespace TDefragLib.Helper
 
         /// <summary>
         /// returns a 2*number of extents array -
-        /// the vcn and the lcn as pairs
+        /// the virtualClusterNumber and the logicalClusterNumber as pairs
         /// </summary>
         /// <param name="path">file to get the map for ex: "c:\windows\explorer.exe" </param>
         /// <returns>An array of [virtual cluster, physical cluster]</returns>
@@ -416,7 +464,7 @@ namespace TDefragLib.Helper
                     (uint)Marshal.SizeOf(i64),
                     pDest,
                     q,
-                    ref size,
+                    out size,
                     IntPtr.Zero);
 
                 if (fResult)
@@ -491,10 +539,10 @@ namespace TDefragLib.Helper
         /// </summary>
         /// <param name="deviceName">device to move on"c:"</param>
         /// <param name="path">file to muck with "c:\windows\explorer.exe"</param>
-        /// <param name="VCN">cluster number in file to move</param>
-        /// <param name="LCN">cluster on disk to move to</param>
+        /// <param name="virtualClusterNumber">cluster number in file to move</param>
+        /// <param name="logicalClusterNumber">cluster on disk to move to</param>
         /// <param name="count">for how many clusters</param>
-        static public void MoveFile(string deviceName, string path, Int64 VCN, Int64 LCN, Int32 count)
+        static public void MoveFile(string deviceName, string path, Int64 virtualClusterNumber, Int64 logicalClusterNumber, Int32 count)
         {
             IntPtr hVol = IntPtr.Zero;
             IntPtr hFile = IntPtr.Zero;
@@ -507,8 +555,8 @@ namespace TDefragLib.Helper
 
                 MoveFileData mfd = new MoveFileData();
                 mfd.hFile = hFile;
-                mfd.StartingVCN = VCN;
-                mfd.StartingLCN = LCN;
+                mfd.StartingVCN = virtualClusterNumber;
+                mfd.StartingLCN = logicalClusterNumber;
                 mfd.ClusterCount = count;
 
                 GCHandle handle = GCHandle.Alloc(mfd, GCHandleType.Pinned);
@@ -523,7 +571,7 @@ namespace TDefragLib.Helper
                     bufSize,
                     IntPtr.Zero, // no output data from this FSCTL
                     0,
-                    ref size,
+                    out size,
                     IntPtr.Zero);
 
                 handle.Free();
@@ -712,7 +760,7 @@ namespace TDefragLib.Helper
         #endregion
 
         [System.Runtime.InteropServices.DllImport("kernel32", SetLastError = true)]
-        public static extern unsafe bool ReadFile
+        private static extern unsafe bool ReadFile
         (
             System.IntPtr hFile,      // handle to file
             void* pBuffer,            // data buffer

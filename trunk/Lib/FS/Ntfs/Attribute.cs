@@ -8,7 +8,7 @@ using System.Text;
 namespace TDefragLib.FileSystem.Ntfs
 {
     [Flags]
-    public enum AttributeFlags : ushort
+    public enum AttributeFlags
     {
         Compressed = 0x0001,
         Encrypted = 0x4000,
@@ -28,7 +28,7 @@ namespace TDefragLib.FileSystem.Ntfs
         public UInt32 Length
         { get; private set; }
 
-        public Boolean IsNonResident
+        public Boolean IsNonresident
         { get; private set; }
 
         public Byte NameLength
@@ -45,11 +45,16 @@ namespace TDefragLib.FileSystem.Ntfs
 
         protected void InternalParse(BinaryReader reader)
         {
+            if (reader == null)
+            {
+                return;
+            }
+
             Type = AttributeType.Parse(reader);
-            if (Type.Type != AttributeTypeEnum.AttributeEndOfList)
+            if (Type.Type != AttributeEnumType.EndOfList)
             {
                 Length = reader.ReadUInt32();
-                IsNonResident = reader.ReadBoolean();
+                IsNonresident = reader.ReadBoolean();
                 NameLength = reader.ReadByte();
                 NameOffset = reader.ReadUInt16();
                 Flags = (AttributeFlags)reader.ReadUInt16();

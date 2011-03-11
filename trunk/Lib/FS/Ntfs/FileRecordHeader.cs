@@ -15,8 +15,14 @@ namespace TDefragLib.FileSystem.Ntfs
 
         public static FileRecordHeader Parse(BinaryReader reader)
         {
+            if (reader == null)
+            {
+                return null;
+            }
+
             FileRecordHeader r = new FileRecordHeader();
-            r.RecHdr = RecordHeader.Parse(reader);
+
+            r.RecordHeader = RecordHeader.Parse(reader);
             r.SequenceNumber = reader.ReadUInt16();
             r.LinkCount = reader.ReadUInt16();
             r.AttributeOffset = reader.ReadUInt16();
@@ -26,12 +32,12 @@ namespace TDefragLib.FileSystem.Ntfs
             r.BaseFileRecord = InodeReference.Parse(reader);
             r.NextAttributeNumber = reader.ReadUInt16();
             r.Padding = reader.ReadUInt16();
-            r.MFTRecordNumber = reader.ReadUInt32();
-            r.UpdateSeqNum = reader.ReadUInt16();
+            r.MasterFileTableRecordNumber = reader.ReadUInt32();
+            r.UpdateSequenceNumber = reader.ReadUInt16();
             return r;
         }
 
-        public RecordHeader RecHdr
+        public RecordHeader RecordHeader
         { get; private set; }
 
         public UInt16 SequenceNumber            /* Sequence number */
@@ -70,10 +76,10 @@ namespace TDefragLib.FileSystem.Ntfs
         public UInt16 Padding                   /* Align to 4 UCHAR boundary (XP) */
         { get; private set; }
 
-        public UInt32 MFTRecordNumber           /* Number of this MFT Record (XP) */
+        public UInt32 MasterFileTableRecordNumber /* Number of this MFT Record (XP) */
         { get; private set; }
 
-        public UInt16 UpdateSeqNum              /*  */
+        public UInt16 UpdateSequenceNumber      /*  */
         { get; private set; }
 
     }

@@ -46,7 +46,7 @@
     
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with 
-            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
     mimetype: application/x-microsoft.net.object.soap.base64
@@ -60,6 +60,7 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
@@ -68,9 +69,10 @@
               <xsd:sequence>
                 <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="name" use="required" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
@@ -85,9 +87,10 @@
                 <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
@@ -109,9 +112,977 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DiskInfoBytesPerMftRecord" xml:space="preserve">
+    <value>  Bytes Per Master File Table Record: {0:G}</value>
+  </data>
+  <data name="DiskInfoBytesPerSector" xml:space="preserve">
+    <value>  Bytes Per Sector: {0:G}</value>
+  </data>
+  <data name="DiskInfoClusterPerIndexRecord" xml:space="preserve">
+    <value>  Clusters Per Index Record: {0:G}</value>
+  </data>
+  <data name="DiskInfoCookie" xml:space="preserve">
+    <value>  Disk cookie: {0:X}</value>
+  </data>
+  <data name="DiskInfoMediaType" xml:space="preserve">
+    <value>  Media Type: {0:X}</value>
+  </data>
+  <data name="DiskInfoMft2StartLcn" xml:space="preserve">
+    <value>  Master File Table 2 Start Logical Cluster Number: {0:G}</value>
+  </data>
+  <data name="DiskInfoMftStartLcn" xml:space="preserve">
+    <value>  Master File Table Start Logical Cluster Number: {0:G}</value>
+  </data>
+  <data name="DiskInfoNumberOfHeads" xml:space="preserve">
+    <value>  Number Of Heads: {0:G}</value>
+  </data>
+  <data name="DiskInfoSectorsPerCluster" xml:space="preserve">
+    <value>  Sectors Per Cluster: {0:G}</value>
+  </data>
+  <data name="DiskInfoSectorsPerTrack" xml:space="preserve">
+    <value>  Sectors Per Track: {0:G}</value>
+  </data>
+  <data name="DiskInfoTotalSectors" xml:space="preserve">
+    <value>  Total Sectors: {0:G}</value>
+  </data>
+  <data name="DiskInfoVolumeSerialNumber" xml:space="preserve">
+    <value>  Volume Serial Number: {0:X}</value>
+  </data>
+  <data name="ErrorCouldNotReadBuffer" xml:space="preserve">
+    <value>Could not read buffer!!</value>
+  </data>
+  <data name="ErrorElevatePermissionsFailed" xml:space="preserve">
+    <value>Elevate permissions failed!!!</value>
+  </data>
+  <data name="ErrorMissingDataUSA" xml:space="preserve">
+    <value>Warning: Update Sequence Array data indicates that data is missing, the Master File Table may be corrupt.</value>
+  </data>
+  <data name="ErrorNotNtfsDisk" xml:space="preserve">
+    <value>This is not NTFS disk.</value>
+  </data>
+  <data name="ErrorNotValidMFTDoesStartWithFILE" xml:space="preserve">
+    <value>This is not a valid Master File Table record, it does not begin with "FILE" (maybe trying to read past the end?).</value>
+  </data>
+  <data name="ErrorSanityCheck" xml:space="preserve">
+    <value>Sanity check failed!</value>
+  </data>
+  <data name="ErrorUnableToOpenVolume" xml:space="preserve">
+    <value>Unable to open volume!</value>
+  </data>
+  <data name="ErrorUSAfixupNotEquealToUSN" xml:space="preserve">
+    <value>Error: Update Sequence Array fixup word is not equal to the Update Sequence Number, the Master File Table may be corrupt.</value>
+  </data>
+  <data name="InfoNtfsDisk" xml:space="preserve">
+    <value>This is an NTFS disk.</value>
+  </data>
+  <data name="LogLcn" xml:space="preserve">
+    <value>    Reading {0:G} bytes from Logical Cluster {1:G} into offset {2:G}</value>
+  </data>
+  <data name="LogReading" xml:space="preserve">
+    <value>    Reading {0:G} bytes from offset {0:G}</value>
+  </data>
+  <data name="SystemErrorAccessDenied" xml:space="preserve">
+    <value>Access is denied.</value>
+    <comment>5</comment>
+  </data>
+  <data name="SystemErrorAdapterHardwareError" xml:space="preserve">
+    <value>A network adapter hardware error occurred.</value>
+    <comment>57</comment>
+  </data>
+  <data name="SystemErrorAlreadyAssigned" xml:space="preserve">
+    <value>The local device name is already in use.</value>
+    <comment>85</comment>
+  </data>
+  <data name="SystemErrorAlreadyExists" xml:space="preserve">
+    <value>Cannot create a file when that file already exists.</value>
+    <comment>183</comment>
+  </data>
+  <data name="SystemErrorArenaThrashed" xml:space="preserve">
+    <value>The storage control blocks were destroyed.</value>
+    <comment>7</comment>
+  </data>
+  <data name="SystemErrorAtomicLocksNotSupported" xml:space="preserve">
+    <value>The file system does not support atomic changes to the lock type.</value>
+    <comment>174</comment>
+  </data>
+  <data name="SystemErrorAutoDataSegmentExceeds64k" xml:space="preserve">
+    <value>The operating system cannot run this application program.</value>
+    <comment>199</comment>
+  </data>
+  <data name="SystemErrorBadArguments" xml:space="preserve">
+    <value>One or more arguments are not correct.</value>
+    <comment>160</comment>
+  </data>
+  <data name="SystemErrorBadCommand" xml:space="preserve">
+    <value>The device does not recognize the command.</value>
+    <comment>22</comment>
+  </data>
+  <data name="SystemErrorBadDeviceType" xml:space="preserve">
+    <value>The network resource type is not correct.</value>
+    <comment>66</comment>
+  </data>
+  <data name="SystemErrorBadDriverLevel" xml:space="preserve">
+    <value>The system does not support the command requested.</value>
+    <comment>119</comment>
+  </data>
+  <data name="SystemErrorBadEnvironment" xml:space="preserve">
+    <value>The environment is incorrect.</value>
+    <comment>10</comment>
+  </data>
+  <data name="SystemErrorBadExeFormat" xml:space="preserve">
+    <value>is not a valid Win32 application.</value>
+    <comment>193</comment>
+  </data>
+  <data name="SystemErrorBadFileType" xml:space="preserve">
+    <value>The file type being saved or retrieved has been blocked.</value>
+    <comment>222</comment>
+  </data>
+  <data name="SystemErrorBadFormat" xml:space="preserve">
+    <value>An attempt was made to load a program with an incorrect format.</value>
+    <comment>11</comment>
+  </data>
+  <data name="SystemErrorBadLength" xml:space="preserve">
+    <value>The program issued a command but the command length is incorrect.</value>
+    <comment>24</comment>
+  </data>
+  <data name="SystemErrorBadNetworkName" xml:space="preserve">
+    <value>The network name cannot be found.</value>
+    <comment>67</comment>
+  </data>
+  <data name="SystemErrorBadNetworkPath" xml:space="preserve">
+    <value>The network path was not found.</value>
+    <comment>53</comment>
+  </data>
+  <data name="SystemErrorBadNetworkResponse" xml:space="preserve">
+    <value>The specified server cannot perform the requested operation.</value>
+    <comment>58</comment>
+  </data>
+  <data name="SystemErrorBadPathName" xml:space="preserve">
+    <value>The specified path is invalid.</value>
+    <comment>161</comment>
+  </data>
+  <data name="SystemErrorBadPipe" xml:space="preserve">
+    <value>The pipe state is invalid.</value>
+    <comment>230</comment>
+  </data>
+  <data name="SystemErrorBadRemoteAdapter" xml:space="preserve">
+    <value>The remote adapter is not compatible.</value>
+    <comment>60</comment>
+  </data>
+  <data name="SystemErrorBadThreadIdAddress" xml:space="preserve">
+    <value>The address for the thread ID is not correct.</value>
+    <comment>159</comment>
+  </data>
+  <data name="SystemErrorBadUnit" xml:space="preserve">
+    <value>The system cannot find the device specified.</value>
+    <comment>20</comment>
+  </data>
+  <data name="SystemErrorBrokenPipe" xml:space="preserve">
+    <value>The pipe has been ended.</value>
+    <comment>109</comment>
+  </data>
+  <data name="SystemErrorBufferOverflow" xml:space="preserve">
+    <value>The file name is too long.</value>
+    <comment>111</comment>
+  </data>
+  <data name="SystemErrorBusy" xml:space="preserve">
+    <value>The requested resource is in use.</value>
+    <comment>170</comment>
+  </data>
+  <data name="SystemErrorBusyDrive" xml:space="preserve">
+    <value>The system cannot perform a JOIN or SUBST at this time.</value>
+    <comment>142</comment>
+  </data>
+  <data name="SystemErrorCallNotImplemented" xml:space="preserve">
+    <value>This function is not supported on this system.</value>
+    <comment>120</comment>
+  </data>
+  <data name="SystemErrorCancelViolation" xml:space="preserve">
+    <value>A lock request was not outstanding for the supplied cancel region.</value>
+    <comment>173</comment>
+  </data>
+  <data name="SystemErrorCannotCopy" xml:space="preserve">
+    <value>The copy functions cannot be used.</value>
+    <comment>266</comment>
+  </data>
+  <data name="SystemErrorCannotCreate" xml:space="preserve">
+    <value>The directory or file cannot be created.</value>
+    <comment>82</comment>
+  </data>
+  <data name="SystemErrorCheckoutRequired" xml:space="preserve">
+    <value>The file must be checked out before saving changes.</value>
+    <comment>221</comment>
+  </data>
+  <data name="SystemErrorChildNotComplete" xml:space="preserve">
+    <value>The %1 application cannot be run in Win32 mode.</value>
+    <comment>129</comment>
+  </data>
+  <data name="SystemErrorCrc" xml:space="preserve">
+    <value>Data error ;.</value>
+    <comment>23</comment>
+  </data>
+  <data name="SystemErrorCurrentDirectory" xml:space="preserve">
+    <value>The directory cannot be removed.</value>
+    <comment>16</comment>
+  </data>
+  <data name="SystemErrorDeletePending" xml:space="preserve">
+    <value>The file cannot be opened because it is in the process of being deleted.</value>
+    <comment>303</comment>
+  </data>
+  <data name="SystemErrorDeviceNotExist" xml:space="preserve">
+    <value>The specified network resource or device is no longer available.</value>
+    <comment>55</comment>
+  </data>
+  <data name="SystemErrorDirectory" xml:space="preserve">
+    <value>The directory name is invalid.</value>
+    <comment>267</comment>
+  </data>
+  <data name="SystemErrorDirectoryAccessHandle" xml:space="preserve">
+    <value>Attempt to use a file handle to an open disk partition for an operation other than raw disk I/O.</value>
+    <comment>130</comment>
+  </data>
+  <data name="SystemErrorDirectoryNotEmpty" xml:space="preserve">
+    <value>The directory is not empty.</value>
+    <comment>145</comment>
+  </data>
+  <data name="SystemErrorDirectoryNotRoot" xml:space="preserve">
+    <value>The directory is not a subdirectory of the root directory.</value>
+    <comment>144</comment>
+  </data>
+  <data name="SystemErrorDiscarded" xml:space="preserve">
+    <value>The segment is already discarded and cannot be locked.</value>
+    <comment>157</comment>
+  </data>
+  <data name="SystemErrorDiskChange" xml:space="preserve">
+    <value>The program stopped because an alternate diskette was not inserted.</value>
+    <comment>107</comment>
+  </data>
+  <data name="SystemErrorDiskFull" xml:space="preserve">
+    <value>There is not enough space on the disk.</value>
+    <comment>112</comment>
+  </data>
+  <data name="SystemErrorDiskTooFragmented" xml:space="preserve">
+    <value>The volume is too fragmented to complete this operation.</value>
+    <comment>302</comment>
+  </data>
+  <data name="SystemErrorDriveLocked" xml:space="preserve">
+    <value>The disk is in use or locked by another process.</value>
+    <comment>108</comment>
+  </data>
+  <data name="SystemErrorDuplicateName" xml:space="preserve">
+    <value>You were not connected because a duplicate name exists on the network. If joining a domain, go to System in Control Panel to change the computer name and try again. If joining a workgroup, choose another workgroup name.</value>
+    <comment>52</comment>
+  </data>
+  <data name="SystemErrorDynamicLinkFromInvalidRing" xml:space="preserve">
+    <value>The operating system cannot run this application program.</value>
+    <comment>196</comment>
+  </data>
+  <data name="SystemErrorEaFileCorrupt" xml:space="preserve">
+    <value>The extended attribute file on the mounted file system is corrupt.</value>
+    <comment>276</comment>
+  </data>
+  <data name="SystemErrorEaListInconsistent" xml:space="preserve">
+    <value>The extended attributes are inconsistent.</value>
+    <comment>255</comment>
+  </data>
+  <data name="SystemErrorEasDidNotFit" xml:space="preserve">
+    <value>The extended attributes did not fit in the buffer.</value>
+    <comment>275</comment>
+  </data>
+  <data name="SystemErrorEasNotSupported" xml:space="preserve">
+    <value>The mounted file system does not support extended attributes.</value>
+    <comment>282</comment>
+  </data>
+  <data name="SystemErrorEaTableFull" xml:space="preserve">
+    <value>The extended attribute table file is full.</value>
+    <comment>277</comment>
+  </data>
+  <data name="SystemErrorEnvVarNotFound" xml:space="preserve">
+    <value>The system could not find the environment option that was entered.</value>
+    <comment>203</comment>
+  </data>
+  <data name="SystemErrorExclusiveSemaphoreAlreadyOwned" xml:space="preserve">
+    <value>The exclusive semaphore is owned by another process.</value>
+    <comment>101</comment>
+  </data>
+  <data name="SystemErrorExeCanNotModifySignedBinary" xml:space="preserve">
+    <value>The image file %1 is signed, unable to modify.</value>
+    <comment>217</comment>
+  </data>
+  <data name="SystemErrorExeCanNotModifyStrongSingedBinary" xml:space="preserve">
+    <value>The image file %1 is strong signed, unable to modify.</value>
+    <comment>218</comment>
+  </data>
+  <data name="SystemErrorExeMachineTypeMismatch" xml:space="preserve">
+    <value>The version of %1 is not compatible with the version you're running. Check your computer's system information to see whether you need a x86 ; or x64 ; version of the program, and then contact the software publisher.</value>
+    <comment>216</comment>
+  </data>
+  <data name="SystemErrorExeMarkedInvalid" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>192</comment>
+  </data>
+  <data name="SystemErrorFailInt24" xml:space="preserve">
+    <value>Fail on INT 24.</value>
+    <comment>83</comment>
+  </data>
+  <data name="SystemErrorFailNoActionReboot" xml:space="preserve">
+    <value>No action was taken as a system reboot is required.</value>
+    <comment>350</comment>
+  </data>
+  <data name="SystemErrorFailRestart" xml:space="preserve">
+    <value>The restart operation failed.</value>
+    <comment>352</comment>
+  </data>
+  <data name="SystemErrorFailShutdown" xml:space="preserve">
+    <value>The shutdown operation failed.</value>
+    <comment>351</comment>
+  </data>
+  <data name="SystemErrorFileCheckedOut" xml:space="preserve">
+    <value>This file is checked out or locked for editing by another user.</value>
+    <comment>220</comment>
+  </data>
+  <data name="SystemErrorFileExists" xml:space="preserve">
+    <value>The file exists.</value>
+    <comment>80</comment>
+  </data>
+  <data name="SystemErrorFileNameExceedsRange" xml:space="preserve">
+    <value>The filename or extension is too long.</value>
+    <comment>206</comment>
+  </data>
+  <data name="SystemErrorFileNotFound" xml:space="preserve">
+    <value>The system cannot find the file specified.</value>
+    <comment>2</comment>
+  </data>
+  <data name="SystemErrorFileTooLarge" xml:space="preserve">
+    <value>The file size exceeds the limit allowed and cannot be saved.</value>
+    <comment>223</comment>
+  </data>
+  <data name="SystemErrorFormsAuthenticationRequired" xml:space="preserve">
+    <value>Access Denied. Before opening files in this location, you must first add the web site to your trusted sites list, browse to the web site, and select the option to login automatically.</value>
+    <comment>224</comment>
+  </data>
+  <data name="SystemErrorGeneralFailure" xml:space="preserve">
+    <value>A device attached to the system is not functioning.</value>
+    <comment>31</comment>
+  </data>
+  <data name="SystemErrorHandleDiskFull" xml:space="preserve">
+    <value>The disk is full.</value>
+    <comment>39</comment>
+  </data>
+  <data name="SystemErrorHandleEof" xml:space="preserve">
+    <value>Reached the end of the file.Reached the end of the file.</value>
+    <comment>38</comment>
+  </data>
+  <data name="SystemErrorImageSubsystemNotPresent" xml:space="preserve">
+    <value>The subsystem needed to support the image type is not present.</value>
+    <comment>308</comment>
+  </data>
+  <data name="SystemErrorIncompatibleWithGlobalShortNameRegistrySetting" xml:space="preserve">
+    <value>Short name settings may not be changed on this volume due to the global registry setting.</value>
+    <comment>304</comment>
+  </data>
+  <data name="SystemErrorInfiniteLoopInRelocationChain" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>202</comment>
+  </data>
+  <data name="SystemErrorInsufficientBuffer" xml:space="preserve">
+    <value>The data area passed to a system call is too small.</value>
+    <comment>122</comment>
+  </data>
+  <data name="SystemErrorInvalidAccess" xml:space="preserve">
+    <value>The access code is invalid.</value>
+    <comment>12</comment>
+  </data>
+  <data name="SystemErrorInvalidAddress" xml:space="preserve">
+    <value>Attempt to access invalid address.</value>
+    <comment>487</comment>
+  </data>
+  <data name="SystemErrorInvalidAtInterruptTime" xml:space="preserve">
+    <value>Cannot request exclusive semaphores at interrupt time.</value>
+    <comment>104</comment>
+  </data>
+  <data name="SystemErrorInvalidBlock" xml:space="preserve">
+    <value>The storage control block address is invalid.</value>
+    <comment>9</comment>
+  </data>
+  <data name="SystemErrorInvalidCategory" xml:space="preserve">
+    <value>The IOCTL call made by the application program is not correct.</value>
+    <comment>117</comment>
+  </data>
+  <data name="SystemErrorInvalidData" xml:space="preserve">
+    <value>The data is invalid.</value>
+    <comment>13</comment>
+  </data>
+  <data name="SystemErrorInvalidDrive" xml:space="preserve">
+    <value>The system cannot find the drive specified.</value>
+    <comment>15</comment>
+  </data>
+  <data name="SystemErrorInvalidEaHandle" xml:space="preserve">
+    <value>The specified extended attribute handle is invalid.</value>
+    <comment>278</comment>
+  </data>
+  <data name="SystemErrorInvalidEaName" xml:space="preserve">
+    <value>The specified extended attribute name was invalid.</value>
+    <comment>254</comment>
+  </data>
+  <data name="SystemErrorInvalidEventCount" xml:space="preserve">
+    <value>The number of specified semaphore events for DosMuxSemWait is not correct.</value>
+    <comment>151</comment>
+  </data>
+  <data name="SystemErrorInvalidExeSignature" xml:space="preserve">
+    <value>Cannot run %1 in Win32 mode.</value>
+    <comment>191</comment>
+  </data>
+  <data name="SystemErrorInvalidFlagNumber" xml:space="preserve">
+    <value>The flag passed is not correct.</value>
+    <comment>186</comment>
+  </data>
+  <data name="SystemErrorInvalidFunction" xml:space="preserve">
+    <value>Incorrect function.</value>
+    <comment>1</comment>
+  </data>
+  <data name="SystemErrorInvalidHandle" xml:space="preserve">
+    <value>The handle is invalid.</value>
+    <comment>6</comment>
+  </data>
+  <data name="SystemErrorInvalidLevel" xml:space="preserve">
+    <value>The system call level is not correct.</value>
+    <comment>124</comment>
+  </data>
+  <data name="SystemErrorInvalidListFormat" xml:space="preserve">
+    <value>The DosMuxSemWait list is not correct.</value>
+    <comment>153</comment>
+  </data>
+  <data name="SystemErrorInvalidLockRange" xml:space="preserve">
+    <value>A requested file lock operation cannot be processed due to an invalid byte range.</value>
+    <comment>307</comment>
+  </data>
+  <data name="SystemErrorInvalidMinimumAllocationSize" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>195</comment>
+  </data>
+  <data name="SystemErrorInvalidModuleType" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>190</comment>
+  </data>
+  <data name="SystemErrorInvalidName" xml:space="preserve">
+    <value>The filename, directory name, or volume label syntax is incorrect.</value>
+    <comment>123</comment>
+  </data>
+  <data name="SystemErrorInvalidOplockProtocol" xml:space="preserve">
+    <value>An invalid oplock acknowledgment was received by the system.</value>
+    <comment>301</comment>
+  </data>
+  <data name="SystemErrorInvalidOrdinal" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>182</comment>
+  </data>
+  <data name="SystemErrorInvalidParameter" xml:space="preserve">
+    <value>The parameter is incorrect.</value>
+    <comment>87</comment>
+  </data>
+  <data name="SystemErrorInvalidPassword" xml:space="preserve">
+    <value>The specified network password is not correct.</value>
+    <comment>86</comment>
+  </data>
+  <data name="SystemErrorInvalidSegmentDeployment" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>198</comment>
+  </data>
+  <data name="SystemErrorInvalidSegmentNumber" xml:space="preserve">
+    <value>The system detected a segment number that was not correct.</value>
+    <comment>180</comment>
+  </data>
+  <data name="SystemErrorInvalidSignalNumber" xml:space="preserve">
+    <value>The signal being posted is not correct.</value>
+    <comment>209</comment>
+  </data>
+  <data name="SystemErrorInvalidStackSegment" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>189</comment>
+  </data>
+  <data name="SystemErrorInvalidStartingCodeSegment" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>188</comment>
+  </data>
+  <data name="SystemErrorInvalidTargetHandle" xml:space="preserve">
+    <value>The target internal file identifier is incorrect.</value>
+    <comment>114</comment>
+  </data>
+  <data name="SystemErrorInvalidVerifySwitch" xml:space="preserve">
+    <value>The verify-on-write switch parameter value is not correct.</value>
+    <comment>118</comment>
+  </data>
+  <data name="SystemErrorIoplNotEnabled" xml:space="preserve">
+    <value>The operating system is not presently configured to run this application.</value>
+    <comment>197</comment>
+  </data>
+  <data name="SystemErrorIsJoined" xml:space="preserve">
+    <value>An attempt was made to use a JOIN or SUBST command on a drive that has already been joined.</value>
+    <comment>134</comment>
+  </data>
+  <data name="SystemErrorIsJoinPath" xml:space="preserve">
+    <value>Not enough resources are available to process this command.</value>
+    <comment>147</comment>
+  </data>
+  <data name="SystemErrorIsJoinTarget" xml:space="preserve">
+    <value>A JOIN or SUBST command cannot be used for a drive that contains previously joined drives.</value>
+    <comment>133</comment>
+  </data>
+  <data name="SystemErrorIsSubsted" xml:space="preserve">
+    <value>An attempt was made to use a JOIN or SUBST command on a drive that has already been substituted.</value>
+    <comment>135</comment>
+  </data>
+  <data name="SystemErrorIsSubstPath" xml:space="preserve">
+    <value>The path specified is being used in a substitute.</value>
+    <comment>146</comment>
+  </data>
+  <data name="SystemErrorIsSubstTarget" xml:space="preserve">
+    <value>An attempt was made to join or substitute a drive for which a directory on the drive is the target of a previous substitute.</value>
+    <comment>149</comment>
+  </data>
+  <data name="SystemErrorIteratedDataExceeds64k" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>194</comment>
+  </data>
+  <data name="SystemErrorJoinToJoin" xml:space="preserve">
+    <value>The system tried to join a drive to a directory on a joined drive.</value>
+    <comment>138</comment>
+  </data>
+  <data name="SystemErrorJoinToSubst" xml:space="preserve">
+    <value>The system tried to join a drive to a directory on a substituted drive.</value>
+    <comment>140</comment>
+  </data>
+  <data name="SystemErrorLabelTooLong" xml:space="preserve">
+    <value>The volume label you entered exceeds the label character limit of the target file system.</value>
+    <comment>154</comment>
+  </data>
+  <data name="SystemErrorLocked" xml:space="preserve">
+    <value>The segment is locked and cannot be reallocated.</value>
+    <comment>212</comment>
+  </data>
+  <data name="SystemErrorLockFailed" xml:space="preserve">
+    <value>Unable to lock a region of a file.</value>
+    <comment>167</comment>
+  </data>
+  <data name="SystemErrorLockViolation" xml:space="preserve">
+    <value>The process cannot access the file because another process has locked a portion of the file.</value>
+    <comment>33</comment>
+  </data>
+  <data name="SystemErrorMaxSessionsReached" xml:space="preserve">
+    <value>The maximum number of sessions has been reached.</value>
+    <comment>353</comment>
+  </data>
+  <data name="SystemErrorMaxThreadsReached" xml:space="preserve">
+    <value>No more threads can be created in the system.</value>
+    <comment>164</comment>
+  </data>
+  <data name="SystemErrorMetaExpansionTooLong" xml:space="preserve">
+    <value>The global filename characters, * or ?, are entered incorrectly or too many global filename characters are specified.</value>
+    <comment>208</comment>
+  </data>
+  <data name="SystemErrorModuleNotFound" xml:space="preserve">
+    <value>The specified module could not be found.</value>
+    <comment>126</comment>
+  </data>
+  <data name="SystemErrorMoreData" xml:space="preserve">
+    <value>More data is available.</value>
+    <comment>234</comment>
+  </data>
+  <data name="SystemErrorMrMidNotFound" xml:space="preserve">
+    <value>The system cannot find message text for message number 0x%1 in the message file for %2.</value>
+    <comment>317</comment>
+  </data>
+  <data name="SystemErrorNegativeSeek" xml:space="preserve">
+    <value>An attempt was made to move the file pointer before the beginning of the file.</value>
+    <comment>131</comment>
+  </data>
+  <data name="SystemErrorNestingNotAllowed" xml:space="preserve">
+    <value>Cannot nest calls to LoadModule.</value>
+    <comment>215</comment>
+  </data>
+  <data name="SystemErrorNetworkAccessDenied" xml:space="preserve">
+    <value>Network access is denied.</value>
+    <comment>65</comment>
+  </data>
+  <data name="SystemErrorNetworkBusy" xml:space="preserve">
+    <value>The network is busy.</value>
+    <comment>54</comment>
+  </data>
+  <data name="SystemErrorNetworkNameDeleted" xml:space="preserve">
+    <value>The specified network name is no longer available.</value>
+    <comment>64</comment>
+  </data>
+  <data name="SystemErrorNetworkPathNotFound" xml:space="preserve">
+    <value>Windows cannot find the network path. Verify that the network path is correct and the destination computer is not busy or turned off. If Windows still cannot find the network path, contact your network administrator.</value>
+    <comment>51</comment>
+  </data>
+  <data name="SystemErrorNetworkWriteFault" xml:space="preserve">
+    <value>A write fault occurred on the network.</value>
+    <comment>88</comment>
+  </data>
+  <data name="SystemErrorNoData" xml:space="preserve">
+    <value>The pipe is being closed.</value>
+    <comment>232</comment>
+  </data>
+  <data name="SystemErrorNoMoreFiles" xml:space="preserve">
+    <value>There are no more files.</value>
+    <comment>18</comment>
+  </data>
+  <data name="SystemErrorNoMoreItems" xml:space="preserve">
+    <value>No more data is available.</value>
+    <comment>259</comment>
+  </data>
+  <data name="SystemErrorNoMoreProcessSlots" xml:space="preserve">
+    <value>The system cannot start another process at this time.</value>
+    <comment>89</comment>
+  </data>
+  <data name="SystemErrorNoMoreSearchHandles" xml:space="preserve">
+    <value>No more internal file identifiers available.</value>
+    <comment>113</comment>
+  </data>
+  <data name="SystemErrorNoSignalSent" xml:space="preserve">
+    <value>No process in the command subtree has a signal handler.</value>
+    <comment>205</comment>
+  </data>
+  <data name="SystemErrorNoSpoolSpace" xml:space="preserve">
+    <value>Space to store the file waiting to be printed is not available on the server.</value>
+    <comment>62</comment>
+  </data>
+  <data name="SystemErrorNotDosDisk" xml:space="preserve">
+    <value>The specified disk or diskette cannot be accessed.</value>
+    <comment>26</comment>
+  </data>
+  <data name="SystemErrorNotEnoughMemory" xml:space="preserve">
+    <value>Not enough storage is available to process this command.</value>
+    <comment>8</comment>
+  </data>
+  <data name="SystemErrorNotificationGuidAlreadyDefined" xml:space="preserve">
+    <value>The specified file already has a notification GUID associated with it.</value>
+    <comment>309</comment>
+  </data>
+  <data name="SystemErrorNotJoined" xml:space="preserve">
+    <value>The system tried to delete the JOIN of a drive that is not joined.</value>
+    <comment>136</comment>
+  </data>
+  <data name="SystemErrorNotLocked" xml:space="preserve">
+    <value>The segment is already unlocked.</value>
+    <comment>158</comment>
+  </data>
+  <data name="SystemErrorNotOwner" xml:space="preserve">
+    <value>Attempt to release mutex not owned by caller.</value>
+    <comment>288</comment>
+  </data>
+  <data name="SystemErrorNotReady" xml:space="preserve">
+    <value>The device is not ready.</value>
+    <comment>21</comment>
+  </data>
+  <data name="SystemErrorNotSameDevice" xml:space="preserve">
+    <value>The system cannot move the file to a different disk drive.</value>
+    <comment>17</comment>
+  </data>
+  <data name="SystemErrorNotSubsted" xml:space="preserve">
+    <value>The system tried to delete the substitution of a drive that is not substituted.</value>
+    <comment>137</comment>
+  </data>
+  <data name="SystemErrorNotSupported" xml:space="preserve">
+    <value>The request is not supported.</value>
+    <comment>50</comment>
+  </data>
+  <data name="SystemErrorNoVolumeLabel" xml:space="preserve">
+    <value>The disk has no volume label.</value>
+    <comment>125</comment>
+  </data>
+  <data name="SystemErrorOpenFailed" xml:space="preserve">
+    <value>The system cannot open the device or file specified.</value>
+    <comment>110</comment>
+  </data>
+  <data name="SystemErrorOplockNotGranted" xml:space="preserve">
+    <value>The oplock request is denied.</value>
+    <comment>300</comment>
+  </data>
+  <data name="SystemErrorOutOfMemory" xml:space="preserve">
+    <value>Not enough storage is available to complete this operation.</value>
+    <comment>14</comment>
+  </data>
+  <data name="SystemErrorOutOfPaper" xml:space="preserve">
+    <value>The printer is out of paper.</value>
+    <comment>28</comment>
+  </data>
+  <data name="SystemErrorOutOfStructures" xml:space="preserve">
+    <value>Storage to process this request is not available.</value>
+    <comment>84</comment>
+  </data>
+  <data name="SystemErrorPartialCopy" xml:space="preserve">
+    <value>Only part of a ReadProcessMemory or WriteProcessMemory request was completed.</value>
+    <comment>299</comment>
+  </data>
+  <data name="SystemErrorPathBusy" xml:space="preserve">
+    <value>The path specified cannot be used at this time.</value>
+    <comment>148</comment>
+  </data>
+  <data name="SystemErrorPathNotFound" xml:space="preserve">
+    <value>The system cannot find the path specified.</value>
+    <comment>3</comment>
+  </data>
+  <data name="SystemErrorPipeBusy" xml:space="preserve">
+    <value>All pipe instances are busy.</value>
+    <comment>231</comment>
+  </data>
+  <data name="SystemErrorPipeLocal" xml:space="preserve">
+    <value>The pipe is local.</value>
+    <comment>229</comment>
+  </data>
+  <data name="SystemErrorPipeNotConnected" xml:space="preserve">
+    <value>No process is on the other end of the pipe.</value>
+    <comment>233</comment>
+  </data>
+  <data name="SystemErrorPrintCancelled" xml:space="preserve">
+    <value>Your file waiting to be printed was deleted.</value>
+    <comment>63</comment>
+  </data>
+  <data name="SystemErrorPrintQueueFull" xml:space="preserve">
+    <value>The printer queue is full.</value>
+    <comment>61</comment>
+  </data>
+  <data name="SystemErrorProcedureNotFound" xml:space="preserve">
+    <value>The specified procedure could not be found.</value>
+    <comment>127</comment>
+  </data>
+  <data name="SystemErrorProcessModeAlreadyBackground" xml:space="preserve">
+    <value>The process is already in background processing mode.</value>
+    <comment>402</comment>
+  </data>
+  <data name="SystemErrorProcessModeNotBackground" xml:space="preserve">
+    <value>The process is not in background processing mode.</value>
+    <comment>403</comment>
+  </data>
+  <data name="SystemErrorReadFault" xml:space="preserve">
+    <value>The system cannot read from the specified device.</value>
+    <comment>30</comment>
+  </data>
+  <data name="SystemErrorRedirectingPaused" xml:space="preserve">
+    <value>The specified printer or disk device has been paused.</value>
+    <comment>72</comment>
+  </data>
+  <data name="SystemErrorRelocationChainExceedsSegmentLimit" xml:space="preserve">
+    <value>The operating system cannot run %1.</value>
+    <comment>201</comment>
+  </data>
+  <data name="SystemErrorRequestNotAccepted" xml:space="preserve">
+    <value>No more connections can be made to this remote computer at this time because there are already as many connections as the computer can accept.</value>
+    <comment>71</comment>
+  </data>
+  <data name="SystemErrorRing2SegmentMustBeMovable" xml:space="preserve">
+    <value>The code segment cannot be greater than or equal to 64K.</value>
+    <comment>200</comment>
+  </data>
+  <data name="SystemErrorRing2StackInUse" xml:space="preserve">
+    <value>The ring 2 stack is in use.</value>
+    <comment>207</comment>
+  </data>
+  <data name="SystemErrorSameDrive" xml:space="preserve">
+    <value>The system cannot join or substitute a drive to or for a directory on the same drive.</value>
+    <comment>143</comment>
+  </data>
+  <data name="SystemErrorScopeNotFound" xml:space="preserve">
+    <value>The scope specified was not found.</value>
+    <comment>318</comment>
+  </data>
+  <data name="SystemErrorSectorNotFound" xml:space="preserve">
+    <value>The drive cannot find the sector requested.</value>
+    <comment>27</comment>
+  </data>
+  <data name="SystemErrorSecurityStreamIsInconsistent" xml:space="preserve">
+    <value>The security stream for the given volume is in an inconsistent state. Please run CHKDSK on the volume.</value>
+    <comment>306</comment>
+  </data>
+  <data name="SystemErrorSeek" xml:space="preserve">
+    <value>The drive cannot locate a specific area or track on the disk.</value>
+    <comment>25</comment>
+  </data>
+  <data name="SystemErrorSeekOnDevice" xml:space="preserve">
+    <value>The file pointer cannot be set on the specified device or file.</value>
+    <comment>132</comment>
+  </data>
+  <data name="SystemErrorSemaphoreIsSet" xml:space="preserve">
+    <value>The semaphore is set and cannot be closed.</value>
+    <comment>102</comment>
+  </data>
+  <data name="SystemErrorSemaphoreNotFound" xml:space="preserve">
+    <value>The specified system semaphore name was not found.</value>
+    <comment>187</comment>
+  </data>
+  <data name="SystemErrorSemaphoreOwnerDied" xml:space="preserve">
+    <value>The previous ownership of this semaphore has ended.</value>
+    <comment>105</comment>
+  </data>
+  <data name="SystemErrorSemaphoreTimeout" xml:space="preserve">
+    <value>The semaphore timeout period has expired.</value>
+    <comment>121</comment>
+  </data>
+  <data name="SystemErrorSemaphoreUserLimit" xml:space="preserve">
+    <value>Insert the diskette for drive %1.</value>
+    <comment>106</comment>
+  </data>
+  <data name="SystemErrorSharingBufferExceeded" xml:space="preserve">
+    <value>Too many files opened for sharing.</value>
+    <comment>36</comment>
+  </data>
+  <data name="SystemErrorSharingPaused" xml:space="preserve">
+    <value>The remote server has been paused or is in the process of being started.</value>
+    <comment>70</comment>
+  </data>
+  <data name="SystemErrorSharingViolation" xml:space="preserve">
+    <value>The process cannot access the file because it is being used by another process.</value>
+    <comment>32</comment>
+  </data>
+  <data name="SystemErrorShortNamesNotEnabledOnVolume" xml:space="preserve">
+    <value>Short names are not enabled on this volume.</value>
+    <comment>305</comment>
+  </data>
+  <data name="SystemErrorSignalPending" xml:space="preserve">
+    <value>A signal is already pending.</value>
+    <comment>162</comment>
+  </data>
+  <data name="SystemErrorSignalRefused" xml:space="preserve">
+    <value>The recipient process has refused the signal.</value>
+    <comment>156</comment>
+  </data>
+  <data name="SystemErrorSubstToJoin" xml:space="preserve">
+    <value>The system tried to SUBST a drive to a directory on a joined drive.</value>
+    <comment>141</comment>
+  </data>
+  <data name="SystemErrorSubstToSubst" xml:space="preserve">
+    <value>The system tried to substitute a drive to a directory on a substituted drive.</value>
+    <comment>139</comment>
+  </data>
+  <data name="SystemErrorSuccess" xml:space="preserve">
+    <value>The operation completed successfully.</value>
+    <comment>0</comment>
+  </data>
+  <data name="SystemErrorSystemTrace" xml:space="preserve">
+    <value>System trace information was not specified in your CONFIG.SYS file, or tracing is disallowed.</value>
+    <comment>150</comment>
+  </data>
+  <data name="SystemErrorThread1Inactive" xml:space="preserve">
+    <value>The signal handler cannot be set.</value>
+    <comment>210</comment>
+  </data>
+  <data name="SystemErrorThreadModeAlreadyBackground" xml:space="preserve">
+    <value>The thread is already in background processing mode.</value>
+    <comment>400</comment>
+  </data>
+  <data name="SystemErrorThreadModeNotBackground" xml:space="preserve">
+    <value>The thread is not in background processing mode.</value>
+    <comment>401</comment>
+  </data>
+  <data name="SystemErrorTooManyCommands" xml:space="preserve">
+    <value>The network BIOS command limit has been reached.</value>
+    <comment>56</comment>
+  </data>
+  <data name="SystemErrorTooManyModules" xml:space="preserve">
+    <value>Too many dynamic-link modules are attached to this program or dynamic-link module.</value>
+    <comment>214</comment>
+  </data>
+  <data name="SystemErrorTooManyMutexWaiters" xml:space="preserve">
+    <value>DosMuxSemWait did not execute; too many semaphores are already set.</value>
+    <comment>152</comment>
+  </data>
+  <data name="SystemErrorTooManyNames" xml:space="preserve">
+    <value>The name limit for the local computer network adapter card was exceeded.</value>
+    <comment>68</comment>
+  </data>
+  <data name="SystemErrorTooManyOpenFiles" xml:space="preserve">
+    <value>The system cannot open the file.</value>
+    <comment>4</comment>
+  </data>
+  <data name="SystemErrorTooManyPosts" xml:space="preserve">
+    <value>Too many posts were made to a semaphore.</value>
+    <comment>298</comment>
+  </data>
+  <data name="SystemErrorTooManySemaphoreRequests" xml:space="preserve">
+    <value>The semaphore cannot be set again.</value>
+    <comment>103</comment>
+  </data>
+  <data name="SystemErrorTooManySemaphores" xml:space="preserve">
+    <value>Cannot create another system semaphore.</value>
+    <comment>100</comment>
+  </data>
+  <data name="SystemErrorTooManySessions" xml:space="preserve">
+    <value>The network BIOS session limit was exceeded.</value>
+    <comment>69</comment>
+  </data>
+  <data name="SystemErrorTooManyTcbs" xml:space="preserve">
+    <value>Cannot create another thread.</value>
+    <comment>155</comment>
+  </data>
+  <data name="SystemErrorUnexpectedNetworkError" xml:space="preserve">
+    <value>An unexpected network error occurred.</value>
+    <comment>59</comment>
+  </data>
+  <data name="SystemErrorUnknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="SystemErrorVcDisconnected" xml:space="preserve">
+    <value>The session was cancelled.</value>
+    <comment>240</comment>
+  </data>
+  <data name="SystemErrorVirusDeleted" xml:space="preserve">
+    <value>This file contains a virus and cannot be opened. Due to the nature of this virus, the file has been removed from this location.</value>
+    <comment>226</comment>
+  </data>
+  <data name="SystemErrorVirusInfected" xml:space="preserve">
+    <value>Operation did not complete successfully because the file contains a virus.</value>
+    <comment>225</comment>
+  </data>
+  <data name="SystemErrorWaitNoChildren" xml:space="preserve">
+    <value>There are no child processes to wait for.</value>
+    <comment>128</comment>
+  </data>
+  <data name="SystemErrorWaitTimeout" xml:space="preserve">
+    <value>The wait operation timed out.</value>
+    <comment>258</comment>
+  </data>
+  <data name="SystemErrorWriteFault" xml:space="preserve">
+    <value>The system cannot write to the specified device.</value>
+    <comment>29</comment>
+  </data>
+  <data name="SystemErrorWriteProtect" xml:space="preserve">
+    <value>The media is write protected.</value>
+    <comment>19</comment>
+  </data>
+  <data name="SystemErrorWrongDisk" xml:space="preserve">
+    <value>The wrong diskette is in the drive. Insert %2 ; into drive %1.</value>
+    <comment>34</comment>
+  </data>
+  <data name="ErrorAttributesOutsideOfFileRecord" xml:space="preserve">
+    <value>Error: attributes in m_iNode {0:G} are outside the FILE record, the MFT may be corrupt.</value>
+  </data>
+  <data name="ErrorProcessAttributes" xml:space="preserve">
+    <value>ProcessAttributes failed for {0} (cnt={1})</value>
+  </data>
+  <data name="ErrorRecordBiggerThanBufferSize" xml:space="preserve">
+    <value>Error: in m_iNode {0:G} the record is bigger than the size of the buffer, the MFT may be corrupt.</value>
+  </data>
+  <data name="ErrorVirtualClusterNotFoundInFragmentCollection" xml:space="preserve">
+    <value>Virtual cluster number not found for this fragment list, shall never occur</value>
+  </data>
+  <data name="InfoAnalysisSpeed" xml:space="preserve">
+    <value>  Analysis speed: {0:G} items per second</value>
+  </data>
+  <data name="RootStreamName" xml:space="preserve">
+    <value>$I30</value>
+  </data>
+  <data name="stringSlash" xml:space="preserve">
+    <value> / </value>
+  </data>
+  <data name="WarningInodeContainsDifferentMasterFileTableRecordNumber" xml:space="preserve">
+    <value>Warning: Inode {0:G} contains a different MFTRecordNumber {1:G}</value>
+  </data>
 </root>

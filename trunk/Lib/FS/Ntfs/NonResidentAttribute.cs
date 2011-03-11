@@ -7,18 +7,24 @@ using System.Text;
 
 namespace TDefragLib.FileSystem.Ntfs
 {
-    public class NonResidentAttribute : Attribute
+    public class NonresidentAttribute : Attribute
     {
-        private NonResidentAttribute()
+        private NonresidentAttribute()
         {
         }
 
-        public static new NonResidentAttribute Parse(BinaryReader reader)
+        public static new NonresidentAttribute Parse(BinaryReader reader)
         {
-            NonResidentAttribute a = new NonResidentAttribute();
+            if (reader == null)
+            {
+                return null;
+            }
+
+            NonresidentAttribute a = new NonresidentAttribute();
+
             a.InternalParse(reader);
-            a.StartingVcn = reader.ReadUInt64();
-            a.LastVcn = reader.ReadUInt64();
+            a.StartingVirtualClusterNumber = reader.ReadUInt64();
+            a.LastVirtualClusterNumber = reader.ReadUInt64();
             a.RunArrayOffset = reader.ReadUInt16();
             a.CompressionUnit = reader.ReadByte();
             a.AlignmentOrReserved = reader.ReadBytes(5);
@@ -29,10 +35,10 @@ namespace TDefragLib.FileSystem.Ntfs
             return a;
         }
 
-        public UInt64 StartingVcn
+        public UInt64 StartingVirtualClusterNumber
         { get; private set; }
 
-        public UInt64 LastVcn
+        public UInt64 LastVirtualClusterNumber
         { get; private set; }
 
         public UInt16 RunArrayOffset

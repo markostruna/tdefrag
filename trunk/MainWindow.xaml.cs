@@ -24,7 +24,7 @@ namespace TDefragWPF
         {
             InitializeComponent();
 
-            defragLib = new MainLib(this);
+            defragLib = new MainLib(/*this*/);
 
             FillDiskArray();
         }

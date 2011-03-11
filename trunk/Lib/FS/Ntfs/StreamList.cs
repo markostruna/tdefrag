@@ -7,9 +7,9 @@ using System.Text;
 namespace TDefragLib.FileSystem.Ntfs
 {
     [DebuggerDisplay("Streams: {Count}")]
-    public class StreamList : IEnumerable<Stream>
+    public class StreamCollection : IEnumerable<Stream>
     {
-        public StreamList()
+        public StreamCollection()
         {
             _streams = new List<Stream>();
         }
