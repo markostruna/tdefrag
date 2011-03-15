@@ -178,6 +178,15 @@ namespace TDefragWpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Boot sector could not be loaded..
+        /// </summary>
+        internal static string ErrorCouldNotLoadBootSector {
+            get {
+                return ResourceManager.GetString("ErrorCouldNotLoadBootSector", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not read buffer!!.
         /// </summary>
         internal static string ErrorCouldNotReadBuffer {

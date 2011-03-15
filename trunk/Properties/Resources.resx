@@ -1064,6 +1064,9 @@
   <data name="ErrorAttributesOutsideOfFileRecord" xml:space="preserve">
     <value>Error: attributes in m_iNode {0:G} are outside the FILE record, the MFT may be corrupt.</value>
   </data>
+  <data name="ErrorCouldNotLoadBootSector" xml:space="preserve">
+    <value>Boot sector could not be loaded.</value>
+  </data>
   <data name="ErrorProcessAttributes" xml:space="preserve">
     <value>ProcessAttributes failed for {0} (cnt={1})</value>
   </data>

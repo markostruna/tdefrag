@@ -22,29 +22,21 @@ namespace TDefragLib.Ntfs
             Lib = parent;
         }
 
-        public static void ShowLogMessage(String message)
+        public void ShowLogMessage(String message)
         {
-            MainLib.ShowMessage(message);
-        }
-
-        /// <summary>
-        /// If expression is true, exception is thrown
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="message"></param>
-        /// <param name="throwException"></param>
-        public static void ErrorCheck(Boolean expression, String message, Boolean throwException)
-        {
-            if (expression && throwException)
-            {
-                //throw new Exception(message);
-            }
+            Lib.ShowMessage(message);
         }
 
         public void AnalyzeVolume()
         {
             // Read the boot block from the disk.
             FS.IBootSector bootSector = Lib.Data.Volume.BootSector;
+
+            if (bootSector == null)
+            {
+                ShowLogMessage(Resources.ErrorCouldNotLoadBootSector);
+                return;
+            }
 
             // Test if the boot block is an NTFS boot block.
             if (bootSector.Filesystem != FS.FileSystemType.Ntfs)
@@ -87,12 +79,12 @@ namespace TDefragLib.Ntfs
             DiskBuffer diskBuffer = new DiskBuffer((Int64)MFTBUFFERSIZE);
 
             // read MFT record
-            Boolean result = Lib.Data.Volume.ReadFromCluster(tempLcn, diskBuffer.Buffer, 0,
-                (Int32)diskInfo.BytesPerMasterFileTableRecord);
+            Boolean result = Lib.Data.Volume.ReadFromCluster(tempLcn, diskBuffer.Buffer, 0, (Int32)diskInfo.BytesPerMasterFileTableRecord);
 
             if (result == false)
             {
                 ShowLogMessage(Resources.ErrorCouldNotReadBuffer);
+                return;
             }
 
             // Update sequence numbers in all sectors
@@ -138,6 +130,8 @@ namespace TDefragLib.Ntfs
             UInt64 BlockEnd = 0;
             UInt64 InodeNumber = 0;
 
+            UInt64 MftBitmapSize = MftBitmapBytes * 8;
+
             foreach (bool bit in bitmapFile.Bits)
             {
                 //if (Lib.Data.Running != RunningState.Running)
@@ -165,8 +159,8 @@ namespace TDefragLib.Ntfs
                     BlockStart = InodeNumber;
                     BlockEnd = BlockStart + diskInfo.BytesToInode(MFTBUFFERSIZE);
 
-                    if (BlockEnd > MftBitmapBytes * 8)
-                        BlockEnd = MftBitmapBytes * 8;
+                    if (BlockEnd > MftBitmapSize)
+                        BlockEnd = MftBitmapSize;
 
                     Fragment foundFragment = MftDataFragments.FindContaining(
                         diskInfo.InodeToCluster(InodeNumber));
@@ -183,12 +177,7 @@ namespace TDefragLib.Ntfs
 
                     UInt64 lcn = diskInfo.ClusterToBytes(foundFragment.LogicalClusterNumber - foundFragment.VirtualClusterNumber) + diskInfo.InodeToBytes(BlockStart);
 
-                    //Console.WriteLine("Reading block of {0} Inodes from MFT into memory, {1} bytes from LCN={2}",
-                    //    BlockEnd - BlockStart, diskInfo.InodeToBytes(BlockEnd - BlockStart),
-                    //    diskInfo.BytesToCluster(logicalClusterNumber));
-
-                    Lib.Data.Volume.ReadFromCluster(lcn,
-                        diskBuffer.Buffer, 0, (Int32)diskInfo.InodeToBytes(BlockEnd - BlockStart));
+                    Lib.Data.Volume.ReadFromCluster(lcn, diskBuffer.Buffer, 0, (Int32)diskInfo.InodeToBytes(BlockEnd - BlockStart));
                 }
 
                 // Fixup the raw data of this m_iNode
@@ -197,6 +186,7 @@ namespace TDefragLib.Ntfs
                 UpdateSequenceNumbers(diskInfo, diskBuffer, (Int64)position, diskInfo.BytesPerMasterFileTableRecord);
 
                 diskBuffer.ReaderPosition = (Int64)diskInfo.InodeToBytes(InodeNumber - BlockStart);
+
                 // Interpret the m_iNode's attributes.
                 Result = InterpretMftRecord(diskInfo, InodeArray, InodeNumber, MaxInode,
                         ref MftDataFragments, ref MftDataBytes, ref MftBitmapFragments, ref MftBitmapBytes,
@@ -208,7 +198,7 @@ namespace TDefragLib.Ntfs
                 //    //Lib.ShowProgress((Double)(Lib.Data.PhaseDone), (Double)Lib.Data.PhaseTodo);
                 }
 
-                Thread.Sleep(10);
+//                Thread.Sleep(10);
 
                 InodeNumber++;
             }
@@ -385,14 +375,20 @@ namespace TDefragLib.Ntfs
             // 
             // Note: why is the MFTRecordNumber only 32 bit? Inode numbers are 48 bit.
             //
-            ErrorCheck(fileRecordHeader.MasterFileTableRecordNumber != inodeNumber,
-                String.Format(CultureInfo.CurrentCulture, Resources.WarningInodeContainsDifferentMasterFileTableRecordNumber, inodeNumber, fileRecordHeader.MasterFileTableRecordNumber), true);
+            if (fileRecordHeader.MasterFileTableRecordNumber != inodeNumber)
+            {
+                ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.WarningInodeContainsDifferentMasterFileTableRecordNumber, inodeNumber, fileRecordHeader.MasterFileTableRecordNumber));
+            }
 
-            ErrorCheck(fileRecordHeader.AttributeOffset >= bufLength,
-                String.Format(CultureInfo.CurrentCulture, Resources.ErrorAttributesOutsideOfFileRecord, inodeNumber), true);
+            if (fileRecordHeader.AttributeOffset >= bufLength)
+            {
+                ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.ErrorAttributesOutsideOfFileRecord, inodeNumber));
+            }
 
-            ErrorCheck(fileRecordHeader.BytesInUse > bufLength,
-                String.Format(CultureInfo.CurrentCulture, Resources.ErrorRecordBiggerThanBufferSize, inodeNumber), true);
+            if (fileRecordHeader.BytesInUse > bufLength)
+            {
+                ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.ErrorRecordBiggerThanBufferSize, inodeNumber));
+            }
 
             InodeDataStructure inodeData = new InodeDataStructure(inodeNumber);
 
@@ -429,7 +425,7 @@ namespace TDefragLib.Ntfs
             // Save the MftDataFragments, MftDataBytes, MftBitmapFragments, and MftBitmapBytes.
             if (inodeNumber == 0)
             {
-                mftDataFragments =    inodeData.MasterFileTableDataFragments;
+                mftDataFragments = inodeData.MasterFileTableDataFragments;
                 mftDataBytes = inodeData.MasterFileTableDataLength;
                 mftBitmapFragments = inodeData.MasterFileTableBitmapFragments;
                 mftBitmapBytes = inodeData.MasterFileTableBitmapLength;
@@ -443,10 +439,10 @@ namespace TDefragLib.Ntfs
                 // Create and fill a new item record in memory.
                 ItemStruct Item = new ItemStruct(stream);
 
-                Item.LongFileName = ConstructStreamName(inodeData.LongFileName, inodeData.ShortFileName, stream);
+                Item.LongFileName = stream.ConstructStreamName(inodeData.LongFileName, inodeData.ShortFileName);
                 Item.LongPath = null;
 
-                Item.ShortFileName = ConstructStreamName(inodeData.ShortFileName, inodeData.LongFileName, stream);
+                Item.ShortFileName = stream.ConstructStreamName(inodeData.ShortFileName, inodeData.LongFileName);
                 Item.ShortPath = null;
 
                 //Item.Bytes = inodeData.TotalBytes;
@@ -513,11 +509,10 @@ namespace TDefragLib.Ntfs
                     InodeLongFilename = InodeItem.LongFileName;
                 }
 
-//                if (InodeLongFilename.CompareTo(Item.LongFilename) > 0)
-//                {
-                    if (Item.IsDirectory == true)
-                        inodeArray.SetValue(Item, (Int64)inodeNumber);
-//                }
+                if (Item.IsDirectory == true)
+                {
+                    inodeArray.SetValue(Item, (Int64)inodeNumber);
+                }
 
                 //if ((Item != null) && (countFiles % 300 == 0))
                 //    ShowDebug(2, "File: " + (String.IsNullOrEmpty(Item.LongFilename) ? (String.IsNullOrEmpty(Item.ShortFilename) ? "" : Item.ShortFilename) : Item.LongFilename));
@@ -528,7 +523,7 @@ namespace TDefragLib.Ntfs
                 // Draw the item on the screen.
                 //if (Lib.Data.Reparse == false)
                 //{
-                //    Lib.ColorizeItem(Item, 0, 0, false, Item.Error);
+                    Lib.ColorizeItem(Item, 0, 0, false, Item.Error);
                 //}
                 //else
                 //{
@@ -559,10 +554,14 @@ namespace TDefragLib.Ntfs
         {
             Boolean Result = true;
 
-            ErrorCheck(inodeData == null, Resources.LogReading, true);
+            if (inodeData == null)
+            {
+                ShowLogMessage(Resources.LogReading);
+            }
 
             // Find the stream in the list of streams. If not found then create a new stream.
             TDefragLib.FileSystem.Ntfs.Stream foundStream = inodeData.Streams.FirstOrDefault(x => (x.Name == streamName) && (x.Type.Type == streamType.Type));
+
             if (foundStream == null)
             {
                 //ShowDebug(6, "    Creating new stream: '" + streamName + ":" + streamType.GetStreamTypeName() + "'");
@@ -634,11 +633,10 @@ namespace TDefragLib.Ntfs
                 // Exit the loop if end-marker.
                 if ((offset + 4 <= bufLength) && attribute.Type.IsInvalid) break;
 
-                ErrorCheck(
-                    (offset + 4 > bufLength) ||
-                    (attribute.Length < 3) ||
-                    (offset + attribute.Length > bufLength),
-                    String.Format("Error: attribute in m_iNode {0:G} is bigger than the data, the MFT may be corrupt.", inodeData.Inode), true);
+                if ((offset + 4 > bufLength) || (attribute.Length < 3) || (offset + attribute.Length > bufLength))
+                {
+                    ShowLogMessage(String.Format("Error: attribute in m_iNode {0:G} is bigger than the data, the MFT may be corrupt.", inodeData.Inode));
+                }
 
                 // Skip AttributeList's for now.
                 if (attribute.Type.IsAttributeList) continue;
@@ -863,8 +861,15 @@ namespace TDefragLib.Ntfs
 
             UInt64 BaseInode;
 
-            ErrorCheck((diskBuffer == null) || (bufLength == 0), "    Reading {0:G} bytes from offset {0:G}", true);
-            ErrorCheck((depth > 1000), "Error: infinite attribute loop", false);
+            if ((diskBuffer == null) || (bufLength == 0))
+            {
+                ShowLogMessage("    Reading {0:G} bytes from offset {0:G}");
+            }
+
+            if (depth > 1000)
+            {
+                ShowLogMessage("Error: infinite attribute loop");
+            }
 
             AttributeList attributeList = null;
 
@@ -988,7 +993,10 @@ namespace TDefragLib.Ntfs
 
             //ShowLogMessage(Resources.ErrorUSAfixupNotEquealToUSN);
 
-            ErrorCheck((diskBuffer == null) || (runDataLength == 0), Resources.LogReading, true);
+            if ((diskBuffer == null) || (runDataLength == 0))
+            {
+                ShowLogMessage(Resources.LogReading);
+            }
 
             // We have to round up the WantedLength to the nearest sector.
             // For some reason or other Microsoft has decided that raw reading from disk can
@@ -1071,79 +1079,7 @@ namespace TDefragLib.Ntfs
             return (buffer.Buffer);
         }
 
-        /// <summary>
-        /// Construct the full stream name from the filename, the stream name, and the stream type.
-        /// </summary>
-        /// <param name="fileName1"></param>
-        /// <param name="fileName2"></param>
-        /// <param name="thisStream"></param>
-        /// <returns></returns>
-        private static String ConstructStreamName(String fileName1, String fileName2, TDefragLib.FileSystem.Ntfs.Stream thisStream)
-        {
-            String fileName = fileName1 ?? fileName2;
 
-            String streamName = null;
-            AttributeType type = new AttributeType();
-
-            if (thisStream != null)
-            {
-                streamName = thisStream.Name;
-                type = thisStream.Type;
-            }
-
-            // If the StreamName is empty and the StreamType is Data then return only the
-            // FileName. The Data stream is the default stream of regular files.
-            //
-            if ((String.IsNullOrEmpty(streamName)) && type.IsData)
-            {
-                return fileName;
-            }
-
-            // If the StreamName is "$I30" and the StreamType is AttributeIndexAllocation then
-            // return only the FileName. This must be a directory, and the Microsoft 
-            // defragmentation API will automatically select this stream.
-            //
-            if ((streamName == "$I30") && type.IsIndexAllocation)
-            {
-                return fileName;
-            }
-
-            //  If the StreamName is empty and the StreamType is Data then return only the
-            //  FileName. The Data stream is the default stream of regular files.
-            if (String.IsNullOrEmpty(streamName) &&
-                String.IsNullOrEmpty(type.StreamName))
-            {
-                return fileName;
-            }
-
-            Int32 Length = 3;
-
-            if (fileName != null)
-                Length += fileName.Length;
-
-            if (streamName != null)
-                Length += streamName.Length;
-
-            Length += type.StreamName.Length;
-
-            if (Length == 3) return (null);
-
-            StringBuilder p1 = new StringBuilder();
-
-            if (!String.IsNullOrEmpty(fileName))
-                p1.Append(fileName);
-
-            p1.Append(":");
-
-            if (!String.IsNullOrEmpty(streamName))
-                p1.Append(streamName);
-
-            p1.Append(":");
-
-            p1.Append(type.StreamName);
-
-            return p1.ToString();
-        }
 
         private MainLib Lib;
 

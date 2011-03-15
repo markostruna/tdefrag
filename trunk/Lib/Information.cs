@@ -8,8 +8,13 @@ namespace TDefragLib
 {
     public class ExcludesStruct
     {
-        private UInt64 startLcn;
+        public ExcludesStruct()
+        {
+            startLcn = 0;
+            endLcn = 0;
+        }
 
+        private UInt64 startLcn;
         public UInt64 Start
         {
             set { startLcn = value; }
@@ -17,7 +22,6 @@ namespace TDefragLib
         }
 
         private UInt64 endLcn;
-
         public UInt64 End
         {
             set { endLcn = value; }
@@ -42,92 +46,48 @@ namespace TDefragLib
             _MasterFileTableExcludes.Add(new ExcludesStruct());
             _MasterFileTableExcludes.Add(new ExcludesStruct());
 
-            _MasterFileTableExcludes[0].Start = 0;
-            _MasterFileTableExcludes[0].End = 0;
-            _MasterFileTableExcludes[1].Start = 0;
-            _MasterFileTableExcludes[1].End = 0;
-            _MasterFileTableExcludes[2].Start = 0;
-            _MasterFileTableExcludes[2].End = 0;
-
             NumberOfClusters = 0;
             BytesPerCluster = 0;
         }
 
         public UInt64 NumberOfClusters
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 BytesPerCluster
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 MasterFileTableLockedClusters
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 CountDirectories
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 CountAllFiles
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 CountAllClusters
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 CountAllBytes
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 CountFragmentedItems
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 CountFragmentedBytes
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 CountFragmentedClusters
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 TasksCompleted
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         public UInt64 TasksCount
-        {
-            get;
-            set;
-        }
+        { get; set; }
 
         // List of clusters reserved for the MFT.
         private Collection<ExcludesStruct> _MasterFileTableExcludes;
-
         public Collection<ExcludesStruct> MasterFileTableExcludes
         {
             get { return _MasterFileTableExcludes; }

@@ -84,6 +84,73 @@ namespace TDefragLib.FileSystem.Ntfs
         }
 
         /// <summary>
+        /// Construct the full stream name from the filename, the stream name, and the stream type.
+        /// </summary>
+        /// <param name="fileName1"></param>
+        /// <param name="fileName2"></param>
+        /// <param name="thisStream"></param>
+        /// <returns></returns>
+        public String ConstructStreamName(String fileName1, String fileName2)
+        {
+            String fileName = fileName1 ?? fileName2;
+
+            String streamName = Name;
+
+            // If the StreamName is empty and the StreamType is Data then return only the
+            // FileName. The Data stream is the default stream of regular files.
+            //
+            if ((String.IsNullOrEmpty(streamName)) && Type.IsData)
+            {
+                return fileName;
+            }
+
+            // If the StreamName is "$I30" and the StreamType is AttributeIndexAllocation then
+            // return only the FileName. This must be a directory, and the Microsoft 
+            // defragmentation API will automatically select this stream.
+            //
+            if ((streamName == "$I30") && Type.IsIndexAllocation)
+            {
+                return fileName;
+            }
+
+            //  If the StreamName is empty and the StreamType is Data then return only the
+            //  FileName. The Data stream is the default stream of regular files.
+            if (String.IsNullOrEmpty(streamName) &&
+                String.IsNullOrEmpty(Type.StreamName))
+            {
+                return fileName;
+            }
+
+            Int32 Length = 3;
+
+            if (fileName != null)
+                Length += fileName.Length;
+
+            if (streamName != null)
+                Length += streamName.Length;
+
+            Length += Type.StreamName.Length;
+
+            if (Length == 3) return (null);
+
+            StringBuilder p1 = new StringBuilder();
+
+            if (!String.IsNullOrEmpty(fileName))
+                p1.Append(fileName);
+
+            p1.Append(":");
+
+            if (!String.IsNullOrEmpty(streamName))
+                p1.Append(streamName);
+
+            p1.Append(":");
+
+            p1.Append(Type.StreamName);
+
+            return p1.ToString();
+        }
+        
+        /// <summary>
         /// "stream name" 
         /// </summary>
         public String Name
