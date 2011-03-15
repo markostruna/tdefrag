@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using TDefragLib.FS.Ntfs;
 using TDefragLib.Helper;
+using System.Linq.Expressions;
 
 namespace TDefragLib.FileSystem.Ntfs
 {
@@ -16,7 +17,8 @@ namespace TDefragLib.FileSystem.Ntfs
             _bitmapBytes = bitmapBytes;
             _dataBytes = dataBytes;
             _diskInfo = diskInfo;
-            MasterFileTableBitmap = volume.Load(diskInfo, fragments);
+
+            MasterFileTableBitmapBitArray = volume.Load(diskInfo, fragments);
         }
 
         /// <summary>
@@ -39,9 +41,9 @@ namespace TDefragLib.FileSystem.Ntfs
             get
             {
                 UInt64 used = 0;
-                BitArray bits = new BitArray(MasterFileTableBitmap);
                 UInt64 c = 0;
-                foreach (bool bit in bits)
+
+                foreach (bool bit in MasterFileTableBitmapBitArray)
                 {
                     if (++c > MaxInode)
                         break;
@@ -56,7 +58,7 @@ namespace TDefragLib.FileSystem.Ntfs
         {
             get
             {
-                return new BitArray(MasterFileTableBitmap);
+                return MasterFileTableBitmapBitArray;
             }
         }
 
@@ -64,7 +66,7 @@ namespace TDefragLib.FileSystem.Ntfs
         private UInt64 _dataBytes;
         private DiskInformation _diskInfo;
 
-        public Byte[] MasterFileTableBitmap
+        public BitArray MasterFileTableBitmapBitArray
         { get; private set; }
     }
 }

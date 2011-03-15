@@ -6,6 +6,7 @@ using System.Text;
 using System.IO;
 using System.Threading;
 using TDefragLib.FS.Ntfs;
+using System.Collections;
 
 namespace TDefragLib.Helper
 {
@@ -94,10 +95,12 @@ namespace TDefragLib.Helper
                 return false;
             }
 
+            Array bufferArray = buffer.ToArray();
+
             return true;
         }
 
-        public byte[] Load(DiskInformation diskInfo, FragmentCollection fragments)
+        public BitArray Load(DiskInformation diskInfo, FragmentCollection fragments)
         {
             UInt64 totalSize = fragments.TotalLength;
 
@@ -120,7 +123,7 @@ namespace TDefragLib.Helper
                 }
             }
 
-            return bytes;
+            return new BitArray(bytes);
         }
 
         private FS.IBootSector _bootSector;
@@ -132,8 +135,13 @@ namespace TDefragLib.Helper
                 if (_bootSector == null)
                 {
                     FS.Volume volume = new FS.Volume(VolumeHandle);
-                    _bootSector = volume.BootSector;
+
+                    if (volume != null)
+                    {
+                        _bootSector = volume.BootSector;
+                    }
                 }
+
                 return _bootSector;
             }
         }
