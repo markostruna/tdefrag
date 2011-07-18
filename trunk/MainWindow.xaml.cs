@@ -14,7 +14,9 @@ using System.Windows.Shapes;
 using TDefragLib;
 using System.Threading;
 using System.Windows.Threading;
-using TDefragWpf.Lib.Common;
+using TDefragWpf.Library.Common;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace TDefragWPF
 {
@@ -27,12 +29,54 @@ namespace TDefragWPF
         {
             InitializeComponent();
 
-            defragLib = new MainLib(this);
+            if (this.WindowStyle == System.Windows.WindowStyle.SingleBorderWindow)
+            {
+                Thickness t = new Thickness(0);
+                MainBorder.BorderThickness = t;
+
+                MainGrid.RowDefinitions[0].Height = new GridLength(0);
+            }
+
+            defragLib = new MainLibrary(this);
 
             FillDiskArray();
-
-            InitCanvas();
         }
+
+        //public static Margins GetDpiAdjustedMargins(IntPtr windowHandle,
+        //    int left, int top, int right, int bottom)
+        //{
+        //    // Get the system DPI
+        //    System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(windowHandle);
+        //    float desktopDpiX = g.DpiX;
+        //    float desktopDpiY = g.DpiY;
+
+        //    // set the margins
+        //    Margins margins = new Margins();
+        //    margins.cxLeftWidth = Convert.ToInt32(left * (desktopDpiX / 96));
+        //    margins.cxRightWidth = Convert.ToInt32(right * (desktopDpiX / 96));
+        //    margins.cyTopHeight = Convert.ToInt32(top * (desktopDpiY / 96));
+        //    margins.cyBottomHeight = Convert.ToInt32(bottom * (desktopDpiY / 96));
+
+        //    return margins;
+        //}
+
+        //public static void ExtentGlass(System.Windows.Window win, int left, int top, int right, int bottom)
+        //{
+        //    // Obtain the Win32 window handle for the Wpf window
+        //    WindowInteropHelper windowInterop = new WindowInteropHelper(win);
+        //    IntPtr windowHandle = windowInterop.Handle;
+
+        //    // adjust the margins to take the system DPI into account
+        //    Margins margins = GetDpiAdjustedMargins(windowHandle, left, top, right, bottom);
+
+        //    // Extends the glass frame
+        //    int returnVal = DwmExtendFrameIntoClientArea(windowHandle, ref margins);
+
+        //    if (returnVal < 0)
+        //    {
+        //        throw new NotSupportedException("Operation failed.");
+        //    }
+        //}
 
         private Thread defragThread;
 
@@ -45,6 +89,8 @@ namespace TDefragWPF
             defragThread.Priority = ThreadPriority.Normal;
 
             defragThread.Start(diskArray.Text);
+            progressBar1.Visibility = System.Windows.Visibility.Visible;
+            progressBar1.Value = 0.0;
         }
 
         private void Defrag(object driveObject)
@@ -79,6 +125,14 @@ namespace TDefragWPF
             }), DispatcherPriority.Send);
         }
 
+        public void UpdateProgress(Double progress)
+        {
+            this.Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                progressBar1.Value = progress;
+            }), DispatcherPriority.Send);
+        }
+
         private void FillDiskArray()
         {
             String[] DriveList = Environment.GetLogicalDrives();
@@ -89,9 +143,9 @@ namespace TDefragWPF
             diskArray.SelectedIndex = 0;
         }
 
-        private int stepX = 10;
-        private int maxX = 560;
-        private int maxY = 330;
+        private int stepX = 12;
+        private double maxX = 560;
+        private double maxY = 330;
         private int numX = 1;
         private int numY = 1;
 
@@ -99,13 +153,19 @@ namespace TDefragWPF
 
         private void InitCanvas()
         {
-            //canvas1.Background = Brushes.Aqua;
+//            canvas1.Background = Brushes.Gray;
+
+            maxX = canvas1.ActualWidth;
+            maxY = canvas1.ActualHeight;
 
             double wid = maxX;
             double hei = maxY;
 
-            numX = maxX / stepX;
-            numY = maxY / stepX;
+            numX = (int)(maxX / stepX);
+            numY = (int)(maxY / stepX);
+
+            int offsetX = (int)((maxX - numX * stepX) / 2);
+            int offsetY = (int)((maxY - numY * stepX) / 2);
 
             squares = new Dictionary<int, int>(numX * numY);
 
@@ -136,9 +196,23 @@ namespace TDefragWPF
 
                     squares.Add(y * numX + x, idx);
 
-                    Canvas.SetTop(rec, y * stepX);
-                    Canvas.SetLeft(rec, x * stepX);
+                    Canvas.SetLeft(rec, offsetX + x * stepX);
+                    Canvas.SetTop(rec, offsetY + y * stepX);
                 }
+            }
+        }
+
+        bool initialized = false;
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+
+            if (!initialized)
+            {
+                InitCanvas();
+
+                initialized = true;
             }
         }
 
@@ -215,8 +289,8 @@ namespace TDefragWPF
                 Double radius = 2;
                 Double gradientEndPointX = 1;
 
-                byte darkness = 30;
-                byte brightness = 20;
+                byte brightness = 50;
+                byte darkness = 60;
 
                 if (state == eClusterState.Free)
                 {
@@ -226,9 +300,9 @@ namespace TDefragWPF
                     gradientEndPointX = 0;
                 }
 
-                Color darkColor = Color.Subtract(color, Color.FromArgb(255, darkness, darkness, darkness));
                 Color brightColor = Color.Add(color, Color.FromArgb(255, brightness, brightness, brightness));
-                Color endColor = brightColor;
+                Color darkColor = Color.Subtract(color, Color.FromArgb(255, darkness, darkness, darkness));
+                Color endColor = darkColor;
 
                 if (state == eClusterState.Free)
                 {
@@ -236,7 +310,7 @@ namespace TDefragWPF
 
                     darkColor = brightColor;
                     brightColor = tempColor;
-                    endColor = darkColor;
+                    endColor = brightColor;
                 }
 
                 Point endPoint = myLinearGradientBrush.EndPoint;
@@ -244,8 +318,8 @@ namespace TDefragWPF
 
                 myLinearGradientBrush.EndPoint = endPoint;
 
-                myLinearGradientBrush.GradientStops[0].Color = darkColor;
                 myLinearGradientBrush.GradientStops[1].Color = brightColor;
+                myLinearGradientBrush.GradientStops[0].Color = darkColor;
                 myLinearGradientBrush.GradientStops[2].Color = endColor;
 
                 if (square is Rectangle)
@@ -262,7 +336,214 @@ namespace TDefragWPF
             canvas1.Children[squares[pos]] = square;
         }
 
-        private MainLib defragLib;
+        private MainLibrary defragLib;
 
+        [DllImport("DwmApi.dll")]
+        public static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref Margins pMarInset);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Margins
+        {
+            public int cxLeftWidth;
+            public int cxRightWidth;
+            public int cyTopHeight;
+            public int cyBottomHeight;
+        }
+
+        [DllImport("dwmapi.dll", PreserveSig = false)]
+        public static extern void DwmEnableBlurBehindWindow(IntPtr hwnd, ref DWM_BLURBEHIND blurBehind);
+
+        public enum DwmBlurBehindDwFlags
+        {
+            Dwm_bb_enable = 0x00000001,
+            Dwm_bb_blurRegion = 0x00000002,
+            Dwm_bb_transitionOnMaximized = 0x00000004
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct DWM_BLURBEHIND
+        {
+            public DwmBlurBehindDwFlags dwFlags;
+            public bool fEnable;
+            public IntPtr hRgnBlur;
+            public bool fTransitionOnMaximized;
+        }
+
+        public void EnableBlurBehind(IntPtr hwnd)
+        {
+            // Create and populate the Blur Behind structure
+            DWM_BLURBEHIND bb = new DWM_BLURBEHIND();
+
+            // Disable Blur Behind and Blur Region;
+            bb.dwFlags = DwmBlurBehindDwFlags.Dwm_bb_enable;
+            bb.fEnable = true;
+            bb.hRgnBlur = IntPtr.Zero;
+
+            // Disable Blur Behind
+            DwmEnableBlurBehindWindow(hwnd, ref bb);
+        }
+
+        void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Obtain the window handle for WPF application
+                IntPtr mainWindowPtr = new WindowInteropHelper(this).Handle;
+                HwndSource mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
+                mainWindowSrc.CompositionTarget.BackgroundColor = Color.FromArgb(0, 0, 0, 0);
+
+                // Get System Dpi
+                System.Drawing.Graphics desktop = System.Drawing.Graphics.FromHwnd(mainWindowPtr);
+                float DesktopDpiX = desktop.DpiX;
+                float DesktopDpiY = desktop.DpiY;
+
+                // Set Margins
+                Margins margins = new Margins();
+
+                // Extend glass frame into client area
+                // Note that the default desktop Dpi is 96dpi. The  margins are
+                // adjusted for the system Dpi.
+                margins.cxLeftWidth = Convert.ToInt32(-1 * (DesktopDpiX / 96));
+                margins.cxRightWidth = Convert.ToInt32(-1 * (DesktopDpiX / 96));
+                margins.cyTopHeight = Convert.ToInt32(-1 * (DesktopDpiX / 96));
+                margins.cyBottomHeight = Convert.ToInt32(-1 * (DesktopDpiX / 96));
+
+                //margins.cxLeftWidth = Convert.ToInt32(5 * (DesktopDpiX / 96));
+                //margins.cxRightWidth = Convert.ToInt32(5 * (DesktopDpiX / 96));
+                //margins.cyTopHeight = Convert.ToInt32(((int)topBar.ActualHeight + 5) * (DesktopDpiX / 96));
+                //margins.cyBottomHeight = Convert.ToInt32(5 * (DesktopDpiX / 96));
+                int hr = DwmExtendFrameIntoClientArea(mainWindowSrc.Handle, ref margins);
+                //
+                if (hr < 0)
+                {
+                    Brush br = Application.Current.MainWindow.Background;
+
+                    if (br is LinearGradientBrush)
+                    {
+                        LinearGradientBrush b1 = br as LinearGradientBrush;
+
+                        b1.GradientStops[0].Color = Color.FromArgb(255, 255, 255, 255);
+                        b1.GradientStops[1].Color = Color.FromArgb(255, 0, 0, 128);
+                        b1.GradientStops[2].Color = Color.FromArgb(255, 0, 0, 128);
+                        b1.GradientStops[3].Color = Color.FromArgb(255, 255, 255, 255);
+                    }
+                    //DwmExtendFrameIntoClientArea Failed
+                }
+
+                EnableBlurBehind(mainWindowSrc.Handle);
+            }
+            // If not Vista, paint background white.
+            catch (DllNotFoundException)
+            {
+                Application.Current.MainWindow.Background = Brushes.White;
+            }
+        }
+
+        private void CloseButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Brush br = CloseBorder.Background;
+
+            if (br is LinearGradientBrush)
+            {
+                LinearGradientBrush brush = br as LinearGradientBrush;
+
+                brush.GradientStops[0].Color = Color.FromArgb(255, 85, 0, 0);
+                brush.GradientStops[1].Color = Color.FromArgb(255, 255, 0, 0);
+                brush.GradientStops[2].Color = Color.FromArgb(255, 85, 0, 0);
+            }
+
+            CloseButton.Foreground = Brushes.White;
+        }
+
+        private void CloseButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Close();
+        }
+
+        private void CloseButtonMouseEnter(object sender, MouseEventArgs e)
+        {
+            LinearGradientBrush brush = new LinearGradientBrush();
+
+            brush.StartPoint = new Point(0, 0);
+            brush.EndPoint = new Point(0, 1);
+
+            CloseBorder.BorderBrush = Brushes.Black;
+            CloseBorder.Background = brush;
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 85, 0, 0), 0.0));
+                brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 0, 0), 0.5));
+                brush.GradientStops.Add(new GradientStop(Color.FromArgb(255, 85, 0, 0), 1.0));
+
+                CloseButton.Foreground = Brushes.White;
+            }
+            else
+            {
+                brush.GradientStops.Add(new GradientStop(Colors.White, 0.0));
+                brush.GradientStops.Add(new GradientStop(Colors.Gray, 0.5));
+                brush.GradientStops.Add(new GradientStop(Colors.White, 1.0));
+
+                CloseButton.Foreground = Brushes.DarkRed;
+            }
+            //Brush br = CloseBorder.Background;
+
+            //if (br is LinearGradientBrush)
+            //{
+            //    LinearGradientBrush brush = br as LinearGradientBrush;
+
+            //    if (e.LeftButton == MouseButtonState.Pressed)
+            //    {
+            //        brush.GradientStops[0].Color = Color.FromArgb(255, 85, 0, 0);
+            //        brush.GradientStops[1].Color = Color.FromArgb(255, 255, 0, 0);
+            //        brush.GradientStops[2].Color = Color.FromArgb(255, 85, 0, 0);
+            //    }
+            //    else
+            //    {
+            //        brush.GradientStops[0].Color = Color.FromArgb(255, 255, 0, 0);
+            //        brush.GradientStops[1].Color = Color.FromArgb(255, 85, 0, 0);
+            //        brush.GradientStops[2].Color = Color.FromArgb(255, 255, 0, 0);
+            //    }
+            //}
+        }
+
+        private void CloseButtonMouseLeave(object sender, MouseEventArgs e)
+        {
+            CloseBorder.BorderBrush = Brushes.Transparent;
+            CloseBorder.Background = Brushes.Transparent;
+            CloseButton.Foreground = Brushes.Gray;
+
+            //Brush br = CloseBorder.Background;
+
+            //if (br is LinearGradientBrush)
+            //{
+            //    LinearGradientBrush brush = br as LinearGradientBrush;
+
+            //    brush.GradientStops[0].Color = Color.FromArgb(255, 85, 0, 0);
+            //    brush.GradientStops[1].Color = Color.FromArgb(255, 170, 102, 102);
+            //    brush.GradientStops[2].Color = Color.FromArgb(255, 85, 0, 0);
+            //}
+        }
+
+        private void MaximizeButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            WindowState = WindowState.Maximized;
+        }
+
+        private void ChangeViewButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            WindowState = WindowState.Normal;
+        }
+
+        private void MinimizeButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void DragableGridMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                DragMove();
+        }
     }
 }
