@@ -72,6 +72,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -97,42 +98,42 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lib\Common\ClusterState.cs" />
-    <Compile Include="Lib\Common\Fragment.cs" />
-    <Compile Include="Lib\Common\FragmentList.cs" />
-    <Compile Include="Lib\Common\ItemStruct.cs" />
-    <Compile Include="Lib\FS\FileSystem.cs" />
-    <Compile Include="Lib\FS\IBootSector.cs" />
-    <Compile Include="Lib\FS\KnownBootSector\BaseBootSector.cs" />
-    <Compile Include="Lib\FS\KnownBootSector\FatBootSector.cs" />
-    <Compile Include="Lib\FS\KnownBootSector\NtfsBootSector.cs" />
-    <Compile Include="Lib\FS\Ntfs\Attribute.cs" />
-    <Compile Include="Lib\FS\Ntfs\AttributeList.cs" />
-    <Compile Include="Lib\FS\Ntfs\AttributeType.cs" />
-    <Compile Include="Lib\FS\Ntfs\BitmapFile.cs" />
-    <Compile Include="Lib\FS\Ntfs\DiskInformation.cs" />
-    <Compile Include="Lib\FS\Ntfs\FileNameAttribute.cs" />
-    <Compile Include="Lib\FS\Ntfs\FileRecordHeader.cs" />
-    <Compile Include="Lib\FS\Ntfs\IAttribute.cs" />
-    <Compile Include="Lib\FS\Ntfs\InodeDataStructure.cs" />
-    <Compile Include="Lib\FS\Ntfs\InodeReference.cs" />
-    <Compile Include="Lib\FS\Ntfs\NonResidentAttribute.cs" />
-    <Compile Include="Lib\FS\Ntfs\RecordHeader.cs" />
-    <Compile Include="Lib\FS\Ntfs\RefactoringHelper.cs" />
-    <Compile Include="Lib\FS\Ntfs\ResidentAttribute.cs" />
-    <Compile Include="Lib\FS\Ntfs\RunData.cs" />
-    <Compile Include="Lib\FS\Ntfs\StandardInformation.cs" />
-    <Compile Include="Lib\FS\Ntfs\Stream.cs" />
-    <Compile Include="Lib\FS\Ntfs\StreamList.cs" />
-    <Compile Include="Lib\FS\Volume.cs" />
-    <Compile Include="Lib\Helper\DiskBuffer.cs" />
-    <Compile Include="Lib\Helper\OverlappedBuilder.cs" />
-    <Compile Include="Lib\Helper\SystemErrorCodes.cs" />
-    <Compile Include="Lib\Helper\Volume.cs" />
-    <Compile Include="Lib\Helper\Wrapper.cs" />
-    <Compile Include="Lib\Information.cs" />
-    <Compile Include="Lib\MainLib.cs" />
-    <Compile Include="Lib\Ntfs\Scan.cs" />
+    <Compile Include="Library\Common\ClusterState.cs" />
+    <Compile Include="Library\Common\Fragment.cs" />
+    <Compile Include="Library\Common\FragmentList.cs" />
+    <Compile Include="Library\Common\ItemStruct.cs" />
+    <Compile Include="Library\FS\FileSystem.cs" />
+    <Compile Include="Library\FS\IBootSector.cs" />
+    <Compile Include="Library\FS\KnownBootSector\BaseBootSector.cs" />
+    <Compile Include="Library\FS\KnownBootSector\FatBootSector.cs" />
+    <Compile Include="Library\FS\KnownBootSector\NtfsBootSector.cs" />
+    <Compile Include="Library\FS\Ntfs\Attribute.cs" />
+    <Compile Include="Library\FS\Ntfs\AttributeList.cs" />
+    <Compile Include="Library\FS\Ntfs\AttributeType.cs" />
+    <Compile Include="Library\FS\Ntfs\BitmapFile.cs" />
+    <Compile Include="Library\FS\Ntfs\DiskInformation.cs" />
+    <Compile Include="Library\FS\Ntfs\FileNameAttribute.cs" />
+    <Compile Include="Library\FS\Ntfs\FileRecordHeader.cs" />
+    <Compile Include="Library\FS\Ntfs\IAttribute.cs" />
+    <Compile Include="Library\FS\Ntfs\InodeDataStructure.cs" />
+    <Compile Include="Library\FS\Ntfs\InodeReference.cs" />
+    <Compile Include="Library\FS\Ntfs\NonResidentAttribute.cs" />
+    <Compile Include="Library\FS\Ntfs\RecordHeader.cs" />
+    <Compile Include="Library\FS\Ntfs\RefactoringHelper.cs" />
+    <Compile Include="Library\FS\Ntfs\ResidentAttribute.cs" />
+    <Compile Include="Library\FS\Ntfs\RunData.cs" />
+    <Compile Include="Library\FS\Ntfs\StandardInformation.cs" />
+    <Compile Include="Library\FS\Ntfs\Stream.cs" />
+    <Compile Include="Library\FS\Ntfs\StreamList.cs" />
+    <Compile Include="Library\FS\Volume.cs" />
+    <Compile Include="Library\Helper\DiskBuffer.cs" />
+    <Compile Include="Library\Helper\OverlappedBuilder.cs" />
+    <Compile Include="Library\Helper\SystemErrorCodes.cs" />
+    <Compile Include="Library\Helper\Volume.cs" />
+    <Compile Include="Library\Helper\Wrapper.cs" />
+    <Compile Include="Library\Information.cs" />
+    <Compile Include="Library\MainLib.cs" />
+    <Compile Include="Library\Ntfs\Scan.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
