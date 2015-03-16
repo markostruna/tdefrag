@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TDefragWpf.Library.Common;
 
 namespace TDefragLib
 {
@@ -13,7 +14,7 @@ namespace TDefragLib
     /// The latter do not occupy clusters on disk, but are information
     /// used by compressed and sparse files. 
     /// </summary>
-    [DebuggerDisplay("Lcn={Lcn}, Vcn={Vcn}, Len={Length}")]
+    [DebuggerDisplay("Lcn={LogicalClusterNumber}, Vcn={LogicalClusterNumber}, Len={Length}")]
     public class Fragment
     {
         public const UInt64 VirtualFragment = UInt64.MaxValue;
@@ -27,6 +28,8 @@ namespace TDefragLib
                 LogicalClusterNumber = VirtualFragment;
             else
                 LogicalClusterNumber = logicalClusterNumber;
+
+            ClusterState = eClusterState.Allocated;
         }
 
         /// <summary>
@@ -70,5 +73,10 @@ namespace TDefragLib
         /// </summary>
         public UInt64 NextLogicalClusterNumber
         { get { return LogicalClusterNumber + Length; } }
+
+        public ItemStruct Item
+        { get; set; }
+
+        public eClusterState ClusterState;
     };
 }

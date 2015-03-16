@@ -53,18 +53,13 @@ namespace TDefragLib.Ntfs
             DiskInformation diskInfo = new DiskInformation(bootSector);
 
             MainLibraryClass.Data.BytesPerCluster = diskInfo.BytesPerCluster;
-
-            if (diskInfo.SectorsPerCluster > 0)
-            {
-                MainLibraryClass.Data.NumberOfClusters = diskInfo.TotalSectors / diskInfo.SectorsPerCluster;
-            }
+            MainLibraryClass.Data.NumberOfClusters = diskInfo.NumberOfSectors;
 
             ShowLogMessage(Resources.InfoNtfsDisk);
 
             ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.DiskInfoCookie, bootSector.OemId));
             ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.DiskInfoBytesPerSector, diskInfo.BytesPerSector));
             ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.DiskInfoTotalSectors, diskInfo.TotalSectors));
-
             ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.DiskInfoSectorsPerCluster, diskInfo.SectorsPerCluster));
             ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.DiskInfoSectorsPerTrack, bootSector.SectorsPerTrack));
             ShowLogMessage(String.Format(CultureInfo.CurrentCulture, Resources.DiskInfoNumberOfHeads, bootSector.NumberOfHeads));
@@ -98,16 +93,9 @@ namespace TDefragLib.Ntfs
             // Extract data from the MFT record and put into an Item struct in memory.
             // If there was an error then exit.
 
-            FragmentCollection MftDataFragments = null;
-            FragmentCollection MftBitmapFragments = null;
-
-            UInt64 MftDataBytes = 0;
-            UInt64 MftBitmapBytes = 0;
-
             diskBuffer.ReaderPosition = 0;
 
             Boolean Result = InterpretMftRecord(diskInfo, null, 0, 0,
-                ref MftDataFragments, ref MftDataBytes, ref MftBitmapFragments, ref MftBitmapBytes,
                 diskBuffer, diskInfo.BytesPerMasterFileTableRecord);
 
             //ShowLogMessage(String.Format("MftDataBytes = {0:G}, MftBitmapBytes = {0:G}", MftDataBytes, MftBitmapBytes));
@@ -194,7 +182,6 @@ namespace TDefragLib.Ntfs
 
                 // Interpret the m_iNode's attributes.
                 Result = InterpretMftRecord(diskInfo, InodeArray, InodeNumber, MaxInode,
-                        ref MftDataFragments, ref MftDataBytes, ref MftBitmapFragments, ref MftBitmapBytes,
                         diskBuffer, diskInfo.BytesPerMasterFileTableRecord);
 
                 if (MainLibraryClass.Data.TasksCompleted % 500 == 0)
@@ -323,18 +310,12 @@ namespace TDefragLib.Ntfs
         /// <param name="inodeArray"></param>
         /// <param name="inodeNumber"></param>
         /// <param name="maxInode"></param>
-        /// <param name="mftDataFragments"></param>
-        /// <param name="mftDataBytes"></param>
-        /// <param name="mftBitmapFragments"></param>
-        /// <param name="mftBitmapBytes"></param>
         /// <param name="reader"></param>
         /// <param name="bufLength"></param>
         /// <returns></returns>
         Boolean InterpretMftRecord(
             DiskInformation diskInfo, Array inodeArray,
             UInt64 inodeNumber, UInt64 maxInode,
-            ref FragmentCollection mftDataFragments, ref UInt64 mftDataBytes,
-            ref FragmentCollection mftBitmapFragments, ref UInt64 mftBitmapBytes,
             DiskBuffer diskBuffer, UInt64 bufLength)
         {
             //Trace.WriteLine(this, String.Format(
@@ -395,8 +376,8 @@ namespace TDefragLib.Ntfs
             InodeDataStructure inodeData = new InodeDataStructure(inodeNumber);
 
             inodeData.IsDirectory = fileRecordHeader.IsDirectory;
-            inodeData.MasterFileTableDataFragments = mftDataFragments;
-            inodeData.MasterFileTableDataLength = mftDataBytes;
+            inodeData.MasterFileTableDataFragments = MftDataFragments;
+            inodeData.MasterFileTableDataLength = MftDataBytes;
 
             // Make sure that directories are always created.
             if (inodeData.IsDirectory)
@@ -427,10 +408,10 @@ namespace TDefragLib.Ntfs
             // Save the MftDataFragments, MftDataBytes, MftBitmapFragments, and MftBitmapBytes.
             if (inodeNumber == 0)
             {
-                mftDataFragments = inodeData.MasterFileTableDataFragments;
-                mftDataBytes = inodeData.MasterFileTableDataLength;
-                mftBitmapFragments = inodeData.MasterFileTableBitmapFragments;
-                mftBitmapBytes = inodeData.MasterFileTableBitmapLength;
+                MftDataFragments = inodeData.MasterFileTableDataFragments;
+                MftDataBytes = inodeData.MasterFileTableDataLength;
+                MftBitmapFragments = inodeData.MasterFileTableBitmapFragments;
+                MftBitmapBytes = inodeData.MasterFileTableBitmapLength;
             }
 
             int countFiles = 0;
@@ -1082,6 +1063,11 @@ namespace TDefragLib.Ntfs
             return (buffer.Buffer);
         }
 
+        FragmentCollection MftDataFragments = null;
+        FragmentCollection MftBitmapFragments = null;
+
+        UInt64 MftDataBytes = 0;
+        UInt64 MftBitmapBytes = 0;
 
 
         private MainLibrary MainLibraryClass;

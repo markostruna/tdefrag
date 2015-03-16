@@ -42,42 +42,6 @@ namespace TDefragWPF
             FillDiskArray();
         }
 
-        //public static Margins GetDpiAdjustedMargins(IntPtr windowHandle,
-        //    int left, int top, int right, int bottom)
-        //{
-        //    // Get the system DPI
-        //    System.Drawing.Graphics g = System.Drawing.Graphics.FromHwnd(windowHandle);
-        //    float desktopDpiX = g.DpiX;
-        //    float desktopDpiY = g.DpiY;
-
-        //    // set the margins
-        //    Margins margins = new Margins();
-        //    margins.cxLeftWidth = Convert.ToInt32(left * (desktopDpiX / 96));
-        //    margins.cxRightWidth = Convert.ToInt32(right * (desktopDpiX / 96));
-        //    margins.cyTopHeight = Convert.ToInt32(top * (desktopDpiY / 96));
-        //    margins.cyBottomHeight = Convert.ToInt32(bottom * (desktopDpiY / 96));
-
-        //    return margins;
-        //}
-
-        //public static void ExtentGlass(System.Windows.Window win, int left, int top, int right, int bottom)
-        //{
-        //    // Obtain the Win32 window handle for the Wpf window
-        //    WindowInteropHelper windowInterop = new WindowInteropHelper(win);
-        //    IntPtr windowHandle = windowInterop.Handle;
-
-        //    // adjust the margins to take the system DPI into account
-        //    Margins margins = GetDpiAdjustedMargins(windowHandle, left, top, right, bottom);
-
-        //    // Extends the glass frame
-        //    int returnVal = DwmExtendFrameIntoClientArea(windowHandle, ref margins);
-
-        //    if (returnVal < 0)
-        //    {
-        //        throw new NotSupportedException("Operation failed.");
-        //    }
-        //}
-
         private Thread defragThread;
 
         private void startDefrag(object sender, RoutedEventArgs e)
@@ -96,10 +60,11 @@ namespace TDefragWPF
         private void Defrag(object driveObject)
         {
             String drive = (driveObject is String) ? (String)driveObject : "C";
+            Int64 numSquares = numX * numY;
 
             try
             {
-                defragLib.StartDefrag(drive);
+                defragLib.StartDefrag(drive, numSquares);
             }
             catch (Exception e1)
             {
@@ -143,7 +108,7 @@ namespace TDefragWPF
             diskArray.SelectedIndex = 0;
         }
 
-        private int stepX = 12;
+        private int stepX = 10;
         private double maxX = 560;
         private double maxY = 330;
         private int numX = 1;
@@ -153,8 +118,6 @@ namespace TDefragWPF
 
         private void InitCanvas()
         {
-//            canvas1.Background = Brushes.Gray;
-
             maxX = canvas1.ActualWidth;
             maxY = canvas1.ActualHeight;
 
@@ -173,21 +136,26 @@ namespace TDefragWPF
             {
                 for (int y = 0; y < numY; y++)
                 {
+                    SolidColorBrush myBrush = new SolidColorBrush(Color.FromRgb(245, 245, 245));
+
                     LinearGradientBrush myLinearGradientBrush = new LinearGradientBrush();
 
                     myLinearGradientBrush.StartPoint = new Point(0, 0);
                     myLinearGradientBrush.EndPoint = new Point(0, 1);
 
-                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.LightGray, 0.0));
-                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.White, 0.95));
-                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.LightGray, 1.00));
+                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Color.FromRgb(240, 240, 240), 0.0));
+                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Color.FromRgb(240, 240, 240), 0.95));
+                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Color.FromRgb(240, 240, 240), 1.00));
+                    //myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.LightGray, 0.0));
+                    //myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.White, 0.95));
+                    //myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.LightGray, 1.00));
 
                     Rectangle rec = new Rectangle();
 
                     rec.RadiusX = 0;
                     rec.RadiusY = 0;
-                    rec.Width = stepX;
-                    rec.Height = stepX;
+                    rec.Width = stepX - 1;
+                    rec.Height = stepX - 1;
                     rec.Fill = myLinearGradientBrush;
                     rec.StrokeThickness = 0;
                     rec.Stroke = Brushes.Transparent;
@@ -226,15 +194,37 @@ namespace TDefragWPF
             this.Dispatcher.BeginInvoke(new Action(delegate()
             {
                 int max = numX * numY;
+                double clustersPerSquare = (double)((double)numClusters / (double)max);
 
-                int pos1 = (Int32)((double)max * (double)((double)clusterNumber / (double)numClusters));
-                int pos2 = (Int32)((double)max * (double)((double)nextCluster / (double)numClusters));
+                int pos1 = (Int32)((double)clusterNumber / clustersPerSquare);
+                int pos2 = (Int32)((double)nextCluster / clustersPerSquare);
+
+                UInt64 clusterNum1 = clusterNumber;
 
                 for (int pos = pos1; pos <= pos2; pos++)
                 {
-                    colorizeSquare(state, pos);
+                    UInt64 clusterNum2 = (UInt64)(clusterNum1 + clustersPerSquare - 1);
+
+                    if (clusterNum2 > numClusters)
+                    {
+                        clusterNum2 = numClusters - 1;
+                    }
+
+                    //eClusterState maxClusterState = defragLib.GetMaxState(clusterNum1, clusterNum2);
+                    eClusterState maxClusterState = state;
+                    colorizeSquare(maxClusterState, pos);
+
+                    clusterNum1 = clusterNum2 + 1;
                 }
 
+            }), DispatcherPriority.Send);
+                }
+
+        public void SetClusterState(UInt64 pos, eClusterState state)
+        {
+            this.Dispatcher.BeginInvoke(new Action(delegate()
+            {
+                colorizeSquare(state, (Int32)pos);
             }), DispatcherPriority.Send);
         }
 
@@ -270,7 +260,7 @@ namespace TDefragWPF
                         color = Colors.Orange;
                         break;
                     case eClusterState.Free:
-                        color = Colors.LightGray;
+                        color = Color.FromRgb(240, 240, 240);
                         break;
                     case eClusterState.Mft:
                         color = Colors.Pink;
@@ -279,14 +269,14 @@ namespace TDefragWPF
                         color = Colors.DarkCyan;
                         break;
                     case eClusterState.Unfragmented:
-                        color = Colors.Green;
+                        color = Colors.LightGreen;
                         break;
                     case eClusterState.Unmovable:
                         color = Colors.Yellow;
                         break;
                 }
 
-                Double radius = 2;
+                Double radius = 1;
                 Double gradientEndPointX = 1;
 
                 byte brightness = 50;
@@ -318,9 +308,13 @@ namespace TDefragWPF
 
                 myLinearGradientBrush.EndPoint = endPoint;
 
-                myLinearGradientBrush.GradientStops[1].Color = brightColor;
-                myLinearGradientBrush.GradientStops[0].Color = darkColor;
-                myLinearGradientBrush.GradientStops[2].Color = endColor;
+                myLinearGradientBrush.GradientStops[1].Color = color;
+                myLinearGradientBrush.GradientStops[0].Color = color;
+                myLinearGradientBrush.GradientStops[2].Color = color;
+
+                //myLinearGradientBrush.GradientStops[1].Color = brightColor;
+                //myLinearGradientBrush.GradientStops[0].Color = darkColor;
+                //myLinearGradientBrush.GradientStops[2].Color = endColor;
 
                 if (square is Rectangle)
                 {
@@ -390,7 +384,7 @@ namespace TDefragWPF
                 // Obtain the window handle for WPF application
                 IntPtr mainWindowPtr = new WindowInteropHelper(this).Handle;
                 HwndSource mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
-                mainWindowSrc.CompositionTarget.BackgroundColor = Color.FromArgb(0, 0, 0, 0);
+                mainWindowSrc.CompositionTarget.BackgroundColor = Color.FromArgb(255, 255, 255, 255);
 
                 // Get System Dpi
                 System.Drawing.Graphics desktop = System.Drawing.Graphics.FromHwnd(mainWindowPtr);
@@ -408,29 +402,25 @@ namespace TDefragWPF
                 margins.cyTopHeight = Convert.ToInt32(-1 * (DesktopDpiX / 96));
                 margins.cyBottomHeight = Convert.ToInt32(-1 * (DesktopDpiX / 96));
 
-                //margins.cxLeftWidth = Convert.ToInt32(5 * (DesktopDpiX / 96));
-                //margins.cxRightWidth = Convert.ToInt32(5 * (DesktopDpiX / 96));
-                //margins.cyTopHeight = Convert.ToInt32(((int)topBar.ActualHeight + 5) * (DesktopDpiX / 96));
-                //margins.cyBottomHeight = Convert.ToInt32(5 * (DesktopDpiX / 96));
-                int hr = DwmExtendFrameIntoClientArea(mainWindowSrc.Handle, ref margins);
-                //
-                if (hr < 0)
-                {
-                    Brush br = Application.Current.MainWindow.Background;
+                //int hr = DwmExtendFrameIntoClientArea(mainWindowSrc.Handle, ref margins);
 
-                    if (br is LinearGradientBrush)
-                    {
-                        LinearGradientBrush b1 = br as LinearGradientBrush;
+                //if (hr < 0)
+                //{
+                //    Brush br = Application.Current.MainWindow.Background;
 
-                        b1.GradientStops[0].Color = Color.FromArgb(255, 255, 255, 255);
-                        b1.GradientStops[1].Color = Color.FromArgb(255, 0, 0, 128);
-                        b1.GradientStops[2].Color = Color.FromArgb(255, 0, 0, 128);
-                        b1.GradientStops[3].Color = Color.FromArgb(255, 255, 255, 255);
-                    }
-                    //DwmExtendFrameIntoClientArea Failed
-                }
+                //    if (br is LinearGradientBrush)
+                //    {
+                //        LinearGradientBrush b1 = br as LinearGradientBrush;
 
-                EnableBlurBehind(mainWindowSrc.Handle);
+                //        b1.GradientStops[0].Color = Color.FromArgb(255, 255, 255, 255);
+                //        b1.GradientStops[1].Color = Color.FromArgb(255, 0, 0, 128);
+                //        b1.GradientStops[2].Color = Color.FromArgb(255, 0, 0, 128);
+                //        b1.GradientStops[3].Color = Color.FromArgb(255, 255, 255, 255);
+                //    }
+                //    //DwmExtendFrameIntoClientArea Failed
+                //}
+
+                //EnableBlurBehind(mainWindowSrc.Handle);
             }
             // If not Vista, paint background white.
             catch (DllNotFoundException)

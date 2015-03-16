@@ -66,10 +66,18 @@ namespace TDefragLib.FS.Ntfs
         }
 
         public UInt64 BytesPerCluster
+        { get { return BytesPerSector * SectorsPerCluster; } }
+
+        public UInt64 NumberOfSectors
         {
             get
             {
-                return BytesPerSector * SectorsPerCluster;
+                UInt64 retValue = 0;
+
+                if (SectorsPerCluster != 0)
+                    retValue = TotalSectors / SectorsPerCluster;
+
+                return retValue;
             }
         }
 

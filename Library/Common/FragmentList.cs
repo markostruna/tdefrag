@@ -20,22 +20,13 @@ namespace TDefragLib
         {
             if (logicalClusterNumber < 0)
                 throw new InvalidDataException("LCN numbers cannot be negative");
+
             _fragments.Add(new Fragment((UInt64)logicalClusterNumber, virtualClusterNumber, length, isVirtual));
         }
 
         public Fragment FindContaining(UInt64 virtualClusterNumber)
         {
-            Fragment foundFragment = null;
-
-            foreach (Fragment fragment in _fragments)
-            {
-                if (fragment.IsLogical && (fragment.NextVirtualClusterNumber > virtualClusterNumber))
-                {
-                    foundFragment = fragment;
-
-                    break;
-                }
-            }
+            Fragment foundFragment = _fragments.First(x => (x.IsLogical && x.NextVirtualClusterNumber > virtualClusterNumber));
 
             return foundFragment;
         }
@@ -45,10 +36,9 @@ namespace TDefragLib
         {
             get
             {
-                Fragment fragment = _fragments.FirstOrDefault(x => x.IsLogical);
-                if (fragment == null)
-                    return 0;
-                return fragment.LogicalClusterNumber;
+                UInt64 retValue = _fragments.FirstOrDefault(x => x.IsLogical).LogicalClusterNumber;
+
+                return retValue;
             }
         }
 
@@ -56,21 +46,10 @@ namespace TDefragLib
         {
             get
             {
-                int count = 0;
-                UInt64 nextLcn = 0;
-
-                foreach (Fragment fragment in _fragments)
-                {
-                    if (fragment.IsLogical)
-                    {
-                        if ((nextLcn != 0) && (fragment.LogicalClusterNumber != nextLcn))
-                            count++;
-                        nextLcn = fragment.NextLogicalClusterNumber;
-                    }
-                }
-
-                if (nextLcn != 0)
-                    count++;
+                int count =
+                    (from fr in _fragments
+                     where fr.IsLogical == true && fr.NextLogicalClusterNumber != 0
+                     select fr).Count();
 
                 return count;
             }
@@ -80,12 +59,11 @@ namespace TDefragLib
         {
             get 
             {
-                UInt64 sum = 0;
-                foreach (Fragment fragment in _fragments)
-                {
-                    if (fragment.IsLogical)
-                        sum += fragment.Length;
-                }
+                UInt64 sum = (UInt64)
+                    (from f in _fragments
+                    where f.IsLogical == true
+                    select f.Length).Sum(x => Convert.ToDecimal(x));
+
                 return sum;
             }
         }
