@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="TDefragWpf.Library.DiskMap"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TDefragWpf.SomethingElse"
+             mc:Ignorable="d">
+    <Canvas Name="canvas1" Margin="3" >
+        <local:MyVisualHost x:Name="kobila" Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=ActualWidth}"
+                    Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=ActualHeight}" Loaded="OnLoaded"/>
+    </Canvas>
+</UserControl>

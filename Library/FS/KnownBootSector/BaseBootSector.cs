@@ -30,24 +30,11 @@ namespace TDefragLib.FS.KnownBootSector
         /// <summary>
         /// The end of sector signature, shall always be 0xAA55
         /// </summary>
-        public UInt16 EndOfSector
-        {
-            get
-            {
-                return BitConverter.ToUInt16(Data, 0x1FE);
-            }
-        }
+        public UInt16 EndOfSector { get { return BitConverter.ToUInt16(Data, 0x1FE); } }
 
-        public abstract FileSystemType Filesystem
-        {
-            get;
-        }
+        public abstract FileSystemType Filesystem { get; }
 
-        public byte[] Data
-        {
-            get;
-            private set;
-        }
+        public byte[] Data { get; set; }
 
         public virtual ushort BytesPerSector
         {
@@ -99,13 +86,10 @@ namespace TDefragLib.FS.KnownBootSector
             get { throw new NotImplementedException(); }
         }
 
-        public abstract ulong Serial
-        { get; }
+        public abstract ulong Serial { get; }
 
-        public abstract byte MediaType
-        { get; }
+        public abstract byte MediaType { get; }
 
         #endregion
-
     }
 }

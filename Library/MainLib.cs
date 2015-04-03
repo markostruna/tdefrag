@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TDefragLib.Helper;
 using System.Collections;
-using TDefrag;
-using TDefragWPF;
+using TDefragWpf;
 using TDefragWpf.Properties;
 using System.Collections.ObjectModel;
 using TDefragWpf.Library.Common;
-using System.Threading;
+using TDefragWpf.Library.Helper;
+using TDefragWpf.Library.Structures;
 
 namespace TDefragLib
 {
@@ -20,6 +19,9 @@ namespace TDefragLib
             MainForm = mainWindow;
 
             Data = new Information();
+
+            ItemCollection = new Collection<ItemStruct>();
+            FragmentCollection = new Dictionary<ulong, Fragment>();
 
             ScanNtfs = new Ntfs.Scan(this);
         }
@@ -34,18 +36,18 @@ namespace TDefragLib
             MainForm.UpdateProgress(progress);
         }
 
-        private Int64 NumSquares = 1;
+        private Int64 NumSquares { get; set; }
 
         public void StartDefrag(String path, Int64 numberOfSquares)
         {
             if (String.IsNullOrEmpty(path))
-        {
+            {
                 return;
             }
 
             NumSquares = numberOfSquares;
-                DefragPath(path);
-            }
+            DefragPath(path);
+        }
 
         private void DefragPath(String Path)
         {
@@ -70,18 +72,13 @@ namespace TDefragLib
 
             Data.NumberOfClusters = (UInt64)bitmap.Count;
 
-            Helper.UnsafeNativeMethods.NtfsVolumeDataBuffer ntfsData = Data.Volume.NtfsVolumeData;
+            NtfsVolumeDataBuffer ntfsData = Data.Volume.NtfsVolumeData;
 
             Data.BytesPerCluster = ntfsData.BytesPerCluster;
 
-            Data.MasterFileTableExcludes[0].Start = ntfsData.MasterFileTableStartLogicalClusterNumber;
-            Data.MasterFileTableExcludes[0].End = ntfsData.MasterFileTableStartLogicalClusterNumber + (UInt64)(ntfsData.MasterFileTableValidDataLength / ntfsData.BytesPerCluster);
-
-            Data.MasterFileTableExcludes[1].Start = ntfsData.MasterFileTableZoneStart;
-            Data.MasterFileTableExcludes[1].End = ntfsData.MasterFileTableZoneEnd;
-
-            Data.MasterFileTableExcludes[2].Start = ntfsData.MasterFileTable2StartLogicalClusterNumber;
-            Data.MasterFileTableExcludes[2].End = ntfsData.MasterFileTable2StartLogicalClusterNumber + (UInt64)(ntfsData.MasterFileTableValidDataLength / ntfsData.BytesPerCluster);
+            Data.MasterFileTableExcludes.Add(new Excludes(ntfsData.MasterFileTableStartLogicalClusterNumber, ntfsData.MasterFileTableEndLogicalClusterNumber));
+            Data.MasterFileTableExcludes.Add(new Excludes(ntfsData.MasterFileTableZoneStart, ntfsData.MasterFileTableZoneEnd));
+            Data.MasterFileTableExcludes.Add(new Excludes(ntfsData.MasterFileTable2StartLogicalClusterNumber, ntfsData.MasterFileTable2EndLogicalClusterNumber));
 
             InitDiskSquareStructures();
 
@@ -93,87 +90,44 @@ namespace TDefragLib
             Data.Volume.Close();
         }
 
-        Double clustersPerSquare = 1;
+        Double clustersPerSquare { get; set; }
 
-        private class SquareCluster
-        {
-            public Dictionary<eClusterState, Int64> NumClusterStates;
-
-            public eClusterState currentState = eClusterState.Free;
-
-            public SquareCluster(Int64 NumClusters)
-            {
-                NumClusterStates = new Dictionary<eClusterState, long>();
-
-                NumClusterStates.Add(eClusterState.Allocated, 0);
-                NumClusterStates.Add(eClusterState.Busy, 0);
-                NumClusterStates.Add(eClusterState.Error, 0);
-                NumClusterStates.Add(eClusterState.Fragmented, 0);
-                NumClusterStates.Add(eClusterState.Free, NumClusters);
-                NumClusterStates.Add(eClusterState.Mft, 0);
-                NumClusterStates.Add(eClusterState.SpaceHog, 0);
-                NumClusterStates.Add(eClusterState.Unfragmented, 0);
-                NumClusterStates.Add(eClusterState.Unmovable, 0);
-            }
-
-            public eClusterState GetMaxState()
-            {
-                if (NumClusterStates[eClusterState.Busy] > 0)
-                    return eClusterState.Busy;
-
-                if (NumClusterStates[eClusterState.Error] > 0)
-                    return eClusterState.Error;
-
-                if (NumClusterStates[eClusterState.Mft] > 0)
-                    return eClusterState.Mft;
-
-                if (NumClusterStates[eClusterState.Unmovable] > 0)
-                    return eClusterState.Unmovable;
-
-                if (NumClusterStates[eClusterState.Fragmented] > 0)
-                    return eClusterState.Fragmented;
-
-                if (NumClusterStates[eClusterState.SpaceHog] > 0)
-                    return eClusterState.SpaceHog;
-
-                if (NumClusterStates[eClusterState.Unfragmented] > 0)
-                    return eClusterState.Unfragmented;
-
-                if (NumClusterStates[eClusterState.Allocated] > 0)
-                    return eClusterState.Allocated;
-
-                return eClusterState.Free;
-            }
-        }
-
-        Dictionary<Int64, SquareCluster> SquareClusterStates;
+        SquareCluster[] SquareClusterStates { get; set; }
 
         private void InitDiskSquareStructures()
         {
             clustersPerSquare = (Double)((Double)Data.NumberOfClusters / (Double)NumSquares);
 
-            SquareClusterStates = new Dictionary<long, SquareCluster>();
+            SquareClusterStates = new SquareCluster[NumSquares];
 
             for (Int32 ii = 0; ii < NumSquares; ii++)
             {
-                SquareClusterStates.Add(ii, new SquareCluster((Int64)clustersPerSquare));
+                SquareClusterStates[ii] = new SquareCluster();
             }
         }
 
+        /// <summary>
+        /// AnalyzeVolume
+        /// </summary>
         private void AnalyzeVolume()
         {
             ScanNtfs.AnalyzeVolume();
         }
 
-        private Collection<ItemStruct> _ItemCollection;
+        /// <summary>
+        /// ItemCollection
+        /// </summary>
+        public Collection<ItemStruct> ItemCollection { get; set; }
 
-        public Collection<ItemStruct> ItemCollection
-        { get { return _ItemCollection; } }
+        /// <summary>
+        /// FragmentCollection
+        /// </summary>
+        private Dictionary<UInt64, Fragment> FragmentCollection { get; set; }
 
-        private Dictionary<UInt64, Fragment> FragmentCollection
-        { set; get; }
-
-        /* Insert a record into the tree. The tree is sorted by LCN (Logical Cluster Number). */
+        /// <summary>
+        /// Insert a record into the tree. The tree is sorted by LCN (Logical Cluster Number).
+        /// </summary>
+        /// <param name="newItem"></param>
         public void AddItemToList(ItemStruct newItem)
         {
             if (newItem == null)
@@ -181,26 +135,16 @@ namespace TDefragLib
                 return;
             }
 
-            if (_ItemCollection == null)
+            lock (ItemCollection)
             {
-                _ItemCollection = new Collection<ItemStruct>();
-            }
-
-            if (FragmentCollection == null)
-            {
-                FragmentCollection = new Dictionary<ulong,Fragment>();
-            }
-
-            lock (_ItemCollection)
-            {
-                _ItemCollection.Add(newItem);
+                ItemCollection.Add(newItem);
 
                 lock (FragmentCollection)
                 {
-                    List<Fragment> frList =
-                        (from fr in newItem.FragmentList
-                         where fr.IsLogical
-                         select fr).ToList();
+                    List<Fragment> frList = newItem.FragmentList.Select(a => a).Where(a => a.IsLogical).ToList();
+                        //(from fr in newItem.FragmentList
+                        // where fr.IsLogical
+                        // select fr).ToList();
 
                     foreach (Fragment fr in frList)
                     {
@@ -298,18 +242,18 @@ namespace TDefragLib
 
                         for (int i = 0; i < 3; i++)
                         {
-                            if ((fragment.LogicalClusterNumber + SegmentBegin < Data.MasterFileTableExcludes[i].Start) &&
-                                (fragment.LogicalClusterNumber + SegmentEnd > Data.MasterFileTableExcludes[i].Start))
+                            if ((fragment.LogicalClusterNumber + SegmentBegin < Data.MasterFileTableExcludes[i].StartLcn) &&
+                                (fragment.LogicalClusterNumber + SegmentEnd > Data.MasterFileTableExcludes[i].StartLcn))
                             {
-                                SegmentEnd = Data.MasterFileTableExcludes[i].Start - fragment.LogicalClusterNumber;
+                                SegmentEnd = Data.MasterFileTableExcludes[i].StartLcn - fragment.LogicalClusterNumber;
                             }
 
-                            if ((fragment.LogicalClusterNumber + SegmentBegin >= Data.MasterFileTableExcludes[i].Start) &&
-                                (fragment.LogicalClusterNumber + SegmentBegin < Data.MasterFileTableExcludes[i].End))
+                            if ((fragment.LogicalClusterNumber + SegmentBegin >= Data.MasterFileTableExcludes[i].StartLcn) &&
+                                (fragment.LogicalClusterNumber + SegmentBegin < Data.MasterFileTableExcludes[i].EndLcn))
                             {
-                                if (fragment.LogicalClusterNumber + SegmentEnd > Data.MasterFileTableExcludes[i].End)
+                                if (fragment.LogicalClusterNumber + SegmentEnd > Data.MasterFileTableExcludes[i].EndLcn)
                                 {
-                                    SegmentEnd = Data.MasterFileTableExcludes[i].End - fragment.LogicalClusterNumber;
+                                    SegmentEnd = Data.MasterFileTableExcludes[i].EndLcn - fragment.LogicalClusterNumber;
                                 }
 
                                 ClusterState = eClusterState.Mft;
@@ -378,94 +322,29 @@ namespace TDefragLib
                 SetClusterState(clusterBegin, clusterEnd, currentState);
 
                 currentClusterIndex += (UInt64)clustersPerSquare;
-                //UInt64 clusterBegin = (UInt64)currentClusterIndex;
-                //UInt64 clusterEnd = clusterBegin;
-
-                //eClusterState currentState = eClusterState.Free;
-
-                //Boolean Allocated = bitmapData.Buffer[(Int32)clusterBegin];
-
-                //while ((clusterEnd < totalClusters - 1) && (Allocated == bitmapData.Buffer[(Int32)clusterEnd + 1]))
-                //{
-                //    clusterEnd++;
-                //}
-
-                //if (Allocated)
-                //{
-                //    currentState = eClusterState.Allocated;
-                //}
-
-                //SetClusterState(clusterBegin, clusterEnd, currentState);
-
-                //currentClusterIndex = clusterEnd + 1;
             }
 
             // Show the MFT zones
 
-            for (int i = 0; i < 3; i++)
+            foreach (Excludes exclude in Data.MasterFileTableExcludes)
             {
-                if (Data.MasterFileTableExcludes[i].Start <= 0)
+                if (exclude.StartLcn <= 0)
                     continue;
 
-                SetClusterState(Data.MasterFileTableExcludes[i].Start, Data.MasterFileTableExcludes[i].End, eClusterState.Mft);
+                SetClusterState(exclude.StartLcn, exclude.EndLcn, eClusterState.Mft);
             }
-        }
-
-        private void SetClusterState(Fragment fragment, eClusterState clusterState)
-        {
-            if (fragment == null)
-            {
-                return;
-            }
-
-            if (fragment.IsVirtual)
-            {
-                return;
-            }
-
-            fragment.ClusterState = clusterState;
-
-            for (UInt64 clusterIndex = fragment.LogicalClusterNumber; clusterIndex < fragment.LogicalClusterNumber + fragment.Length; clusterIndex++)
-            {
-                Int64 squareIndex = (Int64)((double)fragment.LogicalClusterNumber / clustersPerSquare);
-                SquareCluster squareCluster = SquareClusterStates[squareIndex];
-
-                squareCluster.NumClusterStates[fragment.ClusterState] = Math.Max(squareCluster.NumClusterStates[fragment.ClusterState] - 1, 0);
-                squareCluster.NumClusterStates[clusterState]++;
-            }
-
-            UInt32 squareIndexBegin = (UInt32)((double)fragment.LogicalClusterNumber / clustersPerSquare);
-            UInt32 squareIndexEnd = (UInt32)(((double)fragment.LogicalClusterNumber + fragment.Length) / clustersPerSquare);
-
-            for (UInt32 squareIndex = squareIndexBegin; squareIndex <= squareIndexEnd; squareIndex++)
-            {
-                SquareCluster squareCluster = SquareClusterStates[squareIndex];
-                eClusterState newState = squareCluster.GetMaxState();
-
-                if (squareCluster.currentState != newState)
-                {
-                    MainForm.SetClusterState((UInt32)squareIndex, squareCluster.GetMaxState());
-                    squareCluster.currentState = newState;
-                }
-            }
-            //            MainForm.SetClusterState((UInt32)clusterBegin, (UInt32)clusterNext, (UInt32)Data.NumberOfClusters, clusterState);
         }
 
         private void SetClusterState(UInt64 clusterBegin, UInt64 clusterEnd, eClusterState clusterState)
         {
-            for (UInt64 clusterIndex = clusterBegin; clusterIndex <= clusterEnd; clusterIndex++)
-            {
-                Int64 squareIndex = (Int64)((double)clusterIndex / clustersPerSquare);
+            //for (UInt64 clusterIndex = clusterBegin; clusterIndex <= clusterEnd; clusterIndex++)
+            //{
+            //    Int64 squareIndex = (Int64)((double)clusterIndex / clustersPerSquare);
 
-                SquareCluster squareCluster = SquareClusterStates[squareIndex];
+            //    SquareCluster squareCluster = SquareClusterStates[squareIndex];
 
-                if (clusterState != eClusterState.Free)
-                {
-                    squareCluster.NumClusterStates[eClusterState.Free] = Math.Max(squareCluster.NumClusterStates[eClusterState.Free] - 1, 0);
-                }
-
-                squareCluster.NumClusterStates[clusterState]++;
-            }
+            //    squareCluster.ChangeState(clusterState, 1);
+            //}
 
             UInt32 squareIndexBegin = (UInt32)((double)clusterBegin / clustersPerSquare);
             UInt32 squareIndexEnd = (UInt32)((double)clusterEnd / clustersPerSquare);
@@ -473,67 +352,30 @@ namespace TDefragLib
             for (UInt32 squareIndex = squareIndexBegin; squareIndex <= squareIndexEnd; squareIndex++)
             {
                 SquareCluster squareCluster = SquareClusterStates[squareIndex];
-                eClusterState newState = squareCluster.GetMaxState();
+                
+                squareCluster.ChangeState(clusterState, 1);
 
-                if (squareCluster.currentState != newState)
+                if (squareCluster.IsDirty)
                 {
-                    MainForm.SetClusterState((UInt32)squareIndex, squareCluster.GetMaxState());
-                    squareCluster.currentState = newState;
+                    MainForm.SetClusterState((UInt32)squareIndex, squareCluster.currentState);
+
+                    squareCluster.IsDirty = false;
                 }
+
+                //eClusterState newState = squareCluster.GetMaxState();
+
+                //if (squareCluster.currentState != newState)
+                //{
+                //    MainForm.SetClusterState((UInt32)squareIndex, squareCluster.GetMaxState());
+                //    squareCluster.currentState = newState;
+                //}
             }
             //MainForm.SetClusterState((UInt32)clusterBegin, (UInt32)clusterEnd, (UInt32)Data.NumberOfClusters, clusterState);
         }
 
-        private void SetClusterState1(UInt64 clusterBegin, UInt64 clusterEnd, eClusterState clusterState)
-        {
-            for (UInt64 clusterIndex = clusterBegin; clusterIndex <= clusterEnd; clusterIndex++)
-            {
-                Int64 squareIndex = (Int64)((double)clusterIndex / clustersPerSquare);
+        public Information Data { get; set; }
 
-                SquareCluster squareCluster = SquareClusterStates[squareIndex];
-                Fragment fr = null;
-
-                if (FragmentCollection != null && FragmentCollection.TryGetValue(clusterIndex, out fr))
-                {
-                    if (fr.ClusterState != clusterState)
-                    {
-                        squareCluster.NumClusterStates[fr.ClusterState] = Math.Max(squareCluster.NumClusterStates[fr.ClusterState] - 1, 0);
-
-                        fr.ClusterState = clusterState;
-                    }
-                }
-                else
-                {
-                    if (clusterState != eClusterState.Free)
-                    {
-                        squareCluster.NumClusterStates[eClusterState.Free] = Math.Max(squareCluster.NumClusterStates[eClusterState.Free] - 1, 0);
-                    }
-                }
-
-                squareCluster.NumClusterStates[clusterState]++;
-            }
-            
-            UInt32 squareIndexBegin = (UInt32)((double)clusterBegin / clustersPerSquare);
-            UInt32 squareIndexEnd = (UInt32)((double)clusterEnd / clustersPerSquare);
-
-            for (UInt32 squareIndex = squareIndexBegin; squareIndex <= squareIndexEnd; squareIndex++)
-            {
-                SquareCluster squareCluster = SquareClusterStates[squareIndex];
-                eClusterState newState = squareCluster.GetMaxState();
-
-                if (squareCluster.currentState != newState)
-                {
-                    MainForm.SetClusterState((UInt32)squareIndex, squareCluster.GetMaxState());
-                    squareCluster.currentState = newState;
-                }
-            }
-//            MainForm.SetClusterState((UInt32)clusterBegin, (UInt32)clusterNext, (UInt32)Data.NumberOfClusters, clusterState);
-        }
-
-        public Information Data
-        { set; get; }
-
-        Ntfs.Scan ScanNtfs;
+        Ntfs.Scan ScanNtfs { get; set; }
 
         private MainWindow MainForm;
     }

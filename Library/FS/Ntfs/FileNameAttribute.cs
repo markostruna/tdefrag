@@ -55,65 +55,59 @@ namespace TDefragLib.FileSystem.Ntfs
         [Conditional("DEBUG")]
         public void AssertValid()
         {
-            Debug.Assert((_nameType == 0x00) || (_nameType == 0x01) ||
-                (_nameType == 0x02) || (_nameType == 0x03));
+            Debug.Assert((NameType == NameTypes.Posix) || (NameType == NameTypes.Ntfs) ||
+                (NameType == NameTypes.Dos) || (NameType == NameTypes.Win32Dos));
         }
 
         public static FileNameAttribute Parse(BinaryReader reader)
         {
-            FileNameAttribute filename = new FileNameAttribute();
-            filename.ParentDirectory = InodeReference.Parse(reader);
-            filename.CreationTime = reader.ReadUInt64();
-            filename.ChangeTime = reader.ReadUInt64();
-            filename.LastWriteTime = reader.ReadUInt64();
-            filename.LastAccessTime = reader.ReadUInt64();
-            filename.AllocatedSize = reader.ReadUInt64();
-            filename.DataSize = reader.ReadUInt64();
-            filename.FileAttributes = reader.ReadUInt32();
-            filename.AlignmentOrReserved = reader.ReadUInt32();
-            int nameLength = reader.ReadByte();
-            filename._nameType = reader.ReadByte();
-            filename.Name = TDefragLib.FS.Ntfs.Helper.ParseString(reader, nameLength);
-            filename.AssertValid();
-            return filename;
-        }
+            if (reader == null)
+                return null;
 
-        private Byte _nameType;
+            FileNameAttribute filenameAttribute = new FileNameAttribute();
+
+            filenameAttribute.ParentDirectory = InodeReference.Parse(reader);
+            
+            filenameAttribute.CreationTime = reader.ReadUInt64();
+            filenameAttribute.ChangeTime = reader.ReadUInt64();
+            filenameAttribute.LastWriteTime = reader.ReadUInt64();
+            filenameAttribute.LastAccessTime = reader.ReadUInt64();
+            filenameAttribute.AllocatedSize = reader.ReadUInt64();
+            filenameAttribute.DataSize = reader.ReadUInt64();
+            filenameAttribute.FileAttributes = reader.ReadUInt32();
+            filenameAttribute.AlignmentOrReserved = reader.ReadUInt32();
+            int nameLength = reader.ReadByte();
+            filenameAttribute.NameType = (NameTypes)reader.ReadByte();
+            filenameAttribute.Name = TDefragLib.FS.Ntfs.Helper.ParseString(reader, nameLength);
+            
+            filenameAttribute.AssertValid();
+            
+            return filenameAttribute;
+        }
 
         /// <summary>
         /// NTFS or DOS name
         /// </summary>
-        public NameTypes NameType
-        { get { return (NameTypes)_nameType; } }
+        public NameTypes NameType { get; set; }
 
-        public InodeReference ParentDirectory
-        { get; private set; }
+        public InodeReference ParentDirectory { get; set; }
 
-        public UInt64 CreationTime
-        { get; private set; }
+        public UInt64 CreationTime { get; set; }
 
-        public UInt64 ChangeTime
-        { get; private set; }
+        public UInt64 ChangeTime { get; set; }
 
-        public UInt64 LastWriteTime
-        { get; private set; }
+        public UInt64 LastWriteTime { get; set; }
 
-        public UInt64 LastAccessTime
-        { get; private set; }
+        public UInt64 LastAccessTime { get; set; }
 
-        public UInt64 AllocatedSize
-        { get; private set; }
+        public UInt64 AllocatedSize { get; set; }
 
-        public UInt64 DataSize
-        { get; private set; }
+        public UInt64 DataSize { get; set; }
 
-        public UInt32 FileAttributes
-        { get; private set; }
+        public UInt32 FileAttributes { get; set; }
 
-        public UInt32 AlignmentOrReserved
-        { get; private set; }
+        public UInt32 AlignmentOrReserved { get; set; }
 
-        public String Name
-        { get; private set; }
+        public String Name { get; set; }
     }
 }

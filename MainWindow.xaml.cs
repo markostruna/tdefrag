@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TDefragLib;
 using System.Threading;
@@ -18,7 +12,7 @@ using TDefragWpf.Library.Common;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 
-namespace TDefragWPF
+namespace TDefragWpf
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -55,12 +49,15 @@ namespace TDefragWPF
             defragThread.Start(diskArray.Text);
             progressBar1.Visibility = System.Windows.Visibility.Visible;
             progressBar1.Value = 0.0;
+
+            diskMap.Reset();
         }
 
         private void Defrag(object driveObject)
         {
             String drive = (driveObject is String) ? (String)driveObject : "C";
-            Int64 numSquares = numX * numY;
+
+            Int64 numSquares = diskMap.NumSquares;
 
             try
             {
@@ -74,6 +71,9 @@ namespace TDefragWPF
 
         public void AddLine(String line)
         {
+            if (line == null)
+                return;
+
             line = line.Replace("\r", String.Empty);
             line = line.Replace("\n", String.Empty);
 
@@ -108,82 +108,6 @@ namespace TDefragWPF
             diskArray.SelectedIndex = 0;
         }
 
-        private int stepX = 10;
-        private double maxX = 560;
-        private double maxY = 330;
-        private int numX = 1;
-        private int numY = 1;
-
-        Dictionary<Int32, Int32> squares;
-
-        private void InitCanvas()
-        {
-            maxX = canvas1.ActualWidth;
-            maxY = canvas1.ActualHeight;
-
-            double wid = maxX;
-            double hei = maxY;
-
-            numX = (int)(maxX / stepX);
-            numY = (int)(maxY / stepX);
-
-            int offsetX = (int)((maxX - numX * stepX) / 2);
-            int offsetY = (int)((maxY - numY * stepX) / 2);
-
-            squares = new Dictionary<int, int>(numX * numY);
-
-            for (int x = 0; x < numX; x++)
-            {
-                for (int y = 0; y < numY; y++)
-                {
-                    SolidColorBrush myBrush = new SolidColorBrush(Color.FromRgb(245, 245, 245));
-
-                    LinearGradientBrush myLinearGradientBrush = new LinearGradientBrush();
-
-                    myLinearGradientBrush.StartPoint = new Point(0, 0);
-                    myLinearGradientBrush.EndPoint = new Point(0, 1);
-
-                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Color.FromRgb(240, 240, 240), 0.0));
-                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Color.FromRgb(240, 240, 240), 0.95));
-                    myLinearGradientBrush.GradientStops.Add(new GradientStop(Color.FromRgb(240, 240, 240), 1.00));
-                    //myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.LightGray, 0.0));
-                    //myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.White, 0.95));
-                    //myLinearGradientBrush.GradientStops.Add(new GradientStop(Colors.LightGray, 1.00));
-
-                    Rectangle rec = new Rectangle();
-
-                    rec.RadiusX = 0;
-                    rec.RadiusY = 0;
-                    rec.Width = stepX - 1;
-                    rec.Height = stepX - 1;
-                    rec.Fill = myLinearGradientBrush;
-                    rec.StrokeThickness = 0;
-                    rec.Stroke = Brushes.Transparent;
-
-                    Int32 idx = canvas1.Children.Add(rec);
-
-                    squares.Add(y * numX + x, idx);
-
-                    Canvas.SetLeft(rec, offsetX + x * stepX);
-                    Canvas.SetTop(rec, offsetY + y * stepX);
-                }
-            }
-        }
-
-        bool initialized = false;
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            base.OnRender(drawingContext);
-
-            if (!initialized)
-            {
-                InitCanvas();
-
-                initialized = true;
-            }
-        }
-
         public void SetClusterState(UInt64 clusterNumber, UInt64 numClusters, eClusterState state)
         {
             SetClusterState(clusterNumber, clusterNumber, numClusters, state);
@@ -193,7 +117,8 @@ namespace TDefragWPF
         {
             this.Dispatcher.BeginInvoke(new Action(delegate()
             {
-                int max = numX * numY;
+                int max = (Int32)diskMap.NumSquares;
+
                 double clustersPerSquare = (double)((double)numClusters / (double)max);
 
                 int pos1 = (Int32)((double)clusterNumber / clustersPerSquare);
@@ -218,7 +143,7 @@ namespace TDefragWPF
                 }
 
             }), DispatcherPriority.Send);
-                }
+        }
 
         public void SetClusterState(UInt64 pos, eClusterState state)
         {
@@ -230,104 +155,40 @@ namespace TDefragWPF
 
         private void colorizeSquare(eClusterState state, int pos)
         {
-            if ((pos < 0) || (pos > squares.Count))
-                return;
+            Color color = Colors.White;
 
-            if ((squares[pos] < 0) || (squares[pos] > canvas1.Children.Count))
-                return;
-
-            Shape square = (Shape)canvas1.Children[squares[pos]];
-
-            Brush brush = square.Fill;
-
-            if (brush is LinearGradientBrush)
+            switch (state)
             {
-                LinearGradientBrush myLinearGradientBrush = (LinearGradientBrush)brush;
-                Color color = Colors.White;
-
-                switch (state)
-                {
-                    case eClusterState.Allocated:
-                        color = Colors.LightBlue;
-                        break;
-                    case eClusterState.Busy:
-                        color = Colors.Blue;
-                        break;
-                    case eClusterState.Error:
-                        color = Colors.Red;
-                        break;
-                    case eClusterState.Fragmented:
-                        color = Colors.Orange;
-                        break;
-                    case eClusterState.Free:
-                        color = Color.FromRgb(240, 240, 240);
-                        break;
-                    case eClusterState.Mft:
-                        color = Colors.Pink;
-                        break;
-                    case eClusterState.SpaceHog:
-                        color = Colors.DarkCyan;
-                        break;
-                    case eClusterState.Unfragmented:
-                        color = Colors.LightGreen;
-                        break;
-                    case eClusterState.Unmovable:
-                        color = Colors.Yellow;
-                        break;
-                }
-
-                Double radius = 1;
-                Double gradientEndPointX = 1;
-
-                byte brightness = 50;
-                byte darkness = 60;
-
-                if (state == eClusterState.Free)
-                {
-                    darkness = 40;
-                    brightness = 0;
-                    radius = 0;
-                    gradientEndPointX = 0;
-                }
-
-                Color brightColor = Color.Add(color, Color.FromArgb(255, brightness, brightness, brightness));
-                Color darkColor = Color.Subtract(color, Color.FromArgb(255, darkness, darkness, darkness));
-                Color endColor = darkColor;
-
-                if (state == eClusterState.Free)
-                {
-                    Color tempColor = darkColor;
-
-                    darkColor = brightColor;
-                    brightColor = tempColor;
-                    endColor = brightColor;
-                }
-
-                Point endPoint = myLinearGradientBrush.EndPoint;
-                endPoint.X = gradientEndPointX;
-
-                myLinearGradientBrush.EndPoint = endPoint;
-
-                myLinearGradientBrush.GradientStops[1].Color = color;
-                myLinearGradientBrush.GradientStops[0].Color = color;
-                myLinearGradientBrush.GradientStops[2].Color = color;
-
-                //myLinearGradientBrush.GradientStops[1].Color = brightColor;
-                //myLinearGradientBrush.GradientStops[0].Color = darkColor;
-                //myLinearGradientBrush.GradientStops[2].Color = endColor;
-
-                if (square is Rectangle)
-                {
-                    Rectangle rec = (Rectangle)square;
-
-                    rec.RadiusX = radius;
-                    rec.RadiusY = radius;
-                }
-
-                square.Fill = myLinearGradientBrush;
+                case eClusterState.Allocated:
+                    color = Colors.LightBlue;
+                    break;
+                case eClusterState.Busy:
+                    color = Colors.Blue;
+                    break;
+                case eClusterState.Error:
+                    color = Colors.Red;
+                    break;
+                case eClusterState.Fragmented:
+                    color = Colors.Orange;
+                    break;
+                case eClusterState.Free:
+                    color = Color.FromRgb(240, 240, 240);
+                    break;
+                case eClusterState.Mft:
+                    color = Colors.Pink;
+                    break;
+                case eClusterState.SpaceHog:
+                    color = Colors.DarkCyan;
+                    break;
+                case eClusterState.Unfragmented:
+                    color = Colors.LightGreen;
+                    break;
+                case eClusterState.Unmovable:
+                    color = Colors.Yellow;
+                    break;
             }
 
-            canvas1.Children[squares[pos]] = square;
+            diskMap.ColorizeSquare(pos, color);
         }
 
         private MainLibrary defragLib;
@@ -389,7 +250,7 @@ namespace TDefragWPF
                 // Get System Dpi
                 System.Drawing.Graphics desktop = System.Drawing.Graphics.FromHwnd(mainWindowPtr);
                 float DesktopDpiX = desktop.DpiX;
-                float DesktopDpiY = desktop.DpiY;
+                //float DesktopDpiY = desktop.DpiY;
 
                 // Set Margins
                 Margins margins = new Margins();
@@ -536,4 +397,5 @@ namespace TDefragWPF
                 DragMove();
         }
     }
+
 }

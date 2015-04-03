@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using TDefragLib.FS.Ntfs;
 using System.Collections;
+using TDefragWpf.Library.Helper;
 
 namespace TDefragLib.Helper
 {
@@ -152,7 +153,7 @@ namespace TDefragLib.Helper
             }
         }
 
-        public UnsafeNativeMethods.NtfsVolumeDataBuffer NtfsVolumeData
+        public NtfsVolumeDataBuffer NtfsVolumeData
         {
             get
             {

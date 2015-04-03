@@ -20,26 +20,49 @@ namespace TDefragLib.FileSystem.Ntfs
     /// </summary>
     public class RunData
     {
+        /// <summary>
+        /// Parse
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="length"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
         public static Boolean Parse(BinaryReader reader, out UInt64 length, out Int64 offset)
         {
+            if (reader == null)
+            {
+                length = 0;
+                offset = 0;
+
+                return false;
+            }
+
             Byte runDataValue = reader.ReadByte();
+            
             if (runDataValue == 0)
             {
                 length = 0;
                 offset = 0;
+             
                 return false;
             }
-            else
-            {
-                int runLengthSize = (runDataValue & 0x0F);
-                int runOffsetSize = ((runDataValue & 0xF0) >> 4);
 
-                length = ReadLength(reader, runLengthSize);
-                offset = ReadOffset(reader, runOffsetSize);
-                return true;
-            }
+            int runLengthSize = (runDataValue & 0x0F);
+            int runOffsetSize = ((runDataValue & 0xF0) >> 4);
+
+            length = ReadLength(reader, runLengthSize);
+            
+            offset = ReadOffset(reader, runOffsetSize);
+            
+            return true;
         }
 
+        /// <summary>
+        /// ReadLength
+        /// </summary>
+        /// <param name="runData"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         private static UInt64 ReadLength(BinaryReader runData, int length)
         {
             if (length > 8)
@@ -56,13 +79,21 @@ namespace TDefragLib.FileSystem.Ntfs
             return BitConverter.ToUInt64(runLength, 0);
         }
 
+        /// <summary>
+        /// ReadOffset
+        /// </summary>
+        /// <param name="runData"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         private static Int64 ReadOffset(BinaryReader runData, int length)
         {
             if (length == 0) return 0;
+            
             if (length > 8)
                 throw new InvalidDataException("The offset shall never be more than 8 bytes");
             
             Byte[] runOffset = new Byte[8];
+            
             for (int i = 0; i < 8; i++)
             {
                 if (i < length)
@@ -70,6 +101,7 @@ namespace TDefragLib.FileSystem.Ntfs
                 else
                     runOffset[i] = (Byte)((runOffset[length-1] >= 0x80) ? 0xFF : 0);
             }
+            
             return BitConverter.ToInt64(runOffset, 0);
         }
     }

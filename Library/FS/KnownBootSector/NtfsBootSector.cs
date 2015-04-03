@@ -12,8 +12,7 @@ namespace TDefragLib.FS.KnownBootSector
     /// </summary>
     class NtfsBootSector : BaseBootSector
     {
-        public NtfsBootSector(byte[] buffer)
-            : base(buffer)
+        public NtfsBootSector(byte[] buffer) : base(buffer)
         {
             AssertValid();
         }
@@ -28,108 +27,32 @@ namespace TDefragLib.FS.KnownBootSector
 
         #region IBootSector Members
 
-        public override FileSystemType Filesystem
-        {
-            get { return FileSystemType.Ntfs; }
-        }
+        public override FileSystemType Filesystem { get { return FileSystemType.Ntfs; } }
 
-        public override ushort BytesPerSector
-        {
-            get
-            {
-                return BitConverter.ToUInt16(Data, 11);
-            }
-        }
+        public override ushort BytesPerSector { get { return BitConverter.ToUInt16(Data, 11); } }
 
-        public override ulong SectorsPerCluster
-        {
-            get
-            {
-                // TODO: check for impossible values
-                return BitConverter.ToUInt64(Data, 13);
-            }
-        }
+        public override ulong SectorsPerCluster { get { return BitConverter.ToUInt64(Data, 13); } }
 
-        public override ulong TotalSectors
-        {
-            get
-            {
-                return BitConverter.ToUInt64(Data, 40);
-            }
-        }
+        public override ulong TotalSectors { get { return BitConverter.ToUInt64(Data, 40); } }
 
-        public override ulong MasterFileTable1StartLogicalClusterNumber
-        {
-            get
-            {
-                return BitConverter.ToUInt64(Data, 48);
-            }
-        }
+        public override ulong MasterFileTable1StartLogicalClusterNumber { get { return BitConverter.ToUInt64(Data, 48); } }
 
-        public override ulong MasterFileTable2StartLogicalClusterNumber
-        {
-            get
-            {
-                return BitConverter.ToUInt64(Data, 56);
-            }
-        }
+        public override ulong MasterFileTable2StartLogicalClusterNumber { get { return BitConverter.ToUInt64(Data, 56); } }
 
-        public override ushort SectorsPerTrack
-        {
-            get
-            {
-                return BitConverter.ToUInt16(Data, 24);
-            }
-        }
+        public override ushort SectorsPerTrack { get { return BitConverter.ToUInt16(Data, 24); } }
 
-        public override ushort NumberOfHeads
-        {
-            get
-            {
-                return BitConverter.ToUInt16(Data, 26);
-            }
-        }
+        public override ushort NumberOfHeads { get { return BitConverter.ToUInt16(Data, 26); } }
 
-        public override uint ClustersPerIndexRecord
-        {
-            get
-            {
-                return BitConverter.ToUInt32(Data, 68);
-            }
-        }
+        public override uint ClustersPerIndexRecord { get { return BitConverter.ToUInt32(Data, 68); } }
 
-        public override uint ClustersPerMftRecord
-        {
-            get
-            {
-                return BitConverter.ToUInt32(Data, 64);
-            }
-        }
+        public override uint ClustersPerMftRecord { get { return BitConverter.ToUInt32(Data, 64); } }
 
         #endregion
 
-        public override UInt64 OemId
-        {
-            get
-            {
-                return BitConverter.ToUInt64(Data, 0x03);
-            }
-        }
+        public override UInt64 OemId { get { return BitConverter.ToUInt64(Data, 0x03); } }
 
-        public override ulong Serial
-        {
-            get
-            {
-                return BitConverter.ToUInt64(Data, 72);
-            }
-        }
+        public override ulong Serial { get { return BitConverter.ToUInt64(Data, 72); } }
 
-        public override byte MediaType
-        {
-            get
-            {
-                return Data[21];
-            }
-        }
+        public override byte MediaType { get { return Data[21]; } }
     }
 }

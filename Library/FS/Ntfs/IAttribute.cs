@@ -7,7 +7,7 @@ namespace TDefragLib.FileSystem.Ntfs
 {
     public interface IAttribute
     {
-        AttributeType Type { get; }
+        AttributeType AttributeType { get; }
 
         UInt32 Length { get; }
 

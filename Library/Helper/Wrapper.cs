@@ -8,6 +8,7 @@ using System.Threading;
 using Microsoft.Win32.SafeHandles;
 using TDefrag.Lib.Helper;
 using System.IO;
+using TDefragWpf.Library.Helper;
 
 namespace TDefragLib.Helper
 {
@@ -289,50 +290,6 @@ namespace TDefragLib.Helper
             }
         }
 
-        public class NtfsVolumeDataBuffer
-        {
-            public UInt64 VolumeSerialNumber
-            { set; get; }
-
-            public UInt64 NumberSectors
-            { set; get; }
-         
-            public UInt64 TotalClusters
-            { set; get; }
-            
-            public UInt64 FreeClusters
-            { set; get; }
-            
-            public UInt64 TotalReserved
-            { set; get; }
-            
-            public UInt32 BytesPerSector
-            { set; get; }
-            
-            public UInt32 BytesPerCluster
-            { set; get; }
-            
-            public UInt32 BytesPerFileRecordSegment
-            { set; get; }
-            
-            public UInt32 ClustersPerFileRecordSegment
-            { set; get; }
-            
-            public UInt64 MasterFileTableValidDataLength
-            { set; get; }
-            
-            public UInt64 MasterFileTableStartLogicalClusterNumber
-            { set; get; }
-            
-            public UInt64 MasterFileTable2StartLogicalClusterNumber
-            { set; get; }
-            
-            public UInt64 MasterFileTableZoneStart
-            { set; get; }
-            
-            public UInt64 MasterFileTableZoneEnd
-            { set; get; }
-        };
 
         /// <summary>
         /// Get information about NTFS filesystem

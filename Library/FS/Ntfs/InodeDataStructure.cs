@@ -29,7 +29,9 @@ namespace TDefragLib.FileSystem.Ntfs
             MasterFileTableChangeTime = 0;
             LastAccessTime = 0;
             TotalBytes = 0;
+            
             Streams = new StreamCollection();
+            
             MasterFileTableDataFragments = null;
             MasterFileTableDataLength = 0;
             MasterFileTableBitmapFragments = null;
@@ -77,26 +79,22 @@ namespace TDefragLib.FileSystem.Ntfs
         /// <summary>
         /// The Fragments of the $MFT::$DATA stream.
         /// </summary>
-        public FragmentCollection MasterFileTableDataFragments 
-        { get; set; }
+        public FragmentCollection MasterFileTableDataFragments { get; set; }
 
         /// <summary>
         /// Length of $MFT::$DATA, can be less than what is told by the fragments
         /// </summary>
-        public UInt64 MasterFileTableDataLength
-        { get; set; }
+        public UInt64 MasterFileTableDataLength { get; set; }
 
         /// <summary>
         /// The Fragments of the $MFT::$BITMAP stream.
         /// </summary>
-        public FragmentCollection MasterFileTableBitmapFragments
-        { get; set; }
+        public FragmentCollection MasterFileTableBitmapFragments { get; set; }
 
         /// <summary>
         /// Length of $MFT::$BITMAP, can be less than what is told by the fragments
         /// </summary>
-        public UInt64 MasterFileTableBitmapLength
-        { get; set; }
+        public UInt64 MasterFileTableBitmapLength { get; set; }
 
         /// <summary>
         /// Save the filename in either the Long or the Short filename. We only
@@ -108,6 +106,9 @@ namespace TDefragLib.FileSystem.Ntfs
         /// <param name="attribute"></param>
         public void AddName(FileNameAttribute attribute)
         {
+            if (attribute == null)
+                return;
+
             switch (attribute.NameType)
             {
                 case NameTypes.Dos:

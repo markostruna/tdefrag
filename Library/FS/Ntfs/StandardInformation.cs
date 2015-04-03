@@ -10,13 +10,18 @@ namespace TDefragLib.FileSystem.Ntfs
     [DebuggerDisplay("{CreationTime}: Usn={Usn} ")]
     public class StandardInformation
     {
-        private StandardInformation()
-        {
-        }
-
+        /// <summary>
+        /// Parse
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         public static StandardInformation Parse(BinaryReader reader)
         {
+            if (reader == null)
+                return null;
+
             StandardInformation s = new StandardInformation();
+            
             s.CreationTime = reader.ReadUInt64();
             s.FileChangeTime = reader.ReadUInt64();
             s.MftChangeTime = reader.ReadUInt64();
@@ -29,44 +34,68 @@ namespace TDefragLib.FileSystem.Ntfs
             s.SecurityId = reader.ReadUInt32();
             s.QuotaCharge = reader.ReadUInt64();
             s.Usn = reader.ReadUInt64();
+            
             return s;
         }
 
-        public UInt64 CreationTime
-        { get; private set; }
+        /// <summary>
+        /// CreationTime
+        /// </summary>
+        public UInt64 CreationTime { get; set; }
 
-        public UInt64 FileChangeTime
-        { get; private set; }
+        /// <summary>
+        /// FileChangeTime
+        /// </summary>
+        public UInt64 FileChangeTime { get; set; }
 
-        public UInt64 MftChangeTime
-        { get; private set; }
+        /// <summary>
+        /// MftChangeTime
+        /// </summary>
+        public UInt64 MftChangeTime { get; set; }
 
-        public UInt64 LastAccessTime
-        { get; private set; }
+        /// <summary>
+        /// LastAccessTime
+        /// </summary>
+        public UInt64 LastAccessTime { get; set; }
 
-        public UInt32 FileAttributes                  /* READ_ONLY=0x01, HIDDEN=0x02, SYSTEM=0x04, VOLUME_ID=0x08, ARCHIVE=0x20, DEVICE=0x40 */
-        { get; private set; }
+        /// <summary>
+        /// READ_ONLY = 0x01, HIDDEN = 0x02, SYSTEM = 0x04, VOLUME_ID = 0x08, ARCHIVE = 0x20, DEVICE = 0x40
+        /// </summary>
+        public UInt32 FileAttributes { get; set; }
 
-        public UInt32 MaximumVersions
-        { get; private set; }
+        /// <summary>
+        /// MaximumVersions
+        /// </summary>
+        public UInt32 MaximumVersions { get; set; }
 
-        public UInt32 VersionNumber
-        { get; private set; }
+        /// <summary>
+        /// VersionNumber
+        /// </summary>
+        public UInt32 VersionNumber { get; set; }
 
-        public UInt32 ClassId
-        { get; private set; }
+        /// <summary>
+        /// ClassId
+        /// </summary>
+        public UInt32 ClassId { get; set; }
 
-        public UInt32 OwnerId                         // NTFS 3.0 only
-        { get; private set; }
+        /// <summary>
+        /// NTFS 3.0 only
+        /// </summary>
+        public UInt32 OwnerId { get; set; }
 
-        public UInt32 SecurityId                      // NTFS 3.0 only
-        { get; private set; }
+        /// <summary>
+        /// NTFS 3.0 only
+        /// </summary>
+        public UInt32 SecurityId { get; set; }
 
-        public UInt64 QuotaCharge                     // NTFS 3.0 only
-        { get; private set; }
+        /// <summary>
+        /// NTFS 3.0 only
+        /// </summary>
+        public UInt64 QuotaCharge { get; set; }
 
-        public UInt64 Usn                             // NTFS 3.0 only
-        { get; private set; }
-
+        /// <summary>
+        /// NTFS 3.0 only
+        /// </summary>
+        public UInt64 Usn { get; set; }
     }
 }

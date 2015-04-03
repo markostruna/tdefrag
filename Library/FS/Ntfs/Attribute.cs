@@ -4,70 +4,55 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TDefragWpf.Library.FS.Ntfs;
 
 namespace TDefragLib.FileSystem.Ntfs
 {
-    [Flags]
-    public enum AttributeFlags
-    {
-        Compressed = 0x0001,
-        Encrypted = 0x4000,
-        Sparse = 0x8000
-    }
-
-    [DebuggerDisplay("{Type}: LEN={Length} ")]
+    [DebuggerDisplay("{AttributeType}: LEN={Length} ")]
     public class Attribute : IAttribute
     {
-        protected Attribute()
+        public static Attribute Parse(BinaryReader reader)
         {
+            if (reader == null)
+                return null;
+
+            Attribute attribute = new Attribute();
+
+            attribute.InternalParse(reader);
+
+            return attribute;
         }
-
-        public AttributeType Type
-        { get; private set; }
-
-        public UInt32 Length
-        { get; private set; }
-
-        public Boolean IsNonresident
-        { get; private set; }
-
-        public Byte NameLength
-        { get; private set; }
-
-        public UInt16 NameOffset
-        { get; private set; }
-
-        public AttributeFlags Flags
-        { get; private set; }
-
-        public UInt16 Number
-        { get; private set; }
 
         protected void InternalParse(BinaryReader reader)
         {
             if (reader == null)
-            {
                 return;
-            }
 
-            Type = AttributeType.Parse(reader);
-            if (Type.Type != AttributeEnumType.EndOfList)
-            {
-                Length = reader.ReadUInt32();
-                IsNonresident = reader.ReadBoolean();
-                NameLength = reader.ReadByte();
-                NameOffset = reader.ReadUInt16();
-                Flags = (AttributeFlags)reader.ReadUInt16();
-                Number = reader.ReadUInt16();
-            }
+            AttributeType = AttributeType.Parse(reader);
+
+            if (AttributeType.IsEndOfList)
+                return;
+
+            Length = reader.ReadUInt32();
+            IsNonresident = reader.ReadBoolean();
+            NameLength = reader.ReadByte();
+            NameOffset = reader.ReadUInt16();
+            Flags = (AttributeFlags)reader.ReadUInt16();
+            Number = reader.ReadUInt16();
         }
 
-        public static Attribute Parse(BinaryReader reader)
-        {
-            Attribute attribute = new Attribute();
-            attribute.InternalParse(reader);
-            return attribute;
-        }
+        public AttributeType AttributeType { get; set; }
 
+        public UInt32 Length { get; set; }
+
+        public Boolean IsNonresident { get; set; }
+
+        public Byte NameLength { get; set; }
+
+        public UInt16 NameOffset { get; set; }
+
+        public AttributeFlags Flags { get; set; }
+
+        public UInt16 Number { get; set; }
     }
 }

@@ -91,6 +91,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Library\DiskMap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -104,12 +108,17 @@
     <Compile Include="Library\Common\Fragment.cs" />
     <Compile Include="Library\Common\FragmentList.cs" />
     <Compile Include="Library\Common\ItemStruct.cs" />
+    <Compile Include="Library\DiskMap.xaml.cs">
+      <DependentUpon>DiskMap.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Library\FS\FileSystem.cs" />
     <Compile Include="Library\FS\IBootSector.cs" />
     <Compile Include="Library\FS\KnownBootSector\BaseBootSector.cs" />
     <Compile Include="Library\FS\KnownBootSector\FatBootSector.cs" />
     <Compile Include="Library\FS\KnownBootSector\NtfsBootSector.cs" />
     <Compile Include="Library\FS\Ntfs\Attribute.cs" />
+    <Compile Include="Library\FS\Ntfs\AttributeEnumTypeEntry.cs" />
+    <Compile Include="Library\FS\Ntfs\AttributeFlags.cs" />
     <Compile Include="Library\FS\Ntfs\AttributeList.cs" />
     <Compile Include="Library\FS\Ntfs\AttributeType.cs" />
     <Compile Include="Library\FS\Ntfs\BitmapFile.cs" />
@@ -129,6 +138,7 @@
     <Compile Include="Library\FS\Ntfs\StreamList.cs" />
     <Compile Include="Library\FS\Volume.cs" />
     <Compile Include="Library\Helper\DiskBuffer.cs" />
+    <Compile Include="Library\Helper\NtfsVolumeDataBuffer.cs" />
     <Compile Include="Library\Helper\OverlappedBuilder.cs" />
     <Compile Include="Library\Helper\SystemErrorCodes.cs" />
     <Compile Include="Library\Helper\Volume.cs" />
@@ -136,6 +146,9 @@
     <Compile Include="Library\Information.cs" />
     <Compile Include="Library\MainLib.cs" />
     <Compile Include="Library\Ntfs\Scan.cs" />
+    <Compile Include="Library\Structures\Excludes.cs" />
+    <Compile Include="Library\Structures\RunningStates.cs" />
+    <Compile Include="Library\Structures\SquareCluster.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

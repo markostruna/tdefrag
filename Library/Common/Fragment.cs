@@ -35,16 +35,14 @@ namespace TDefragLib
         /// <summary>
         /// Is this a logical fragment or a virtual one
         /// </summary>
-        public Boolean IsLogical
-        { get { return LogicalClusterNumber != VirtualFragment; } }
-        public Boolean IsVirtual
-        { get { return LogicalClusterNumber == VirtualFragment; } }
+        public Boolean IsLogical { get { return LogicalClusterNumber != VirtualFragment; } }
+
+        public Boolean IsVirtual { get { return LogicalClusterNumber == VirtualFragment; } }
 
         /// <summary>
         /// Logical cluster number, location on disk.
         /// </summary>
-        public UInt64 LogicalClusterNumber
-        { get; private set; }
+        public UInt64 LogicalClusterNumber { get; set; }
 
         /// <summary>
         /// Virtual cluster number, offset from beginning of file.
@@ -53,30 +51,25 @@ namespace TDefragLib
         /// of the file. The data runs map the VCNs to LCNs so that the file
         /// can be located on the volume. 
         /// </summary>
-        public UInt64 VirtualClusterNumber
-        { get; private set; }
+        public UInt64 VirtualClusterNumber { get; set; }
 
         /// <summary>
         /// Length of this fragment in clusters
         /// </summary>
-        public UInt64 Length
-        { get; private set; }
+        public UInt64 Length { get; set; }
 
         /// <summary>
         /// Virtual cluster number of next fragment.
         /// </summary>
-        public UInt64 NextVirtualClusterNumber
-        { get { return VirtualClusterNumber + Length; } }
+        public UInt64 NextVirtualClusterNumber { get { return VirtualClusterNumber + Length; } }
 
         /// <summary>
         /// Logical cluster number of next fragment.
         /// </summary>
-        public UInt64 NextLogicalClusterNumber
-        { get { return LogicalClusterNumber + Length; } }
+        public UInt64 NextLogicalClusterNumber { get { return LogicalClusterNumber + Length; } }
 
-        public ItemStruct Item
-        { get; set; }
+        public ItemStruct Item { get; set; }
 
-        public eClusterState ClusterState;
+        public eClusterState ClusterState { get; set; }
     };
 }

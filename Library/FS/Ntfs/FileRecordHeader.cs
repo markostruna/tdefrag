@@ -10,77 +10,82 @@ namespace TDefragLib.FileSystem.Ntfs
 {
     public class FileRecordHeader
     {
-        private FileRecordHeader()
-        { }
-
         public static FileRecordHeader Parse(BinaryReader reader)
         {
             if (reader == null)
-            {
                 return null;
-            }
 
             FileRecordHeader r = new FileRecordHeader();
 
             r.RecordHeader = RecordHeader.Parse(reader);
+
             r.SequenceNumber = reader.ReadUInt16();
             r.LinkCount = reader.ReadUInt16();
             r.AttributeOffset = reader.ReadUInt16();
             r.Flags = reader.ReadUInt16();
             r.BytesInUse = reader.ReadUInt32();
             r.BytesAllocated = reader.ReadUInt32();
+
             r.BaseFileRecord = InodeReference.Parse(reader);
+            
             r.NextAttributeNumber = reader.ReadUInt16();
             r.Padding = reader.ReadUInt16();
             r.MasterFileTableRecordNumber = reader.ReadUInt32();
             r.UpdateSequenceNumber = reader.ReadUInt16();
+            
             return r;
         }
 
-        public RecordHeader RecordHeader
-        { get; private set; }
+        public RecordHeader RecordHeader { get; set; }
 
-        public UInt16 SequenceNumber            /* Sequence number */
-        { get; private set; }
+        public UInt16 SequenceNumber { get; set; }
 
-        public UInt16 LinkCount                 /* Hard link count */
-        { get; private set; }
+        public UInt16 LinkCount { get; set; }
 
-        public UInt16 AttributeOffset           /* Offset to the first Attribute */
-        { get; private set; }
+        public UInt16 AttributeOffset { get; set; }
 
-        public UInt16 Flags                     /* Flags. bit 1 = in use, bit 2 = directory, bit 4 & 8 = unknown. */
-        { get; private set; }
+        /// <summary>
+        /// Flags. bit 1 = in use, bit 2 = directory, bit 4 & 8 = unknown.
+        /// </summary>
+        public UInt16 Flags { get; set; }
 
-        public Boolean IsInUse
-        { private set { } get { return ((Flags & 1) == 1); } }
+        public Boolean IsInUse { get { return ((Flags & 1) == 1); } }
 
-        public Boolean IsDirectory
-        { private set { } get { return ((Flags & 2) == 2); } }
+        public Boolean IsDirectory { get { return ((Flags & 2) == 2); } }
 
-        public Boolean IsUnknown
-        { private set { } get { return ((Flags & 252) != 0); } }
+        public Boolean IsUnknown { get { return ((Flags & 252) != 0); } }
 
-        public UInt32 BytesInUse                /* Real size of the FILE record */
-        { get; private set; }
+        /// <summary>
+        /// Real size of the FILE record 
+        /// </summary>
+        public UInt32 BytesInUse { get; set; }
 
-        public UInt32 BytesAllocated            /* Allocated size of the FILE record */
-        { get; private set; }
+        /// <summary>
+        /// Allocated size of the FILE record
+        /// </summary>
+        public UInt32 BytesAllocated { get; set; }
 
-        public InodeReference BaseFileRecord    /* File reference to the base FILE record */
-        { get; private set; }
+        /// <summary>
+        /// File reference to the base FILE record
+        /// </summary>
+        public InodeReference BaseFileRecord { get; set; }
 
-        public UInt16 NextAttributeNumber       /* Next Attribute Id */
-        { get; private set; }
+        /// <summary>
+        /// Next Attribute Id
+        /// </summary>
+        public UInt16 NextAttributeNumber { get; set; }
 
-        public UInt16 Padding                   /* Align to 4 UCHAR boundary (XP) */
-        { get; private set; }
+        /// <summary>
+        /// Align to 4 UCHAR boundary (XP)
+        /// </summary>
+        public UInt16 Padding { get; set; }
 
-        public UInt32 MasterFileTableRecordNumber /* Number of this MFT Record (XP) */
-        { get; private set; }
+        /// <summary>
+        /// Number of this MFT Record (XP)
+        /// </summary>
+        public UInt32 MasterFileTableRecordNumber { get; set; }
 
-        public UInt16 UpdateSequenceNumber      /*  */
-        { get; private set; }
+        public UInt16 UpdateSequenceNumber { get; set; }
 
     }
 }

@@ -53,7 +53,7 @@ namespace TDefragLib.FileSystem.Ntfs
             Name = name;
             Type = type;
             Fragments = new FragmentCollection();
-            Clusters = 0;
+            NumClusters = 0;
         }
 
         public override string ToString()
@@ -61,24 +61,29 @@ namespace TDefragLib.FileSystem.Ntfs
             return String.Format("Stream:{0} [{1}]", Name, Type);
         }
 
-        public void ParseRunData(BinaryReader runData, UInt64 startingVirtualClusterNumber)
+        public void ParseRunData(BinaryReader reader, UInt64 startingVirtualClusterNumber)
         {
+            if (reader == null)
+                return;
+
             // Walk through the RunData and add the extents.
             Int64 LogicalClusterNumber = 0;
             UInt64 VirtualClusterNumber = startingVirtualClusterNumber;
-            UInt64 runLength;
-            Int64 runOffset;
-            while (RunData.Parse(runData, out runLength, out runOffset))
+            UInt64 runLength = 0;
+            Int64 runOffset = 0;
+            
+            while (RunData.Parse(reader, out runLength, out runOffset))
             {
                 // the offset is relative to the starting cluster of the previous run
                 LogicalClusterNumber += runOffset;
 
                 if (runOffset != 0)
                 {
-                    Clusters += runLength;
+                    NumClusters += runLength;
                 }
 
                 Fragments.Add(LogicalClusterNumber, VirtualClusterNumber, runLength, runOffset == 0);
+                
                 VirtualClusterNumber += runLength;
             }
         }
@@ -100,26 +105,19 @@ namespace TDefragLib.FileSystem.Ntfs
             // FileName. The Data stream is the default stream of regular files.
             //
             if ((String.IsNullOrEmpty(streamName)) && Type.IsData)
-            {
                 return fileName;
-            }
 
             // If the StreamName is "$I30" and the StreamType is AttributeIndexAllocation then
             // return only the FileName. This must be a directory, and the Microsoft 
             // defragmentation API will automatically select this stream.
             //
             if ((streamName == "$I30") && Type.IsIndexAllocation)
-            {
                 return fileName;
-            }
 
             //  If the StreamName is empty and the StreamType is Data then return only the
             //  FileName. The Data stream is the default stream of regular files.
-            if (String.IsNullOrEmpty(streamName) &&
-                String.IsNullOrEmpty(Type.StreamName))
-            {
+            if (String.IsNullOrEmpty(streamName) && String.IsNullOrEmpty(Type.StreamName))
                 return fileName;
-            }
 
             Int32 Length = 3;
 
@@ -153,32 +151,27 @@ namespace TDefragLib.FileSystem.Ntfs
         /// <summary>
         /// "stream name" 
         /// </summary>
-        public String Name
-        { get; private set; }
+        public String Name { get; set; }
 
         /// <summary>
         /// "stream type"
         /// </summary>
-        public AttributeType Type
-        { get; private set; }
+        public AttributeType Type { get; set; }
 
         /// <summary>
         /// The fragments of the stream.
         /// </summary>
-        public FragmentCollection Fragments
-        { get; private set; }
+        public FragmentCollection Fragments { get; set; }
 
         /// <summary>
         /// Total number of clusters.
         /// </summary>
-        public UInt64 Clusters
-        { get; private set; }
+        public UInt64 NumClusters { get; set; }
 
         /// <summary>
         ///  Total number of bytes.
         /// </summary>
-        public UInt64 TotalBytes
-        { get; set; }
+        public UInt64 TotalBytes { get; set; }
 
     }
 }

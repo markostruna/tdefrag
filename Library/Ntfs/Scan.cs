@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Threading;
 using TDefragWpf.Properties;
 using System.Globalization;
+using TDefragWpf.Library.FS.Ntfs;
 
 namespace TDefragLib.Ntfs
 {
@@ -432,7 +433,7 @@ namespace TDefragLib.Ntfs
                 Item.Size = stream.TotalBytes;
 
                 //Item.Clusters = 0;
-                Item.CountClusters = stream.Clusters;
+                Item.CountClusters = stream.NumClusters;
 
                 Item.CreationTime = inodeData.CreationTime;
                 Item.MasterFileTableChangeTime = inodeData.MasterFileTableChangeTime;
@@ -458,14 +459,14 @@ namespace TDefragLib.Ntfs
                     MainLibraryClass.Data.CountAllBytes += inodeData.TotalBytes;
                 }
 
-                MainLibraryClass.Data.CountAllClusters += stream.Clusters;
+                MainLibraryClass.Data.CountAllClusters += stream.NumClusters;
 
                 if (Item.FragmentCount > 1)
                 {
                     MainLibraryClass.Data.CountFragmentedItems++;
                     MainLibraryClass.Data.CountFragmentedBytes += inodeData.TotalBytes;
 
-                    if (stream != null) MainLibraryClass.Data.CountFragmentedClusters += stream.Clusters;
+                    if (stream != null) MainLibraryClass.Data.CountFragmentedClusters += stream.NumClusters;
                 }
 
                 // Add the item record to the sorted item tree in memory.
@@ -580,6 +581,101 @@ namespace TDefragLib.Ntfs
             return Result;
         }
 
+        public static List<AttributeEnumTypeEntry> attributeEnumTypesList { get; set; }
+
+        public static List<AttributeEnumTypeEntry> AttributeEnumTypesList
+        {
+            get
+            {
+                if (attributeEnumTypesList != null)
+                    return attributeEnumTypesList;
+
+                attributeEnumTypesList = new List<AttributeEnumTypeEntry>();
+
+                // the attribute type code may contain a special value -1 (or 0xFFFFFFFF) which 
+                // may be present as a filler to mark the end of an attribute list. In that case,
+                // the rest of the attribute should be ignored, and the attribute list should not
+                // be scanned further.
+
+                // http://msdn.microsoft.com/en-us/library/bb470038%28VS.85%29.aspx
+                // It is a DWORD containing enumerated values
+
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0xFFFFFFFF, AttributeEnumType.EndOfList, String.Empty));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x00, AttributeEnumType.Invalid, String.Empty));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x10, AttributeEnumType.StandardInformation, "$STANDARD_INFORMATION"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x20, AttributeEnumType.AttributeList, "$ATTRIBUTE_LIST"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x30, AttributeEnumType.FileName, "$FILE_NAME"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x40, AttributeEnumType.ObjectId, "$OBJECT_ID"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x50, AttributeEnumType.SecurityDescriptor, "$SECURITY_DESCRIPTOR"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x60, AttributeEnumType.VolumeName, "$VOLUME_NAME"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x70, AttributeEnumType.VolumeInformation, "$VOLUME_INFORMATION"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x80, AttributeEnumType.Data, "$DATA"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x90, AttributeEnumType.IndexRoot, "$INDEX_ROOT"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0xA0, AttributeEnumType.IndexAllocation, "$INDEX_ALLOCATION"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0xB0, AttributeEnumType.Bitmap, "$BITMAP"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0xC0, AttributeEnumType.ReparsePoint, "$REPARSE_POINT"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0xD0, AttributeEnumType.EAInformation, "$EA_INFORMATION"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0xE0, AttributeEnumType.EA, "$EA"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0xF0, AttributeEnumType.PropertySet, "$PROPERTY_SET"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0x100, AttributeEnumType.LoggedUtilityStream, "$LOGGED_UTILITY_STREAM"));
+                attributeEnumTypesList.Add(new AttributeEnumTypeEntry(0xFF, AttributeEnumType.All, String.Empty));
+
+                return attributeEnumTypesList;
+            }
+        }
+
+        public static Dictionary<UInt32, Int32> attributeEnumTypesListMapping { get; set; }
+
+        public static Dictionary<UInt32, Int32> AttributeEnumTypesListMapping
+        {
+            get
+            {
+                if (attributeEnumTypesListMapping != null)
+                    return attributeEnumTypesListMapping;
+
+                attributeEnumTypesListMapping = new Dictionary<UInt32, Int32>();
+
+                // the attribute type code may contain a special value -1 (or 0xFFFFFFFF) which 
+                // may be present as a filler to mark the end of an attribute list. In that case,
+                // the rest of the attribute should be ignored, and the attribute list should not
+                // be scanned further.
+
+                // http://msdn.microsoft.com/en-us/library/bb470038%28VS.85%29.aspx
+                // It is a DWORD containing enumerated values
+
+                attributeEnumTypesListMapping.Add(0xFFFFFFFF, 0);
+                attributeEnumTypesListMapping.Add(0x00, 1);
+                attributeEnumTypesListMapping.Add(0x10, 2);
+                attributeEnumTypesListMapping.Add(0x20, 3);
+                attributeEnumTypesListMapping.Add(0x30, 4);
+                attributeEnumTypesListMapping.Add(0x40, 5);
+                attributeEnumTypesListMapping.Add(0x50, 6);
+                attributeEnumTypesListMapping.Add(0x60, 7);
+                attributeEnumTypesListMapping.Add(0x70, 8);
+                attributeEnumTypesListMapping.Add(0x80, 9);
+                attributeEnumTypesListMapping.Add(0x90, 10);
+                attributeEnumTypesListMapping.Add(0xA0, 11);
+                attributeEnumTypesListMapping.Add(0xB0, 12);
+                attributeEnumTypesListMapping.Add(0xC0, 13);
+                attributeEnumTypesListMapping.Add(0xD0, 14);
+                attributeEnumTypesListMapping.Add(0xE0, 15);
+                attributeEnumTypesListMapping.Add(0xF0, 16);
+                attributeEnumTypesListMapping.Add(0x100, 17);
+                attributeEnumTypesListMapping.Add(0xFF, 18);
+
+                return attributeEnumTypesListMapping;
+            }
+        }
+
+        public static AttributeEnumTypeEntry GetAttributeEnumEntry(UInt32 typeCode)
+        {
+            //AttributeEnumTypeEntry entry = AttributeEnumTypesList.Select(a => a).Where(a => a.TypeCode == typeCode).First();
+
+            AttributeEnumTypeEntry entry = AttributeEnumTypesList[AttributeEnumTypesListMapping[typeCode]];
+
+            return entry;
+        }
+
         /// <summary>
         /// Process a list of attributes and store the gathered information in the Item
         /// struct. Return FALSE if an error occurred.
@@ -612,34 +708,42 @@ namespace TDefragLib.Ntfs
             {
                 attribute = diskBuffer.GetAttribute(position + offset);
 
-                if (attribute.Type.IsEndOfList) break;
+                AttributeEnumTypeEntry entry = GetAttributeEnumEntry(attribute.AttributeType.TypeCode);
+
+                attribute.AttributeType.Type = entry.Type;
+                attribute.AttributeType.StreamName = entry.StreamName;
+
+                if (attribute.AttributeType.IsEndOfList) break;
 
                 // Exit the loop if end-marker.
-                if ((offset + 4 <= bufLength) && attribute.Type.IsInvalid) break;
+                if ((offset + 4 <= bufLength) && attribute.AttributeType.IsInvalid) break;
 
                 if ((offset + 4 > bufLength) || (attribute.Length < 3) || (offset + attribute.Length > bufLength))
-                {
                     ShowLogMessage(String.Format("Error: attribute in m_iNode {0:G} is bigger than the data, the MFT may be corrupt.", inodeData.Inode));
-                }
 
                 // Skip AttributeList's for now.
-                if (attribute.Type.IsAttributeList) continue;
+                //if (attribute.AttributeType.IsAttributeList) continue;
 
                 // If the Instance does not equal the m_attributeNumber then ignore the attribute.
                 // This is used when an AttributeList is being processed and we only want a specific instance.
-
-                if ((instance != UInt16.MaxValue) && (instance != attribute.Number)) continue;
+                if ((instance != UInt16.MaxValue) && (instance != attribute.Number) && (!attribute.AttributeType.IsAttributeList)) continue;
 
 
                 diskBuffer.ReaderPosition = position + offset;
 
-                if (attribute.IsNonresident)
+                if (!attribute.AttributeType.IsAttributeList)
                 {
-                    Result = ParseNonResidentAttribute(inodeData, diskBuffer, offset, attribute, position);
+                    if (attribute.IsNonresident)
+                        Result = ParseNonResidentAttribute(inodeData, diskBuffer, offset, attribute, position);
+                    else
+                        Result = ParseResidentAttribute(inodeData, diskBuffer, offset, attribute, position);
                 }
                 else
                 {
-                    Result = ParseResidentAttribute(inodeData, diskBuffer, offset, attribute, position);
+                    if (attribute.IsNonresident)
+                        Result = ParseNonResidentAttributesFull(diskInfo, inodeData, diskBuffer, depth, attribute, position, offset);
+                    else
+                        Result = ParseResidentAttributesFull(diskInfo, inodeData, diskBuffer, depth, position, offset);
                 }
 
                 if (Result == false)
@@ -654,38 +758,33 @@ namespace TDefragLib.Ntfs
             // defined in the DATA attribute, and/or contain a continuation of the DATA or
             // BITMAP attributes.
             //
-            for (UInt32 offset = 0; offset < bufLength; offset += attribute.Length)
-            {
-                attribute = diskBuffer.GetAttribute(position + offset);
+            //for (UInt32 offset = 0; offset < bufLength; offset += attribute.Length)
+            //{
+            //    attribute = diskBuffer.GetAttribute(position + offset);
 
-                if (attribute.Type.IsEndOfList || attribute.Type.IsInvalid)
-                {
-                    break;
-                }
+            //    AttributeEnumTypeEntry entry = GetAttributeEnumEntry(attribute.AttributeType.TypeCode);
 
-                if (!attribute.Type.IsAttributeList)
-                {
-                    continue;
-                }
+            //    attribute.AttributeType.Type = entry.Type;
+            //    attribute.AttributeType.StreamName = entry.StreamName;
 
-                //ShowDebug(6, String.Format("  Attribute {0:G}: {1:G}", attribute.Number, attribute.Type.GetStreamTypeName()));
+            //    if (attribute.AttributeType.IsEndOfList || attribute.AttributeType.IsInvalid)
+            //        break;
 
-                diskBuffer.ReaderPosition = position + offset;
+            //    if (!attribute.AttributeType.IsAttributeList)
+            //        continue;
 
-                if (attribute.IsNonresident)
-                {
-                    Result = ParseNonResidentAttributesFull(diskInfo, inodeData, diskBuffer, depth, attribute, position, offset);
-                }
-                else
-                {
-                    Result = ParseResidentAttributesFull(diskInfo, inodeData, diskBuffer, depth, position, offset);
-                }
+            //    //ShowDebug(6, String.Format("  Attribute {0:G}: {1:G}", attribute.Number, attribute.Type.GetStreamTypeName()));
+
+            //    diskBuffer.ReaderPosition = position + offset;
+
+            //    if (attribute.IsNonresident)
+            //        Result = ParseNonResidentAttributesFull(diskInfo, inodeData, diskBuffer, depth, attribute, position, offset);
+            //    else
+            //        Result = ParseResidentAttributesFull(diskInfo, inodeData, diskBuffer, depth, position, offset);
                 
-                if (Result == false)
-                {
-                    FunctionResult = false;
-                }
-            }
+            //    if (Result == false)
+            //        FunctionResult = false;
+            //}
 
             return FunctionResult;
         }
@@ -700,7 +799,7 @@ namespace TDefragLib.Ntfs
             NonresidentAttribute nonResidentAttribute = diskBuffer.GetNonResidentAttribute(diskBuffer.ReaderPosition);
 
             // Save the length (number of bytes) of the data.
-            if (attribute.Type.IsData && (inodeData.TotalBytes == 0))
+            if (attribute.AttributeType.IsData && (inodeData.TotalBytes == 0))
             {
                 inodeData.TotalBytes = nonResidentAttribute.DataSize;
             }
@@ -714,19 +813,19 @@ namespace TDefragLib.Ntfs
             // Create a new stream with a list of fragments for this data.
             diskBuffer.ReaderPosition = position + offset + nonResidentAttribute.RunArrayOffset;
 
-            Result = TranslateRundataToFragmentlist(inodeData, p1, attribute.Type,
+            Result = TranslateRundataToFragmentlist(inodeData, p1, attribute.AttributeType,
                 diskBuffer, nonResidentAttribute.StartingVirtualClusterNumber, nonResidentAttribute.DataSize);
 
             // Special case: If this is the $MFT then save data.
             if (inodeData.Inode == 0)
             {
-                if (attribute.Type.IsData && (inodeData.MasterFileTableDataFragments == null))
+                if (attribute.AttributeType.IsData && (inodeData.MasterFileTableDataFragments == null))
                 {
                     inodeData.MasterFileTableDataFragments = inodeData.Streams.First().Fragments;
                     inodeData.MasterFileTableDataLength = nonResidentAttribute.DataSize;
                 }
 
-                if (attribute.Type.IsBitmap && (inodeData.MasterFileTableBitmapFragments == null))
+                if (attribute.AttributeType.IsBitmap && (inodeData.MasterFileTableBitmapFragments == null))
                 {
                     inodeData.MasterFileTableBitmapFragments = inodeData.Streams.First().Fragments;
                     inodeData.MasterFileTableBitmapLength = nonResidentAttribute.DataSize;
@@ -753,7 +852,7 @@ namespace TDefragLib.Ntfs
             FileNameAttribute fileNameAttribute;
 
             // The AttributeFileName (0x30) contains the filename and the link to the parent directory.
-            if (attribute.Type.IsFileName)
+            if (attribute.AttributeType.IsFileName)
             {
                 fileNameAttribute = diskBuffer.GetFileNameAttribute(diskBuffer.ReaderPosition);
 
@@ -766,7 +865,7 @@ namespace TDefragLib.Ntfs
 
             //  The AttributeStandardInformation (0x10) contains the m_creationTime,
             //  m_lastAccessTime, the m_mftChangeTime, and the file attributes.
-            if (attribute.Type.IsStandardInformation)
+            if (attribute.AttributeType.IsStandardInformation)
             {
                 StandardInformation standardInformation = diskBuffer.GetStandardInformation(diskBuffer.ReaderPosition);
 
@@ -776,7 +875,7 @@ namespace TDefragLib.Ntfs
             }
 
             // The value of the AttributeData (0x80) is the actual data of the file.
-            if (attribute.Type.IsData)
+            if (attribute.AttributeType.IsData)
             {
                 inodeData.TotalBytes = residentAttribute.ValueLength;
             }
@@ -809,7 +908,7 @@ namespace TDefragLib.Ntfs
 
             diskBuffer.ReaderPosition = position + offset + nonResidentAttribute.RunArrayOffset;
 
-            DiskBuffer buffer2 = new DiskBuffer(40000);
+            DiskBuffer buffer2 = new DiskBuffer(Buffer2Length); // 40000
 
             buffer2.Buffer = ReadNonResidentData(diskInfo, diskBuffer,
                 attribute.Length - nonResidentAttribute.RunArrayOffset, 0, Buffer2Length);
@@ -869,7 +968,7 @@ namespace TDefragLib.Ntfs
                 // Reaching the end of the buffer is therefore normal and not an error.
 
                 if (offset + 3 > (Int64)bufLength) break;
-                if (attributeList.Type.IsEndOfList) break;
+                if (attributeList.AttributeType.IsEndOfList) break;
                 if (attributeList.Length < 3) break;
                 if (offset + attributeList.Length > (Int64)bufLength) break;
 
@@ -878,8 +977,6 @@ namespace TDefragLib.Ntfs
                 // some reason the info in the calling m_iNode is duplicated here...).
                 //
                 UInt64 RefInode = attributeList.FileReferenceNumber.BaseInodeNumber;
-                //(UInt64)attributeList.m_fileReferenceNumber.m_iNodeNumberLowPart +
-                //    ((UInt64)attributeList.m_fileReferenceNumber.m_iNodeNumberHighPart << 32);
 
                 if (RefInode == inodeData.Inode) continue;
 
@@ -906,9 +1003,7 @@ namespace TDefragLib.Ntfs
                     diskInfo.InodeToCluster(RefInode));
 
                 if (foundFragment == null)
-                {
                     continue;
-                }
 
                 // Fetch the record of the referenced m_iNode from disk.
                 UInt64 tempVcn = diskInfo.ClusterToBytes(foundFragment.LogicalClusterNumber) + diskInfo.InodeToBytes(RefInode);

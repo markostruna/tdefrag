@@ -9,20 +9,20 @@ namespace TDefragLib.FileSystem.Ntfs
 {
     public class NonresidentAttribute : Attribute
     {
-        private NonresidentAttribute()
-        {
-        }
-
+        /// <summary>
+        /// Parse
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         public static new NonresidentAttribute Parse(BinaryReader reader)
         {
             if (reader == null)
-            {
                 return null;
-            }
 
             NonresidentAttribute a = new NonresidentAttribute();
 
             a.InternalParse(reader);
+            
             a.StartingVirtualClusterNumber = reader.ReadUInt64();
             a.LastVirtualClusterNumber = reader.ReadUInt64();
             a.RunArrayOffset = reader.ReadUInt16();
@@ -32,35 +32,53 @@ namespace TDefragLib.FileSystem.Ntfs
             a.DataSize = reader.ReadUInt64();
             a.InitializedSize = reader.ReadUInt64();
             a.CompressedSize = reader.ReadUInt64();
+
             return a;
         }
 
-        public UInt64 StartingVirtualClusterNumber
-        { get; private set; }
+        /// <summary>
+        /// StartingVirtualClusterNumber
+        /// </summary>
+        public UInt64 StartingVirtualClusterNumber { get; set; }
 
-        public UInt64 LastVirtualClusterNumber
-        { get; private set; }
+        /// <summary>
+        /// LastVirtualClusterNumber
+        /// </summary>
+        public UInt64 LastVirtualClusterNumber { get; set; }
 
-        public UInt16 RunArrayOffset
-        { get; private set; }
+        /// <summary>
+        /// RunArrayOffset
+        /// </summary>
+        public UInt16 RunArrayOffset { get; set; }
 
-        public Byte CompressionUnit
-        { get; private set; }
+        /// <summary>
+        /// CompressionUnit
+        /// </summary>
+        public Byte CompressionUnit { get; set; }
 
-        public Byte[] AlignmentOrReserved/*[5]*/
-        { get; private set; }
+        /// <summary>
+        /// [5]
+        /// </summary>
+        public Byte[] AlignmentOrReserved { get; set; }
 
-        public UInt64 AllocatedSize
-        { get; private set; }
+        /// <summary>
+        /// AllocatedSize
+        /// </summary>
+        public UInt64 AllocatedSize { get; set; }
 
-        public UInt64 DataSize
-        { get; private set; }
+        /// <summary>
+        /// DataSize
+        /// </summary>
+        public UInt64 DataSize { get; set; }
 
-        public UInt64 InitializedSize
-        { get; private set; }
+        /// <summary>
+        /// InitializedSize
+        /// </summary>
+        public UInt64 InitializedSize { get; set; }
 
-        // Only when compressed
-        public UInt64 CompressedSize
-        { get; private set; }
+        /// <summary>
+        /// Only when compressed
+        /// </summary>
+        public UInt64 CompressedSize { get; set; }
     }
 }

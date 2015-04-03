@@ -14,9 +14,9 @@ namespace TDefragLib.FileSystem.Ntfs
         public BitmapFile(Volume volume, DiskInformation diskInfo, FragmentCollection fragments,
             UInt64 bitmapBytes, UInt64 dataBytes)
         {
-            _bitmapBytes = bitmapBytes;
-            _dataBytes = dataBytes;
-            _diskInfo = diskInfo;
+            BitmapBytes = bitmapBytes;
+            DataBytes = dataBytes;
+            DiskInfo = diskInfo;
 
             MasterFileTableBitmapBitArray = volume.Load(diskInfo, fragments);
         }
@@ -28,13 +28,7 @@ namespace TDefragLib.FileSystem.Ntfs
         /// The maximum number of Inodes is primarily determined by the size of the
         /// bitmap. But that is rounded up to 8 Inodes, and the MFT can be shorter.
         /// </summary>
-        public UInt64 MaxInode
-        {
-            get
-            {
-                return Math.Min(_bitmapBytes * 8, _diskInfo.BytesToInode(_dataBytes));
-            }
-        }
+        public UInt64 MaxInode { get { return Math.Min(BitmapBytes * 8, DiskInfo.BytesToInode(DataBytes)); } }
 
         public UInt64 UsedInodes
         {
@@ -54,19 +48,12 @@ namespace TDefragLib.FileSystem.Ntfs
             }
         }
 
-        public BitArray Bits
-        {
-            get
-            {
-                return MasterFileTableBitmapBitArray;
-            }
-        }
+        public BitArray Bits { get { return MasterFileTableBitmapBitArray; } }
 
-        private UInt64 _bitmapBytes;
-        private UInt64 _dataBytes;
-        private DiskInformation _diskInfo;
+        private UInt64 BitmapBytes { get; set; }
+        private UInt64 DataBytes { get; set; }
+        private DiskInformation DiskInfo { get; set; }
 
-        public BitArray MasterFileTableBitmapBitArray
-        { get; private set; }
+        public BitArray MasterFileTableBitmapBitArray { get; set; }
     }
 }
