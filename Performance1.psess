@@ -63,8 +63,8 @@
         <InstrEventExclude>false</InstrEventExclude>
       </PostinstrumentEvent>
       <ProjRef>{6EAEE8F5-B63C-4C65-BFF8-C69049C45ABF}|TDefragWpf.csproj</ProjRef>
-      <ProjPath>TDefragWpf.csproj</ProjPath>
-      <ProjName>TDefragWpf</ProjName>
+      <ProjPath>TDefragWPF.csproj</ProjPath>
+      <ProjName>TDefragWPF</ProjName>
     </ProjBinary>
   </Binaries>
   <Reports>

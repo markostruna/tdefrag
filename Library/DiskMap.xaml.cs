@@ -170,13 +170,11 @@ namespace TDefragWpf
                 drawing = false;
             }
 
-            public void ColorizeSquare(int pos, Color brush)
+            public void ColorizeSquare(int pos, Color brushColor)
             {
-                SolidColorBrush squareBrush = new SolidColorBrush(brush);
-
-                if (squareBrush != squares[pos])
+                if (brushColor != squares[pos].Color)
                 {
-                    squares[pos] = squareBrush;
+                    squares[pos] = new SolidColorBrush(brushColor);
 
                     resetView = true;
                 }

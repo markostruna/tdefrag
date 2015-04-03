@@ -21,8 +21,9 @@ namespace TDefragLib
             Data = new Information();
 
             ItemCollection = new Collection<ItemStruct>();
-            FragmentCollection = new Dictionary<ulong, Fragment>();
 
+            FragmentCollection = new Dictionary<ulong, Fragment>();
+            
             ScanNtfs = new Ntfs.Scan(this);
         }
 
@@ -94,6 +95,9 @@ namespace TDefragLib
 
         SquareCluster[] SquareClusterStates { get; set; }
 
+        /// <summary>
+        /// InitDiskSquareStructures
+        /// </summary>
         private void InitDiskSquareStructures()
         {
             clustersPerSquare = (Double)((Double)Data.NumberOfClusters / (Double)NumSquares);
@@ -141,13 +145,16 @@ namespace TDefragLib
 
                 lock (FragmentCollection)
                 {
-                    List<Fragment> frList = newItem.FragmentList.Select(a => a).Where(a => a.IsLogical).ToList();
+                    //List<Fragment> frList = newItem.FragmentList.Select(a => a).Where(a => a.IsLogical).ToList();
                         //(from fr in newItem.FragmentList
                         // where fr.IsLogical
                         // select fr).ToList();
 
-                    foreach (Fragment fr in frList)
+                    foreach (Fragment fr in newItem.FragmentList)
                     {
+                        if (fr.IsVirtual)
+                            continue;
+
                         fr.Item = newItem;
                         fr.ClusterState = eClusterState.Free;
 
@@ -199,7 +206,8 @@ namespace TDefragLib
                 UInt64 Vcn = fragment.VirtualClusterNumber;
 
                 SegmentBegin = 0;
-                SegmentEnd = Math.Min(fragment.Length, Data.CountAllClusters - RealVcn);
+                SegmentEnd = fragment.Length;
+                //SegmentEnd = Math.Min(fragment.Length, Data.CountAllClusters - RealVcn);
 
                 // Walk through all the segments of the file. A segment is usually the same as a fragment,
                 // but if a fragment spans across a boundary then we must determine the color of the left 
@@ -210,63 +218,62 @@ namespace TDefragLib
                 {
                     // Determine the color with which to draw this segment.
 
-                    if (revertColoring == false)
+                    //if (revertColoring == false)
                     {
                         ClusterState = eClusterState.Unfragmented;
 
-                        if (item.SpaceHog) ClusterState = eClusterState.SpaceHog;
-                        if (Fragmented) ClusterState = eClusterState.Fragmented;
-                        if (item.Unmovable) ClusterState = eClusterState.Unmovable;
-                        if (item.Exclude) ClusterState = eClusterState.Unmovable;
+                        if (item.Exclude) 
+                            ClusterState = eClusterState.Unmovable;
+                        else if (item.Unmovable) 
+                            ClusterState = eClusterState.Unmovable;
+                        else if (Fragmented)
+                            ClusterState = eClusterState.Fragmented;
+                        else if (item.SpaceHog)
+                            ClusterState = eClusterState.SpaceHog;
 
-                        if ((Vcn + SegmentBegin < busyOffset) &&
-                            (Vcn + SegmentEnd > busyOffset))
-                        {
-                            SegmentEnd = busyOffset - Vcn;
-                        }
+                        //if ((Vcn + SegmentBegin < busyOffset) &&
+                        //    (Vcn + SegmentEnd > busyOffset))
+                        //{
+                        //    SegmentEnd = busyOffset - Vcn;
+                        //}
 
-                        if ((Vcn + SegmentBegin >= busyOffset) &&
-                            (Vcn + SegmentBegin < busyOffset + busySize))
-                        {
-                            if (SegmentEnd > busyOffset + busySize - Vcn)
-                            {
-                                SegmentEnd = busyOffset + busySize - Vcn;
-                            }
+                        //if ((Vcn + SegmentBegin >= busyOffset) &&
+                        //    (Vcn + SegmentBegin < busyOffset + busySize))
+                        //{
+                        //    if (SegmentEnd > busyOffset + busySize - Vcn)
+                        //    {
+                        //        SegmentEnd = busyOffset + busySize - Vcn;
+                        //    }
 
-                            ClusterState = eClusterState.Busy;
-                        }
+                        //    ClusterState = eClusterState.Busy;
+                        //}
                     }
-                    else
-                    {
-                        ClusterState = eClusterState.Free;
+                    //else
+                    //{
+                    //    ClusterState = eClusterState.Free;
 
-                        for (int i = 0; i < 3; i++)
-                        {
-                            if ((fragment.LogicalClusterNumber + SegmentBegin < Data.MasterFileTableExcludes[i].StartLcn) &&
-                                (fragment.LogicalClusterNumber + SegmentEnd > Data.MasterFileTableExcludes[i].StartLcn))
-                            {
-                                SegmentEnd = Data.MasterFileTableExcludes[i].StartLcn - fragment.LogicalClusterNumber;
-                            }
+                    //    for (int i = 0; i < 3; i++)
+                    //    {
+                    //        if ((fragment.LogicalClusterNumber + SegmentBegin < Data.MasterFileTableExcludes[i].StartLcn) &&
+                    //            (fragment.LogicalClusterNumber + SegmentEnd > Data.MasterFileTableExcludes[i].StartLcn))
+                    //        {
+                    //            SegmentEnd = Data.MasterFileTableExcludes[i].StartLcn - fragment.LogicalClusterNumber;
+                    //        }
 
-                            if ((fragment.LogicalClusterNumber + SegmentBegin >= Data.MasterFileTableExcludes[i].StartLcn) &&
-                                (fragment.LogicalClusterNumber + SegmentBegin < Data.MasterFileTableExcludes[i].EndLcn))
-                            {
-                                if (fragment.LogicalClusterNumber + SegmentEnd > Data.MasterFileTableExcludes[i].EndLcn)
-                                {
-                                    SegmentEnd = Data.MasterFileTableExcludes[i].EndLcn - fragment.LogicalClusterNumber;
-                                }
+                    //        if ((fragment.LogicalClusterNumber + SegmentBegin >= Data.MasterFileTableExcludes[i].StartLcn) &&
+                    //            (fragment.LogicalClusterNumber + SegmentBegin < Data.MasterFileTableExcludes[i].EndLcn))
+                    //        {
+                    //            if (fragment.LogicalClusterNumber + SegmentEnd > Data.MasterFileTableExcludes[i].EndLcn)
+                    //            {
+                    //                SegmentEnd = Data.MasterFileTableExcludes[i].EndLcn - fragment.LogicalClusterNumber;
+                    //            }
 
-                                ClusterState = eClusterState.Mft;
-                            }
-                        }
-                    }
+                    //            ClusterState = eClusterState.Mft;
+                    //        }
+                    //    }
+                    //}
 
-                    // Colorize the segment.
-                    //defragmenter.SetClusterState((Int32)(fragment.Lcn + SegmentBegin), (Int32)(fragment.Lcn + SegmentEnd), ClusterState);
-
-                    //SetClusterState(fragment, isFileError ? eClusterState.Error : ClusterState);
                     SetClusterState(item.LogicalClusterNumber + SegmentBegin, item.LogicalClusterNumber + SegmentEnd, isFileError ? eClusterState.Error : ClusterState);
-                    //defragmenter.SetClusterState(Item, Error ? eClusterState.Error : ClusterState);
 
                     // Next segment
                     SegmentBegin = SegmentEnd;
@@ -277,6 +284,9 @@ namespace TDefragLib
             }
         }
 
+        /// <summary>
+        /// ParseDiskBitmap
+        /// </summary>
         public void ParseDiskBitmap()
         {
             if (Data == null)
@@ -285,8 +295,6 @@ namespace TDefragLib
             }
 
             UInt64 totalClusters = Data.NumberOfClusters;
-
-            //Clusters = new Dictionary<Int32, ClusterState>();
 
             // Fetch a block of cluster data.
 
@@ -335,17 +343,14 @@ namespace TDefragLib
             }
         }
 
+        /// <summary>
+        /// SetClusterState
+        /// </summary>
+        /// <param name="clusterBegin"></param>
+        /// <param name="clusterEnd"></param>
+        /// <param name="clusterState"></param>
         private void SetClusterState(UInt64 clusterBegin, UInt64 clusterEnd, eClusterState clusterState)
         {
-            //for (UInt64 clusterIndex = clusterBegin; clusterIndex <= clusterEnd; clusterIndex++)
-            //{
-            //    Int64 squareIndex = (Int64)((double)clusterIndex / clustersPerSquare);
-
-            //    SquareCluster squareCluster = SquareClusterStates[squareIndex];
-
-            //    squareCluster.ChangeState(clusterState, 1);
-            //}
-
             UInt32 squareIndexBegin = (UInt32)((double)clusterBegin / clustersPerSquare);
             UInt32 squareIndexEnd = (UInt32)((double)clusterEnd / clustersPerSquare);
 
@@ -361,16 +366,7 @@ namespace TDefragLib
 
                     squareCluster.IsDirty = false;
                 }
-
-                //eClusterState newState = squareCluster.GetMaxState();
-
-                //if (squareCluster.currentState != newState)
-                //{
-                //    MainForm.SetClusterState((UInt32)squareIndex, squareCluster.GetMaxState());
-                //    squareCluster.currentState = newState;
-                //}
             }
-            //MainForm.SetClusterState((UInt32)clusterBegin, (UInt32)clusterEnd, (UInt32)Data.NumberOfClusters, clusterState);
         }
 
         public Information Data { get; set; }

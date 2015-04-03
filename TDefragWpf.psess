@@ -69,31 +69,13 @@
   </Binaries>
   <Reports>
     <Report>
-      <Path>TDefragWpf150330.vsp</Path>
+      <Path>TDefragWpf150403.vsp</Path>
     </Report>
     <Report>
-      <Path>TDefragWpf150402.vsp</Path>
+      <Path>TDefragWpf150403(1).vsp</Path>
     </Report>
     <Report>
-      <Path>TDefragWpf150402(1).vsp</Path>
-    </Report>
-    <Report>
-      <Path>TDefragWpf150402(2).vsp</Path>
-    </Report>
-    <Report>
-      <Path>TDefragWpf150402(3).vsp</Path>
-    </Report>
-    <Report>
-      <Path>TDefragWpf150402(4).vsp</Path>
-    </Report>
-    <Report>
-      <Path>TDefragWpf150402(5).vsp</Path>
-    </Report>
-    <Report>
-      <Path>TDefragWpf150402(6).vsp</Path>
-    </Report>
-    <Report>
-      <Path>TDefragWpf150402(7).vsp</Path>
+      <Path>TDefragWpf150403(2).vsp</Path>
     </Report>
   </Reports>
   <Launches>

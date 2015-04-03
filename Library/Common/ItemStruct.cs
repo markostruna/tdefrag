@@ -25,26 +25,14 @@ namespace TDefragLib
         /// Return the location on disk (LCN, Logical
         /// Cluster Number) of an item.
         /// </summary>
-        public UInt64 LogicalClusterNumber
-        {
-            get
-            {
-                return FragmentList.LogicalClusterNumber;
-            }
-        }
+        public UInt64 LogicalClusterNumber { get { return FragmentList.LogicalClusterNumber; } }
 
         /// <summary>
         /// Return the number of fragments in the item.
         /// </summary>
         /// <param name="Item"></param>
         /// <returns></returns>
-        public int FragmentCount
-        {
-            get
-            {
-                return FragmentList.FragmentCount;
-            }
-        }
+        public int FragmentCount { get { return FragmentList.FragmentCount; } }
 
         /// <summary>
         /// Return true if the block in the item starting at Offset with Size clusters
@@ -150,68 +138,104 @@ namespace TDefragLib
             return path;
         }
 
-        public ItemStruct Parent                  /* Parent item. */
-        { set; get; }
+        /// <summary>
+        /// Parent item
+        /// </summary>
+        public ItemStruct Parent { get; set; }
 
-        public ItemStruct Smaller                 /* Next smaller item. */
-        { set; get; }
+        /// <summary>
+        /// Next smaller item
+        /// </summary>
+        public ItemStruct Smaller { get; set; }
 
-        public ItemStruct Bigger                  /* Next bigger item. */
-        { set; get; }
+        /// <summary>
+        /// Next bigger item
+        /// </summary>
+        public ItemStruct Bigger { get; set; }
 
+        /// <summary>
+        /// Long filename
+        /// </summary>
+        public String LongFileName { get; set; }
 
-        public String LongFileName                /* Long filename. */
-        { set; get; }
+        /// <summary>
+        /// Full path on disk, long filenames
+        /// </summary>
+        public String LongPath { get; set; }
 
-        public String LongPath                    /* Full path on disk, long filenames. */
-        { set; get; }
+        /// <summary>
+        /// Short filename (8.3 DOS)
+        /// </summary>
+        public String ShortFileName { get; set; }
 
-        public String ShortFileName               /* Short filename (8.3 DOS). */
-        { set; get; }
+        /// <summary>
+        /// Full path on disk, short filenames
+        /// </summary>
+        public String ShortPath { get; set; }
 
-        public String ShortPath                   /* Full path on disk, short filenames. */
-        { set; get; }
+        /// <summary>
+        /// Total number of bytes
+        /// </summary>
+        public UInt64 Size { get; set; }
 
+        /// <summary>
+        /// Total number of clusters
+        /// </summary>
+        public UInt64 CountClusters { get; set; }
 
-        public UInt64 Size                        /* Total number of bytes. */
-        { set; get; }
+        /// <summary>
+        /// 1 second = 10000000
+        /// </summary>
+        public UInt64 CreationTime { get; set; }
 
-        public UInt64 CountClusters               /* Total number of clusters. */
-        { set; get; }
+        /// <summary>
+        /// MasterFileTableChangeTime
+        /// </summary>
+        public UInt64 MasterFileTableChangeTime { get; set; }
 
-        public UInt64 CreationTime                /* 1 second = 10000000 */
-        { set; get; }
+        /// <summary>
+        /// LastAccessTime
+        /// </summary>
+        public UInt64 LastAccessTime { get; set; }
 
-        public UInt64 MasterFileTableChangeTime
-        { set; get; }
-
-        public UInt64 LastAccessTime
-        { set; get; }
-
-
-        /* List of fragments. */
+        /// <summary>
+        /// List of fragments
+        /// </summary>
         public FragmentCollection FragmentList { get; private set; }
 
-        public UInt64 ParentIndexNode                 /* The Inode number of the parent directory. */
-        { set; get; }
+        /// <summary>
+        /// The Inode number of the parent directory
+        /// </summary>
+        public UInt64 ParentIndexNode { get; set; }
 
-        public ItemStruct ParentDirectory
-        { set; get; }
+        /// <summary>
+        /// ParentDirectory
+        /// </summary>
+        public ItemStruct ParentDirectory { get; set; }
 
-        public Boolean IsDirectory                /* YES: it's a directory. */
-        { set; get; }
+        /// <summary>
+        /// YES: it's a directory
+        /// </summary>
+        public Boolean IsDirectory { get; set; }
 
-        public Boolean Unmovable                  /* YES: file can't/couldn't be moved. */
-        { set; get; }
+        /// <summary>
+        /// YES: file can't/couldn't be moved
+        /// </summary>
+        public Boolean Unmovable { get; set; }
 
-        public Boolean Exclude                    /* YES: file is not to be defragged/optimized. */
-        { set; get; }
+        /// <summary>
+        /// YES: file is not to be defragged/optimized
+        /// </summary>
+        public Boolean Exclude { get; set; }
 
-        public Boolean SpaceHog                   /* YES: file to be moved to end of disk. */
-        { set; get; }
+        /// <summary>
+        /// YES: file to be moved to end of disk
+        /// </summary>
+        public Boolean SpaceHog { get; set; }
 
-        public Boolean Error
-        { set; get; }
-
+        /// <summary>
+        /// Error
+        /// </summary>
+        public Boolean Error { get; set; }
     };
 }

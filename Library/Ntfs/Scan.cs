@@ -18,21 +18,36 @@ namespace TDefragLib.Ntfs
     {
         const UInt64 MFTBUFFERSIZE = 256 * 1024;
 
+        /// <summary>
+        /// Scan
+        /// </summary>
+        /// <param name="parent"></param>
         public Scan(MainLibrary parent)
         {
             MainLibraryClass = parent;
         }
 
+        /// <summary>
+        /// ShowLogMessage
+        /// </summary>
+        /// <param name="message"></param>
         public void ShowLogMessage(String message)
         {
             MainLibraryClass.ShowMessage(message);
         }
 
+        /// <summary>
+        /// UpdateProgress
+        /// </summary>
+        /// <param name="progress"></param>
         public void UpdateProgress(Double progress)
         {
             MainLibraryClass.UpdateProgress(progress);
         }
 
+        /// <summary>
+        /// AnalyzeVolume
+        /// </summary>
         public void AnalyzeVolume()
         {
             // Read the boot block from the disk.
@@ -304,6 +319,7 @@ namespace TDefragLib.Ntfs
 
             return true;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -581,6 +597,8 @@ namespace TDefragLib.Ntfs
             return Result;
         }
 
+        #region Attribute Enum Types
+
         public static List<AttributeEnumTypeEntry> attributeEnumTypesList { get; set; }
 
         public static List<AttributeEnumTypeEntry> AttributeEnumTypesList
@@ -675,6 +693,8 @@ namespace TDefragLib.Ntfs
 
             return entry;
         }
+
+        #endregion
 
         /// <summary>
         /// Process a list of attributes and store the gathered information in the Item
@@ -1158,12 +1178,13 @@ namespace TDefragLib.Ntfs
             return (buffer.Buffer);
         }
 
-        FragmentCollection MftDataFragments = null;
-        FragmentCollection MftBitmapFragments = null;
+        FragmentCollection MftDataFragments { get; set; }
 
-        UInt64 MftDataBytes = 0;
-        UInt64 MftBitmapBytes = 0;
+        FragmentCollection MftBitmapFragments { get; set; }
 
+        UInt64 MftDataBytes { get; set; }
+
+        UInt64 MftBitmapBytes { get; set; }
 
         private MainLibrary MainLibraryClass;
 
