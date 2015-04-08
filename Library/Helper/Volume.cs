@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Threading;
 using TDefragLib.FS.Ntfs;
@@ -13,36 +10,43 @@ namespace TDefragLib.Helper
 {
     public class Volume : IDisposable
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="path"></param>
         public Volume(String path)
         {
             MountPoint = path;
             VolumeHandle = IntPtr.Zero;
         }
 
+        /// <summary>
+        /// ToString
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "Disk: " + _mountPoint;
         }
 
-        private IntPtr VolumeHandle
-        {
-            get;
-            set;
-        }
+        /// <summary>
+        /// VolumeHandle
+        /// </summary>
+        private IntPtr VolumeHandle { get; set; }
 
+        /// <summary>
+        /// Open
+        /// </summary>
         public void Open()
         {
             Close();
             VolumeHandle = UnsafeNativeMethods.OpenVolume(_mountPoint);
         }
 
-        public Boolean IsOpen
-        {
-            get
-            {
-                return VolumeHandle != IntPtr.Zero;
-            }
-        }
+        /// <summary>
+        /// IsOpen
+        /// </summary>
+        public Boolean IsOpen { get { return VolumeHandle != IntPtr.Zero; } }
 
         private String _mountPoint;
 
@@ -99,6 +103,12 @@ namespace TDefragLib.Helper
             return true;
         }
 
+        /// <summary>
+        /// Load
+        /// </summary>
+        /// <param name="diskInfo"></param>
+        /// <param name="fragments"></param>
+        /// <returns></returns>
         public BitArray Load(DiskInformation diskInfo, FragmentCollection fragments)
         {
             UInt64 totalSize = fragments.TotalLength;
@@ -145,24 +155,19 @@ namespace TDefragLib.Helper
             }
         }
 
-        public UnsafeNativeMethods.BitmapData VolumeBitmap
-        {
-            get
-            {
-                return UnsafeNativeMethods.GetVolumeMap(VolumeHandle);
-            }
-        }
+        /// <summary>
+        /// VolumeBitmap
+        /// </summary>
+        public UnsafeNativeMethods.BitmapData VolumeBitmap { get { return UnsafeNativeMethods.GetVolumeMap(VolumeHandle); } }
 
-        public NtfsVolumeDataBuffer NtfsVolumeData
-        {
-            get
-            {
-                return UnsafeNativeMethods.GetNtfsInfo(VolumeHandle);
-            }
-        }
+        /// <summary>
+        /// NtfsVolumeData
+        /// </summary>
+        public NtfsVolumeDataBuffer NtfsVolumeData { get { return UnsafeNativeMethods.GetNtfsInfo(VolumeHandle); } }
 
-
-
+        /// <summary>
+        /// Close
+        /// </summary>
         public void Close()
         {
             if (IsOpen)

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TDefragLib.FileSystem.Ntfs
 {
@@ -11,23 +9,23 @@ namespace TDefragLib.FileSystem.Ntfs
     {
         public StreamCollection()
         {
-            _streams = new List<Stream>();
+            StreamList = new List<Stream>();
         }
 
         public void Add(Stream newStream)
         {
-            _streams.Insert(0, newStream);
+            StreamList.Insert(0, newStream);
         }
 
-        public int Count { get { return _streams.Count; } }
+        public int Count { get { return StreamList.Count; } }
 
-        private IList<Stream> _streams;
+        private IList<Stream> StreamList { get; set; }
 
         #region IEnumerable<Stream> Members
 
         public IEnumerator<Stream> GetEnumerator()
         {
-            return _streams.GetEnumerator();
+            return StreamList.GetEnumerator();
         }
 
         #endregion

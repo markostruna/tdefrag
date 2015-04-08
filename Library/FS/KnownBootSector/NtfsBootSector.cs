@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace TDefragLib.FS.KnownBootSector
@@ -12,6 +10,8 @@ namespace TDefragLib.FS.KnownBootSector
     /// </summary>
     class NtfsBootSector : BaseBootSector
     {
+        private const String NtfsBootSectorSignature = "NTFS    ";
+        
         public NtfsBootSector(byte[] buffer) : base(buffer)
         {
             AssertValid();
@@ -21,8 +21,8 @@ namespace TDefragLib.FS.KnownBootSector
         {
             base.AssertValid();
 
-            // 'NTFS    '
-            Debug.Assert(OemId == 0x202020205346544E);
+            Debug.Assert(OemIdString.Equals(NtfsBootSectorSignature));
+            //Debug.Assert(OemId == 0x202020205346544E);
         }
 
         #region IBootSector Members
@@ -50,6 +50,8 @@ namespace TDefragLib.FS.KnownBootSector
         #endregion
 
         public override UInt64 OemId { get { return BitConverter.ToUInt64(Data, 0x03); } }
+        
+        public String OemIdString { get { return ASCIIEncoding.ASCII.GetString(Data, 0x03, 8); } }
 
         public override ulong Serial { get { return BitConverter.ToUInt64(Data, 72); } }
 

@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Collections;
 using System.Threading;
-using Microsoft.Win32.SafeHandles;
 using TDefrag.Lib.Helper;
-using System.IO;
 using TDefragWpf.Library.Helper;
 
 namespace TDefragLib.Helper

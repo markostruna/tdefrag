@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TDefragLib.FS.Ntfs;
 using TDefragLib.Helper;
-using System.Linq.Expressions;
 
 namespace TDefragLib.FileSystem.Ntfs
 {

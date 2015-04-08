@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TDefragLib.FS.Ntfs;
 using TDefragLib.Helper;
-using System.IO;
 using TDefragLib.FileSystem.Ntfs;
 using System.Diagnostics;
-using System.Threading;
 using TDefragWpf.Properties;
 using System.Globalization;
 using TDefragWpf.Library.FS.Ntfs;

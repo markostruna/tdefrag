@@ -19,6 +19,8 @@ namespace TDefragWpf
     /// </summary>
     public partial class MainWindow : Window
     {
+        Dictionary<eClusterState, Color> MapColorCollection { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -34,6 +36,18 @@ namespace TDefragWpf
             defragLib = new MainLibrary(this);
 
             FillDiskArray();
+
+            MapColorCollection = new Dictionary<eClusterState, Color>();
+
+            MapColorCollection.Add(eClusterState.Allocated, Colors.LightBlue);
+            MapColorCollection.Add(eClusterState.Busy, Colors.Blue);
+            MapColorCollection.Add(eClusterState.Error, Colors.Red);
+            MapColorCollection.Add(eClusterState.Fragmented, Colors.Orange);
+            MapColorCollection.Add(eClusterState.Free, Color.FromRgb(240, 240, 240));
+            MapColorCollection.Add(eClusterState.Mft, Colors.Pink);
+            MapColorCollection.Add(eClusterState.SpaceHog, Colors.DarkCyan);
+            MapColorCollection.Add(eClusterState.Unfragmented, Colors.LightGreen);
+            MapColorCollection.Add(eClusterState.Unmovable, Colors.Yellow);
         }
 
         private Thread defragThread;
@@ -135,9 +149,7 @@ namespace TDefragWpf
                         clusterNum2 = numClusters - 1;
                     }
 
-                    //eClusterState maxClusterState = defragLib.GetMaxState(clusterNum1, clusterNum2);
-                    eClusterState maxClusterState = state;
-                    colorizeSquare(maxClusterState, pos);
+                    diskMap.ColorizeSquare((Int32)pos, MapColorCollection[state]);
 
                     clusterNum1 = clusterNum2 + 1;
                 }
@@ -149,52 +161,19 @@ namespace TDefragWpf
         {
             this.Dispatcher.BeginInvoke(new Action(delegate()
             {
-                colorizeSquare(state, (Int32)pos);
+                diskMap.ColorizeSquare((Int32)pos, MapColorCollection[state]);
             }), DispatcherPriority.Send);
         }
 
-        private void colorizeSquare(eClusterState state, int pos)
-        {
-            Color color = Colors.White;
-
-            switch (state)
-            {
-                case eClusterState.Allocated:
-                    color = Colors.LightBlue;
-                    break;
-                case eClusterState.Busy:
-                    color = Colors.Blue;
-                    break;
-                case eClusterState.Error:
-                    color = Colors.Red;
-                    break;
-                case eClusterState.Fragmented:
-                    color = Colors.Orange;
-                    break;
-                case eClusterState.Free:
-                    color = Color.FromRgb(240, 240, 240);
-                    break;
-                case eClusterState.Mft:
-                    color = Colors.Pink;
-                    break;
-                case eClusterState.SpaceHog:
-                    color = Colors.DarkCyan;
-                    break;
-                case eClusterState.Unfragmented:
-                    color = Colors.LightGreen;
-                    break;
-                case eClusterState.Unmovable:
-                    color = Colors.Yellow;
-                    break;
-            }
-
-            diskMap.ColorizeSquare(pos, color);
-        }
+        //private void colorizeSquare(eClusterState state, int pos)
+        //{
+        //    diskMap.ColorizeSquare(pos, MapColorCollection[state]);
+        //}
 
         private MainLibrary defragLib;
 
-        [DllImport("DwmApi.dll")]
-        public static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref Margins pMarInset);
+        //[DllImport("DwmApi.dll")]
+        //public static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref Margins pMarInset);
 
         [StructLayout(LayoutKind.Sequential)]
         public struct Margins
@@ -205,90 +184,90 @@ namespace TDefragWpf
             public int cyBottomHeight;
         }
 
-        [DllImport("dwmapi.dll", PreserveSig = false)]
-        public static extern void DwmEnableBlurBehindWindow(IntPtr hwnd, ref DWM_BLURBEHIND blurBehind);
+        //[DllImport("dwmapi.dll", PreserveSig = false)]
+        //public static extern void DwmEnableBlurBehindWindow(IntPtr hwnd, ref DWM_BLURBEHIND blurBehind);
 
-        public enum DwmBlurBehindDwFlags
-        {
-            Dwm_bb_enable = 0x00000001,
-            Dwm_bb_blurRegion = 0x00000002,
-            Dwm_bb_transitionOnMaximized = 0x00000004
-        }
+        //public enum DwmBlurBehindDwFlags
+        //{
+        //    Dwm_bb_enable = 0x00000001,
+        //    Dwm_bb_blurRegion = 0x00000002,
+        //    Dwm_bb_transitionOnMaximized = 0x00000004
+        //}
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct DWM_BLURBEHIND
-        {
-            public DwmBlurBehindDwFlags dwFlags;
-            public bool fEnable;
-            public IntPtr hRgnBlur;
-            public bool fTransitionOnMaximized;
-        }
+        //[StructLayout(LayoutKind.Sequential)]
+        //public struct DWM_BLURBEHIND
+        //{
+        //    public DwmBlurBehindDwFlags dwFlags;
+        //    public bool fEnable;
+        //    public IntPtr hRgnBlur;
+        //    public bool fTransitionOnMaximized;
+        //}
 
-        public void EnableBlurBehind(IntPtr hwnd)
-        {
-            // Create and populate the Blur Behind structure
-            DWM_BLURBEHIND bb = new DWM_BLURBEHIND();
+        //public void EnableBlurBehind(IntPtr hwnd)
+        //{
+        //    // Create and populate the Blur Behind structure
+        //    DWM_BLURBEHIND bb = new DWM_BLURBEHIND();
 
-            // Disable Blur Behind and Blur Region;
-            bb.dwFlags = DwmBlurBehindDwFlags.Dwm_bb_enable;
-            bb.fEnable = true;
-            bb.hRgnBlur = IntPtr.Zero;
+        //    // Disable Blur Behind and Blur Region;
+        //    bb.dwFlags = DwmBlurBehindDwFlags.Dwm_bb_enable;
+        //    bb.fEnable = true;
+        //    bb.hRgnBlur = IntPtr.Zero;
 
-            // Disable Blur Behind
-            DwmEnableBlurBehindWindow(hwnd, ref bb);
-        }
+        //    // Disable Blur Behind
+        //    DwmEnableBlurBehindWindow(hwnd, ref bb);
+        //}
 
-        void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Obtain the window handle for WPF application
-                IntPtr mainWindowPtr = new WindowInteropHelper(this).Handle;
-                HwndSource mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
-                mainWindowSrc.CompositionTarget.BackgroundColor = Color.FromArgb(255, 255, 255, 255);
+        //void OnLoaded(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        // Obtain the window handle for WPF application
+        //        IntPtr mainWindowPtr = new WindowInteropHelper(this).Handle;
+        //        HwndSource mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
+        //        mainWindowSrc.CompositionTarget.BackgroundColor = Color.FromArgb(255, 255, 255, 255);
 
-                // Get System Dpi
-                System.Drawing.Graphics desktop = System.Drawing.Graphics.FromHwnd(mainWindowPtr);
-                float DesktopDpiX = desktop.DpiX;
-                //float DesktopDpiY = desktop.DpiY;
+        //        // Get System Dpi
+        //        System.Drawing.Graphics desktop = System.Drawing.Graphics.FromHwnd(mainWindowPtr);
+        //        float DesktopDpiX = desktop.DpiX;
+        //        //float DesktopDpiY = desktop.DpiY;
 
-                // Set Margins
-                Margins margins = new Margins();
+        //        // Set Margins
+        //        Margins margins = new Margins();
 
-                // Extend glass frame into client area
-                // Note that the default desktop Dpi is 96dpi. The  margins are
-                // adjusted for the system Dpi.
-                margins.cxLeftWidth = Convert.ToInt32(-1 * (DesktopDpiX / 96));
-                margins.cxRightWidth = Convert.ToInt32(-1 * (DesktopDpiX / 96));
-                margins.cyTopHeight = Convert.ToInt32(-1 * (DesktopDpiX / 96));
-                margins.cyBottomHeight = Convert.ToInt32(-1 * (DesktopDpiX / 96));
+        //        // Extend glass frame into client area
+        //        // Note that the default desktop Dpi is 96dpi. The  margins are
+        //        // adjusted for the system Dpi.
+        //        margins.cxLeftWidth = Convert.ToInt32(-1 * (DesktopDpiX / 96));
+        //        margins.cxRightWidth = Convert.ToInt32(-1 * (DesktopDpiX / 96));
+        //        margins.cyTopHeight = Convert.ToInt32(-1 * (DesktopDpiX / 96));
+        //        margins.cyBottomHeight = Convert.ToInt32(-1 * (DesktopDpiX / 96));
 
-                //int hr = DwmExtendFrameIntoClientArea(mainWindowSrc.Handle, ref margins);
+        //        //int hr = DwmExtendFrameIntoClientArea(mainWindowSrc.Handle, ref margins);
 
-                //if (hr < 0)
-                //{
-                //    Brush br = Application.Current.MainWindow.Background;
+        //        //if (hr < 0)
+        //        //{
+        //        //    Brush br = Application.Current.MainWindow.Background;
 
-                //    if (br is LinearGradientBrush)
-                //    {
-                //        LinearGradientBrush b1 = br as LinearGradientBrush;
+        //        //    if (br is LinearGradientBrush)
+        //        //    {
+        //        //        LinearGradientBrush b1 = br as LinearGradientBrush;
 
-                //        b1.GradientStops[0].Color = Color.FromArgb(255, 255, 255, 255);
-                //        b1.GradientStops[1].Color = Color.FromArgb(255, 0, 0, 128);
-                //        b1.GradientStops[2].Color = Color.FromArgb(255, 0, 0, 128);
-                //        b1.GradientStops[3].Color = Color.FromArgb(255, 255, 255, 255);
-                //    }
-                //    //DwmExtendFrameIntoClientArea Failed
-                //}
+        //        //        b1.GradientStops[0].Color = Color.FromArgb(255, 255, 255, 255);
+        //        //        b1.GradientStops[1].Color = Color.FromArgb(255, 0, 0, 128);
+        //        //        b1.GradientStops[2].Color = Color.FromArgb(255, 0, 0, 128);
+        //        //        b1.GradientStops[3].Color = Color.FromArgb(255, 255, 255, 255);
+        //        //    }
+        //        //    //DwmExtendFrameIntoClientArea Failed
+        //        //}
 
-                //EnableBlurBehind(mainWindowSrc.Handle);
-            }
-            // If not Vista, paint background white.
-            catch (DllNotFoundException)
-            {
-                Application.Current.MainWindow.Background = Brushes.White;
-            }
-        }
+        //        //EnableBlurBehind(mainWindowSrc.Handle);
+        //    }
+        //    // If not Vista, paint background white.
+        //    catch (DllNotFoundException)
+        //    {
+        //        Application.Current.MainWindow.Background = Brushes.White;
+        //    }
+        //}
 
         private void CloseButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

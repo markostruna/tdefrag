@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TDefragWpf.Library.Common
 {
@@ -24,55 +21,33 @@ namespace TDefragWpf.Library.Common
     {
         public ClusterState(Int32 clusterIndex, eClusterState newState)
         {
-            index = clusterIndex;
+            Index = clusterIndex;
             state = newState;
-            dirty = true;
+            IsDirty = true;
         }
 
-        private Int32 index;
-        public Int32 Index { get { return index; } }
+        public Int32 Index { get; set; }
 
         private eClusterState state;
+
         public eClusterState State
         {
             get { return state; }
             set
             {
                 if (state != value)
-                {
-                    dirty = true;
-                }
+                    IsDirty = true;
 
                 state = value;
             }
         }
 
-        private Boolean dirty;
-        public Boolean Dirty
-        {
-            get { return dirty; }
-            set { dirty = value; }
-        }
+        public Boolean IsDirty { get; set; }
 
-        private Boolean masterFileTable;
-        public Boolean MasterFileTable
-        {
-            get { return masterFileTable; }
-            set { masterFileTable = value; }
-        }
+        public Boolean MasterFileTable { get; set; }
 
-        private Boolean currentyUsed;
-        public Boolean CurrentlyUsed
-        {
-            get { return currentyUsed; }
-            set { currentyUsed = value; }
-        }
+        public Boolean CurrentlyUsed { get; set; }
 
-        private Boolean spaceHog;
-        public Boolean SpaceHog
-        {
-            get { return spaceHog; }
-            set { spaceHog = value; }
-        }
+        public Boolean SpaceHog { get; set; }
     }
 }

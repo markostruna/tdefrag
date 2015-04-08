@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using TDefragLib.FS.KnownBootSector;
 
@@ -12,10 +9,27 @@ namespace TDefragLib.FS
     /// </summary>
     public class Volume
     {
-        private const int BOOT_SECTOR_SIZE = 512;
-        private const UInt16 BOOT_SECTOR_SIGNATURE = 0xAA55;
+        private const int BootSectorLength = 512;
 
-        private IntPtr _handle;
+        private const UInt16 BootSectorSignature = 0xAA55;
+        private const Int32 BootSectorSignatureOffset = 510;
+
+        private const String FileSystemTypeNtfsSignature = "4E-54-46-53";
+        
+        private const Int32 FileSystemTypeNtfsSignatureOffset = 0x03;
+        private const Int32 FileSystemTypeNtfsSignatureLength = 4;
+
+        private const String FileSystemTypeFat32Signature = "Unknown";
+        
+        private const Int32 FileSystemTypeFat32SignatureOffset = 0x52;
+        private const Int32 FileSystemTypeFat32SignatureLength = 5;
+
+        private const String FileSystemTypeFat16Signature = "Unknown";
+        
+        private const Int32 FileSystemTypeFat16SignatureOffset = 0x36;
+        private const Int32 FileSystemTypeFat16SignatureLength = 3;
+
+        private IntPtr VolumeHandle;
 
         /// <summary>
         /// Create a volume by giving a handle
@@ -23,7 +37,7 @@ namespace TDefragLib.FS
         /// <param name="handle"></param>
         public Volume(IntPtr handle)
         {
-            _handle = handle;
+            VolumeHandle = handle;
         }
 
         /// <summary>
@@ -36,12 +50,12 @@ namespace TDefragLib.FS
             {
                 BaseBootSector bootSector = null;
 
-                Byte[] buffer = new Byte[BOOT_SECTOR_SIZE];
+                Byte[] buffer = new Byte[BootSectorLength];
                 Overlapped overlapped = Helper.OverlappedBuilder.Get();
 
-                int bytesRead = Helper.UnsafeNativeMethods.Read(_handle, buffer, 0, BOOT_SECTOR_SIZE, overlapped);
+                int bytesRead = Helper.UnsafeNativeMethods.Read(VolumeHandle, buffer, 0, BootSectorLength, overlapped);
                 
-                if (bytesRead != BOOT_SECTOR_SIZE)
+                if (bytesRead != BootSectorLength)
                     return bootSector;
                 
                 switch (RecognizeType(buffer))
@@ -68,44 +82,27 @@ namespace TDefragLib.FS
         /// <returns>The FS type</returns>
         private FileSystemType RecognizeType(byte[] buffer)
         {
-            FileSystemType fileSystemType = FS.FileSystemType.UnknownType;
-
-            if (BitConverter.ToUInt16(buffer, 510) != BOOT_SECTOR_SIGNATURE)
+            if (BitConverter.ToUInt16(buffer, BootSectorSignatureOffset) != BootSectorSignature)
                 throw new Exception("This seems not to be a valid boot sector!");
 
             String s = String.Empty;
 
-            if (fileSystemType == FS.FileSystemType.UnknownType)
-            {
-                s = BitConverter.ToString(buffer, 0x03, 4);
+            s = BitConverter.ToString(buffer, FileSystemTypeNtfsSignatureOffset, FileSystemTypeNtfsSignatureLength);
 
-                if (s.Equals("4E-54-46-53"))
-                {
-                    fileSystemType = FS.FileSystemType.Ntfs;
-                }
-            }
+            if (s.Equals(FileSystemTypeNtfsSignature))
+                return FS.FileSystemType.Ntfs;
 
-            if (fileSystemType == FS.FileSystemType.UnknownType)
-            {
-                s = BitConverter.ToString(buffer, 0x52, 5);
+            s = BitConverter.ToString(buffer, FileSystemTypeFat32SignatureOffset, FileSystemTypeFat32SignatureLength);
 
-                if (String.IsNullOrEmpty(s))
-                {
-                    fileSystemType = FS.FileSystemType.Fat32;
-                }
-            }
+            if (s.Equals(FileSystemTypeFat32Signature))
+                return FS.FileSystemType.Fat32;
 
-            if (fileSystemType == FS.FileSystemType.UnknownType)
-            {
-                s = BitConverter.ToString(buffer, 0x36, 3);
+            s = BitConverter.ToString(buffer, FileSystemTypeFat16SignatureOffset, FileSystemTypeFat16SignatureLength);
 
-                if (String.IsNullOrEmpty(s))
-                {
-                    fileSystemType = FS.FileSystemType.Fat16;
-                }
-            }
+            if (s.Equals(FileSystemTypeFat16Signature))
+                return FS.FileSystemType.Fat16;
 
-            return fileSystemType;
+            return FS.FileSystemType.UnknownType;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using TDefragLib.Helper;
 using System.Collections;
 using TDefragWpf;
@@ -42,9 +41,7 @@ namespace TDefragLib
         public void StartDefrag(String path, Int64 numberOfSquares)
         {
             if (String.IsNullOrEmpty(path))
-            {
                 return;
-            }
 
             NumSquares = numberOfSquares;
             DefragPath(path);
@@ -105,9 +102,7 @@ namespace TDefragLib
             SquareClusterStates = new SquareCluster[NumSquares];
 
             for (Int32 ii = 0; ii < NumSquares; ii++)
-            {
                 SquareClusterStates[ii] = new SquareCluster();
-            }
         }
 
         /// <summary>
@@ -219,7 +214,7 @@ namespace TDefragLib
                     // Determine the color with which to draw this segment.
 
                     //if (revertColoring == false)
-                    {
+                    //{
                         ClusterState = eClusterState.Unfragmented;
 
                         if (item.Exclude) 
@@ -247,7 +242,7 @@ namespace TDefragLib
 
                         //    ClusterState = eClusterState.Busy;
                         //}
-                    }
+                    //}
                     //else
                     //{
                     //    ClusterState = eClusterState.Free;
@@ -290,9 +285,7 @@ namespace TDefragLib
         public void ParseDiskBitmap()
         {
             if (Data == null)
-            {
                 return;
-            }
 
             UInt64 totalClusters = Data.NumberOfClusters;
 
@@ -358,11 +351,11 @@ namespace TDefragLib
             {
                 SquareCluster squareCluster = SquareClusterStates[squareIndex];
                 
-                squareCluster.ChangeState(clusterState, 1);
+                squareCluster.ChangeState(clusterState);
 
                 if (squareCluster.IsDirty)
                 {
-                    MainForm.SetClusterState((UInt32)squareIndex, squareCluster.currentState);
+                    MainForm.SetClusterState(squareIndex, clusterState);
 
                     squareCluster.IsDirty = false;
                 }

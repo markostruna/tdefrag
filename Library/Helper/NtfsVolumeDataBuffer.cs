@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TDefragWpf.Library.Helper
 {
@@ -31,20 +28,14 @@ namespace TDefragWpf.Library.Helper
 
         public UInt64 MasterFileTableEndLogicalClusterNumber
         {
-            get
-            {
-                return (MasterFileTableStartLogicalClusterNumber + MasterFileTableSizeInClusters);
-            }
+            get { return (MasterFileTableStartLogicalClusterNumber + MasterFileTableSizeInClusters); }
         }
 
         public UInt64 MasterFileTable2StartLogicalClusterNumber { get; set; }
 
         public UInt64 MasterFileTable2EndLogicalClusterNumber
         {
-            get
-            {
-                return (MasterFileTable2StartLogicalClusterNumber + MasterFileTableSizeInClusters);
-            }
+            get { return (MasterFileTable2StartLogicalClusterNumber + MasterFileTableSizeInClusters); }
         }
 
         public UInt64 MasterFileTableSizeInClusters

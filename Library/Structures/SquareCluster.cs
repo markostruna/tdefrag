@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TDefragWpf.Library.Common;
 
 namespace TDefragWpf.Library.Structures
@@ -124,7 +121,7 @@ namespace TDefragWpf.Library.Structures
 
         public bool IsDirty { get; set; }
 
-        public void ChangeState(eClusterState state, int increment)
+        public void ChangeState(eClusterState state)
         {
             states[(Int32)state]++;
 

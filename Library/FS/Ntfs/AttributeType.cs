@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TDefragWpf.Library.FS.Ntfs;
 
 namespace TDefragLib.FileSystem.Ntfs
@@ -18,6 +15,11 @@ namespace TDefragLib.FileSystem.Ntfs
         private AttributeType(AttributeEnumType type)
         {
             Type = type;
+        }
+
+        private AttributeType(UInt32 typeCode)
+        {
+            TypeCode = typeCode;
         }
 
         public static implicit operator AttributeType(AttributeEnumType type)
@@ -80,13 +82,7 @@ namespace TDefragLib.FileSystem.Ntfs
             if (reader == null)
                 return null;
 
-            AttributeType attributeType = new AttributeType();
-
-            UInt32 val = reader.ReadUInt32();
-
-            attributeType.TypeCode = val;
-
-            return attributeType;
+            return new AttributeType(reader.ReadUInt32());
         }
 
         public String StreamName { get; set; }

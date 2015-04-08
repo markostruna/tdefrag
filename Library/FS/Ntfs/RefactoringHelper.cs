@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using TDefragLib.Helper;
 
@@ -45,16 +43,7 @@ namespace TDefragLib.FS.Ntfs
         /// <returns></returns>
         public static String ParseString(BinaryReader reader, int length)
         {
-            StringBuilder sb = new StringBuilder();
-            
-            for (int ii = 0; ii < length; ii++)
-            {
-                UInt16 i = reader.ReadUInt16();
-                
-                sb.Append((Char)i);
-            }
-            
-            return sb.ToString();
+            return Encoding.Unicode.GetString(reader.ReadBytes(length * sizeof(Char)));
         }
     }
 }

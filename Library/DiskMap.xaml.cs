@@ -43,7 +43,7 @@ namespace TDefragWpf
                 kobila.ColorizeSquare(pos, squareBrush);
             }
 
-            public Int64 NumSquares { get { return kobila.NumSquares; } }
+            public Int32 NumSquares { get { return kobila.NumSquares; } }
         }
     }
 
@@ -53,19 +53,19 @@ namespace TDefragWpf
         {
             DispatcherTimer dispatcherTimer;
 
-            private int stepX = 10;
+            private Int32 stepX = 10;
             private double maxX = 560;
             private double maxY = 330;
             private double edgeX = 560;
             private double edgeY = 330;
-            private int numX = 1;
-            private int numY = 1;
-            private int offsetX = 0;
-            private int offsetY = 0;
+            private Int32 numX = 1;
+            private Int32 numY = 1;
+            private Int32 offsetX = 0;
+            private Int32 offsetY = 0;
 
             bool resetView = true;
 
-            public Int64 NumSquares { get { return numX * numY; } }
+            public Int32 NumSquares { get { return numX * numY; } }
 
             private VisualCollection _children;
 
